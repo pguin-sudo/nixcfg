@@ -34,6 +34,7 @@
       firefox.enable = true;
       fonts.enable = true;
       sway.enable = true;
+      hyprland.enable = true;
       wayland.enable = true;
       xdg.enable = true;
       kitty.enable = true;
