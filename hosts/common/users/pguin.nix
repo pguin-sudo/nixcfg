@@ -18,5 +18,5 @@
     openssh.authorizedKeys.keys = [];
     packages = [inputs.home-manager.packages.${pkgs.system}.default]; 
   };
-  home-manager.users.pguin = import pguin/${config.networking.hostName}.nix;
+  home-manager.users.pguin = import ../../../home/pguin/${config.networking.hostName}.nix;
 }

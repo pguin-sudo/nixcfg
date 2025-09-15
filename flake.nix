@@ -34,12 +34,21 @@
         specialArgs = { inherit inputs outputs; };
         modules = [ ./hosts/desktop ];
       };
+      netbook = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs outputs; };
+        modules = [ ./hosts/netbook ];
+      };
     };
     homeConfigurations = {
       "pguin@desktop" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages."x86_64-linux";
         extraSpecialArgs = { inherit inputs outputs; };
         modules = [ ./home/pguin/desktop.nix ];
+      };
+      "pguin@netbook" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages."x86_64-linux";
+        extraSpecialArgs = { inherit inputs outputs; };
+        modules = [ ./home/pguin/netbook.nix ];
       };
     };
   };
