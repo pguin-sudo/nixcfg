@@ -5,6 +5,7 @@
   imports = [
     ./neovim.nix
     ./starship.nix
+    ./pentest.nix
 ];
 
   programs.eza.enable = true;

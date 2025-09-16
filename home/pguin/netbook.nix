@@ -42,6 +42,7 @@ with lib; {
         cli = {
 	  neovim.enable = true;
           starship.enable = true;
+	  pentest.enable = true;
         };
         desktop = {
           fonts.enable = true;
