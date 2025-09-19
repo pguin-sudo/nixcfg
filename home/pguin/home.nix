@@ -16,5 +16,12 @@
     };
   };
 
+  programs.gh = {
+    enable = true;
+    gitCredentialHelper = {
+      enable = true;
+    };
+  };
+
   home.stateVersion = "24.05";
 }
