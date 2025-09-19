@@ -50,5 +50,8 @@
     nixPath = [ "/etc/nix/path" ];
   };
 
+  programs.zsh = {
+    enable = true;
+  };
   users.defaultUserShell = pkgs.zsh;
 }
