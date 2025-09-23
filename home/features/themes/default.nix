@@ -1,9 +1,7 @@
 { pkgs, ... }: {
   imports = [
-    ./fonts.nix
-    ./hyprland.nix
-    ./wayland.nix
-    ./xdg.nix
+    ./gtk.nix
+    ./qt.nix
   ];
 
   home.packages = with pkgs; [

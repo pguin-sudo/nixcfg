@@ -1,75 +1,103 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 with lib; let
   cfg = config.features.desktop.hyprland;
-in {
-  options.features.desktop.hyprland.enable = 
-    mkEnableOption "Hyprland related stuff";
+in
+{
+  options.features.desktop.hyprland.enable = mkEnableOption "hyprland config";
 
   config = mkIf cfg.enable {
     wayland.windowManager.hyprland = {
+      enable = true;
       settings = {
         xwayland = {
           force_zero_scaling = true;
         };
 
+
+        monitor = [
+          "DP-1,highres,auto,1"
+          "eDP-1,2560x1600@60,0x0,1.25,mirror,DP-1"
+
+        ];
+        workspace = [
+          # "1, monitor:DP-1, default:true"
+          # "2, monitor:DP-1"
+          # "3, monitor:DP-1"
+          # "4, monitor:DP-1"
+          # "5, monitor:DP-1"
+          # "6, monitor:DP-1"
+          # "7, monitor:DP-1"
+        ];
+
+
         exec-once = [
-          "hyprpanel"
+          "waybar"
           "hyprpaper"
-          "hyprpaper-random"
           "hypridle"
-          "wl-paste --type text --watch cliphist store" # Stores only text data
-          "wl-paste --type image --watch cliphist store" # Stores only image data "wl-paste -p -t text --watch clipman store -P --histpath=\"~/.local/share/clipman-primary.json\""
-          "xwaylandvideobridge"
+          "wl-clipboard-history -t"
+          "wl-paste -p -t text --watch clipman store -P --histpath=\"~/.local/share/clipman-primary.json\""
+          "poweralertd"
+          "syncthing"
+          "sleep 3; qsyncthingtray"
+          "kdeconnect-indicator"
+          #"kdeconnectd"
+          "dbus-update-actvation-environment --systemd --all WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+          "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DBUS_SESSION_BUS_ADDRESS"
         ];
 
         env = [
-          "XCURSOR_SIZE,32"
-          "HYPRCURSOR_THEME,Bibata-Modern-Ice"
-          "WLR_NO_HARDWARE_CURSORS,1"
-          "GTK_THEME,Dracula"
+          "XCURSOR_SIZE,24"
+          "NIXOS_OZONE_WL,1"
+          "GTK_THEME,Nightfox-Dark"
+          "QT_AUTO_SCREEN_SCALE_FACTOR,1"
+          "ELECTRON_EXTRA_FLAGS,--force-device-scale-factor=1.5"
         ];
 
         input = {
-          kb_layout = "de,us";
-          kb_variant = "";
-          kb_model = "";
-          kb_rules = "";
-          kb_options = "ctrl:nocaps";
+          kb_layout = "us,ara";
+          kb_options = "grp:alt_shift_toggle";
+          kb_variant = "qwerty_digits";
           follow_mouse = 1;
+
+          touchpad = {
+            natural_scroll = true;
+            disable_while_typing = 1;
+            tap-to-click = 1;
+          };
+
+          sensitivity = 0.25;
         };
 
         general = {
-          gaps_in = 5;
+          gaps_in = 3;
           gaps_out = 5;
-          border_size = 1;
-          # Keeping the existing active border as requested
-          "col.active_border" = "rgba(9742b5ee) rgba(9742b5ee) 45deg";
-          "col.inactive_border" = "rgba(${config.colorScheme.palette.base03}aa)";
+          border_size = 2;
+          "col.active_border" = "rgba(5faaffee) rgba(5faaffee) 45deg";
+          "col.inactive_border" = "rgba(595959aa)";
           layout = "dwindle";
         };
 
         decoration = {
+          rounding = 8;
           shadow = {
             enabled = true;
+            color = "rgba(1E202966)";
             range = 60;
-            render_power = 3;
-            color = "rgba(${config.colorScheme.palette.base00}66)";
             offset = "1 2";
+            render_power = 3;
             scale = 0.97;
           };
-          rounding = 8;
           blur = {
             enabled = true;
             size = 3;
             passes = 3;
           };
-          active_opacity = 0.9;
-          inactive_opacity = 0.5;
+          active_opacity = 1;
+          inactive_opacity = 0.95;
         };
 
         animations = {
@@ -90,104 +118,109 @@ in {
           preserve_split = true;
         };
 
-        master = {
-          new_status = "master";
-        };
+        master = { };
 
         gestures = {
-          workspace_swipe = false;
+          workspace_swipe = true;
+          workspace_swipe_min_speed_to_force = 5;
         };
 
-        device = [
-          {
-            name = "epic-mouse-v1";
-            sensitivity = -0.5;
-          }
-          {
-            name = "zsa-technology-labs-moonlander-mark-i";
-            kb_layout = "us";
-          }
-          {
-            name = "keychron-keychron-k7";
-            kb_layout = "us";
-          }
-        ];
+        misc = {
+          vfr = true;
+        };
+
         windowrule = [
-          "float, class:file_progress"
-          "float, class:confirm"
-          "float, class:dialog"
-          "float, class:download"
-          "float, class:notification"
-          "float, class:error"
-          "float, class:splash"
-          "float, class:confirmreset"
-          "float, title:Open File"
+          "float, file_progress"
+          "float, confirm"
+          "float, dialog"
+          "float, download"
+          "float, notification"
+          "float, error"
+          "float, splash"
+          "float, confirmreset"
+          "float, title:Open File" # decrease screen brightness
           "float, title:branchdialog"
-          "float, class:pavucontrol-qt"
-          "float, class:pavucontrol"
-          "fullscreen, class:wlogout"
+          "float, Rofi"
+          "float, Calculator"
+          "float, mako"
+          "float,viewnior"
+          "float,feh"
+          "float, pavucontrol-qt"
+          "float, pavucontrol"
+          "float, file-roller"
+          "fullscreen, wlogout"
           "float, title:wlogout"
           "fullscreen, title:wlogout"
-          "float, class:mpv"
-          "idleinhibit focus, class:mpv"
-          "opacity 1.0 override, class:mpv"
+          "idleinhibit focus, vlc"
+          "idleinhibit fullscreen, firefox"
           "float, title:^(Media viewer)$"
           "float, title:^(Volume Control)$"
           "float, title:^(Picture-in-Picture)$"
-          "float,title:^(floating-pomodoro)$"
-          "size 250 50, title:^(floating-pomodoro)$"
-          "move 12 100%-150,title:^(floating-pomodoro)$"
-          "pin,title:^(floating-pomodoro)$"
-          "float, initialTitle:.*streamlabs.com.*"
-          "pin, initialTitle:.*streamlabs.com.*"
-          "size 800 400, initialTitle:.*streamlabs.com.*"
-          "move 100%-820 102, initialTitle:.*alert-box.*"
-          "move 100%-820 512, initialTitle:.*chat-box.*"
-          "opacity 0.5 override, initialTitle:.*streamlabs.com.*"
-          "idleinhibit focus, initialTitle:.*streamlabs.com.*"
-          "noanim, initialTitle:.*streamlabs.com.*"
-          "noborder, initialTitle:.*streamlabs.com.*"
-          "noshadow, initialTitle:.*streamlabs.com.*"
-          "noblur, initialTitle:.*streamlabs.com.*"
-          "opacity 0.0 override, class:^(xwaylandvideobridge)$"
-          "noanim, class:^(xwaylandvideobridge)$"
-          "noinitialfocus, class:^(xwaylandvideobridge)$"
-          "maxsize 1 1, class:^(xwaylandvideobridge)$"
-          "noblur, class:^(xwaylandvideobridge)$"
-          "nofocus, class:^(xwaylandvideobridge)$"
+          "size 1160 960, title:^(Volume Control)$"
+          "move 5 315, title:^(Volume Control)$"
+          "float, title:^(fly_is_kitty)"
         ];
+
         "$mainMod" = "SUPER";
-        "$terminal" = "kitty";
+
+
 
         bind = [
-          "$mainMod, return, exec, $terminal nu -c zellij-ps"
-          # "$mainMod, t, exec, warp-terminal"
-          "$mainMod, t, exec, $terminal -e nu -c 'nitch; exec nu'"
-          "$mainMod SHIFT, t, exec, launch-timer"
-          "$mainMod, n, exec, $terminal -e nvim"
-          "$mainMod, z, exec, uwsm app -- zeditor"
-          "$mainMod, o, exec, hyprctl setprop activewindow opaque toggle"
-          "$mainMod, r, exec, hyprctl dispatch focuswindow \"initialtitle:.*alert-box.*\" && hyprctl dispatch moveactive exact 4300 102 && hyprctl dispatch focuswindow \"initialtitle:.*chat-box.*\" && hyprctl dispatch moveactive exact 4300 512"
-          "$mainMod, b, exec, uwsm app -- thunar"
-          "$mainMod SHIFT, B, exec, uwsm app -- vivaldi"
-          "$mainMod, Escape, exec, uwsm app -- wlogout -p layer-shell"
-          "$mainMod, Space, togglefloating"
-          "$mainMod, q, killactive"
-          "$mainMod, M, exit"
-          "$mainMod, F, fullscreen"
-          "$mainMod SHIFT, V, togglefloating"
-          "$mainMod, D, exec, uwsm app -- rofi -show drun -run-command \"uwsm app -- {cmd}\""
-          "$mainMod, V, exec, uwsm app -- cliphist list | rofi -dmenu | cliphist decode | wl-copy"
-          "$mainMod SHIFT, S, exec, uwsm app -- rofi -show emoji"
-          "$mainMod, P, exec, uwsm app -- rofi-pass"
-          "$mainMod SHIFT, P, pseudo"
-          "$mainMod, J, togglesplit"
+          "$mainMod, Escape, exec, wlogout -p layer-shell"
+          "$mainMod, mouse_down, workspace, e+1"
+          "$mainMod, mouse_up, workspace, e-1"
+
+
+          "$mainMod, F1, exec, $HOME/.config/hypr/scripts/keybind.sh"
+          "$mainMod, Q, killactive"
+          "$mainMod, B, exec, firefox"
+          "$mainMod, F, fullscreen, 1"
+          "$mainModSHIFT, F, fullscreen, 0"
+          "$mainMod, V, togglesplit" # dwindle
+
+          "$mainMod, j, movefocus, d"
+          "$mainMod, k, movefocus, u"
+
           "$mainMod, h, movefocus, l"
           "$mainMod, l, movefocus, r"
-          "$mainMod, k, movefocus, u"
-          "$mainMod, j, movefocus, d"
-          "$mainMod, 1, workspace, 1"
 
+          "$mainMod SHIFT, h, movewindow, l"
+          "$mainMod SHIFT, l, movewindow, r"
+          "$mainMod SHIFT, k, movewindow, u"
+          "$mainMod SHIFT, j, movewindow, d"
+
+          "$mainMod SHIFT, t, exec, alacritty --start-as=fullscreen -o 'font_size=18' --title all_is_kitty"
+          "ALT, RETURN, exec, alacritty --title fly_is_kitty"
+          "$mainMod, RETURN, exec, alacritty"
+
+          "$mainMod, C, killactive"
+          "$mainMod SHIFT, Q, exit"
+          "$mainMod, E, exec, nautilus"
+          "$mainMod, R, exec, ~/.config/rofi/launchers/type-6/launcher.sh"
+          #"$mainMod, P, pseudo"
+
+
+          "ALTCTRL, DELETE, exec, htop"
+          "$mainMod, T, togglefloating"
+
+          # Screen shot
+          "$mainMod, S, exec, hyprctl keyword animation 'fadeOut,0,0,default'; grimshot --notify copy active; hyprctl keyword animation 'fadeOut,1,4,default'"
+          "$mainMod SHIFT, S, exec, grimshot savecopy area - | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
+
+          # Screen recorder
+          "$mainMod SHIFT, R, exec, wf-recorder -a -f ~/Video/recording.mkv & notify-send 'Recordering Started' -i -u -A '^C ,stop' -t 0 -i ~/icons/rec-button.png"
+
+          # Emoji selector
+          "$mainMod SHIFT, E, exec, rofimoji"
+
+
+          # Change HZ
+          "$mainMod, A, exec, ~/.config/hypr/scripts/screenHz.sh"
+
+          "$mainMod SHIFT, RETURN, layoutmsg, swapwithmaster"
+
+          # Workspace bindings
+          "$mainMod, 1, workspace, 1"
           "$mainMod, 2, workspace, 2"
           "$mainMod, 3, workspace, 3"
           "$mainMod, 4, workspace, 4"
@@ -197,23 +230,43 @@ in {
           "$mainMod, 8, workspace, 8"
           "$mainMod, 9, workspace, 9"
           "$mainMod, 0, workspace, 10"
-          "$mainMod SHIFT, 1, movetoworkspace, 1"
-          "$mainMod SHIFT, 2, movetoworkspace, 2"
-          "$mainMod SHIFT, 3, movetoworkspace, 3"
-          "$mainMod SHIFT, 4, movetoworkspace, 4"
-          "$mainMod SHIFT, 5, movetoworkspace, 5"
-          "$mainMod SHIFT, 6, movetoworkspace, 6"
-          "$mainMod SHIFT, 7, movetoworkspace, 7"
-          "$mainMod SHIFT, 8, movetoworkspace, 8"
-          "$mainMod SHIFT, 9, movetoworkspace, 9"
-          "$mainMod SHIFT, 0, movetoworkspace, 10"
-          "$mainMod, mouse_down, workspace, e+1"
-          "$mainMod, mouse_up, workspace, e-1"
+
+          "$mainModSHIFT, 1, movetoworkspacesilent, 1"
+          "$mainModSHIFT, 2, movetoworkspacesilent, 2"
+          "$mainModSHIFT, 3, movetoworkspacesilent, 3"
+          "$mainModSHIFT, 4, movetoworkspacesilent, 4"
+          "$mainModSHIFT, 5, movetoworkspacesilent, 5"
+          "$mainModSHIFT, 6, movetoworkspacesilent, 6"
+          "$mainModSHIFT, 7, movetoworkspacesilent, 7"
+          "$mainModSHIFT, 8, movetoworkspacesilent, 8"
+          "$mainModSHIFT, 9, movetoworkspacesilent, 9"
+          "$mainModSHIFT, 0, movetoworkspacesilent, 10"
+
+          "ALT, Tab, cyclenext"
         ];
 
         bindm = [
           "$mainMod, mouse:272, movewindow"
           "$mainMod, mouse:273, resizewindow"
+        ];
+
+        binde = [
+          "$mainMod, left, resizeactive, -40 0"
+          "$mainMod, right, resizeactive, 40 0"
+          "$mainMod, up, resizeactive, 0 -40"
+          "$mainMod, down, resizeactive, 0 40"
+          ", XF86AudioMute, exec, $HOME/.config/hypr/scripts/volume mute"
+          ", XF86AudioLowerVolume, exec, $HOME/.config/hypr/scripts/volume down"
+          ", XF86AudioRaiseVolume, exec, $HOME/.config/hypr/scripts/volume up"
+          ", XF86MonBrightnessUp, exec, $HOME/.config/hypr/scripts/brightness up"
+          ", XF86MonBrightnessDown, exec, $HOME/.config/hypr/scripts/brightness down"
+        ];
+
+
+        windowrulev2 = [
+          # "workspace 1,class:(Emacs)"
+          # "workspace 3,opacity 1.0, class:(brave-browser)"
+          # "workspace 4,class:(com.obsproject.Studio)"
         ];
       };
     };
