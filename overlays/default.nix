@@ -11,8 +11,6 @@
       # ...
       # });
 
-      rofimoji = prev.rofimoji.override { rofi = prev.rofi-wayland; };
-
       # electron = prev.electron.overrideAttrs (oldAttrs: {
       #   postInstall = ''
       #     wrapProgram $out/bin/electron \

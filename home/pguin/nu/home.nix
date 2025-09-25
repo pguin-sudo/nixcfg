@@ -2,10 +2,10 @@
 # 
 # home-manager init ./
 
-{ config, lib, pkgs, user, inputs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 {
-  home.username = lib.mkDefault user;
+  home.username = "pguin";
   home.homeDirectory = lib.mkDefault "/home/${config.home.username}";
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
@@ -15,55 +15,55 @@
     alacritty
     tmux
     firefox
-    google-chrome
-    age
-    sops
-    nvd
+    #google-chrome
+    #age
+    #sops
+    #nvd
     # Apps
     vlc
-    amberol
-    webcord
+    #amberol
+    #webcord
     #bottles
     #cava
-    ryubing
-    mullvad-vpn
-    transmission_4-gtk
+    #ryubing
+    #mullvad-vpn
+    #transmission_4-gtk
     obsidian
-    tailscale
-    syncthing
-    qsyncthingtray
+    #tailscale
+    #syncthing
+    #qsyncthingtray
     htop
     openvpn
     #nvtopPackages.full
-    exiftool
-    moonlight-qt
+    #exiftool
+    #moonlight-qt
     cmatrix
     #jellyfin-media-player
-    speedtest-go
-    wireguard-tools
+    #speedtest-go
+    #wireguard-tools
     # Dev
-    devbox
-    go
-    python3
-    nim
-    bun
-    pocketbase
+    #devbox
+    #go
+    #python3
+    #nim
+    #bun
+    #pocketbase
     #edgedb
-    bruno
-    ripgrep
-    zip
-    nodejs
-    gcc
-    python312Packages.pip
-    android-studio
-    android-tools
-    jre17_minimal
+    #bruno
+    #ripgrep
+    #zip
+    #nodejs
+    #gcc
+    #python312Packages.pip
+    #android-studio
+    #android-tools
+    #jre17_minimal
     # Nvim-Lsps
     lua-language-server
     tailwindcss-language-server
     glow
     # Hacks
-    responder-patched
+    #responder-patched
 
 
     # # Adds the 'hello' command to your environment. It prints a friendly
@@ -102,7 +102,7 @@
   #  /etc/profiles/per-user/m3tam3re/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    BROWSER = "google-chrome-stable";
+    BROWSER = "firefox";
     EDITOR = "nvim";
     TERMINAL = "alacritty";
     # NIXOS_OZONE_WL = "1";

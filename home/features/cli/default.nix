@@ -1,10 +1,8 @@
 { pkgs, ... }: {
   imports = [
-    ./zsh.nix
     ./fzf.nix
     ./neofetch.nix
-    ./nushell.nix
-    ./fish.nix
+    ./zsh.nix
   ];
 
   # Starship

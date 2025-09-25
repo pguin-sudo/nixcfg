@@ -38,7 +38,7 @@
   };
 
   programs.zsh.enable = true;
-  # programs.fish.enable = true;
+
   home-manager.users.pguin =
     import ../../../home/pguin/${config.networking.hostName}.nix;
 }

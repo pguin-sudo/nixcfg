@@ -27,24 +27,24 @@ in
         dotfilesu = "nix flake lock --update-input dotfiles";
         cleanold = "sudo nix-collect-garbage --delete-old";
         cleanboot = "sudo /run/current-system/bin/switch-to-configuration boot";
-        # nvim = "kitty @ set-spacing padding=0 && /run/current-system/sw/bin/nvim";
-        # nvim = "alacritty --config-file ~/.config/alacritty/alacritty_nvim.toml -e nvim";
-
+        nvim = "kitty @ set-spacing padding=0 && /run/current-system/sw/bin/nvim";
       };
-      initExtraFirst = ''
+
+      initContent = lib.mkBefore ''
         unsetopt beep
         path+=('/home/pguin/.local/bin')
       '';
+
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
-      #  zplug = {
-      #  enable = true;
-      #  plugins = [
-      #    { name = "zsh-users/zsh-autosuggestions"; }
-      #    { name = "zsh-users/zsh-syntax-highlighting"; }
-      #    { name = "romkatv/zsh-defer"; }
-      #    ];
-      # };
+        zplug = {
+        enable = true;
+        plugins = [
+          { name = "zsh-users/zsh-autosuggestions"; }
+          { name = "zsh-users/zsh-syntax-highlighting"; }
+          { name = "romkatv/zsh-defer"; }
+        ];
+      };
     };
   };
 }

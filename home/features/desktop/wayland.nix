@@ -321,7 +321,7 @@ in
       hypridle
       hyprpaper
       hyprpicker
-      rofi-wayland
+      rofi
       rofimoji
       qt6.qtwayland
       kdePackages.qt6ct
@@ -336,10 +336,10 @@ in
       wttrbar
       ydotool
       xdg-utils
-      xwaylandvideobridge
       playerctl
       brightnessctl
       networkmanagerapplet
+      kdePackages.xwaylandvideobridge
       kdePackages.kdeconnect-kde
       pamixer
       pavucontrol # Volume control
