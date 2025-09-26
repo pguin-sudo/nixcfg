@@ -23,11 +23,10 @@ in
       # '';
 
       shellAliases = {
-        rebuild = "sudo nixos-rebuild switch";
+        rebuild = "sudo nixos-rebuild switch --flake /home/pguin/nixcfg/#$(hostname)";
         dotfilesu = "nix flake lock --update-input dotfiles";
         cleanold = "sudo nix-collect-garbage --delete-old";
         cleanboot = "sudo /run/current-system/bin/switch-to-configuration boot";
-        nvim = "kitty @ set-spacing padding=0 && /run/current-system/sw/bin/nvim";
       };
 
       initContent = lib.mkBefore ''
