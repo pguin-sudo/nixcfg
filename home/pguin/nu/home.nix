@@ -32,7 +32,7 @@
     #tailscale
     #syncthing
     #qsyncthingtray
-    htop
+    btop
     openvpn
     #nvtopPackages.full
     #exiftool
@@ -44,7 +44,6 @@
     # Dev
     #devbox
     #go
-    #python3
     #nim
     #bun
     #pocketbase
@@ -53,8 +52,8 @@
     #ripgrep
     #zip
     #nodejs
-    #gcc
-    #python312Packages.pip
+    gcc
+    python3
     #android-studio
     #android-tools
     #jre17_minimal
@@ -63,7 +62,10 @@
     tailwindcss-language-server
     glow
     # Hacks
-    #responder-patched
+    nmap
+    metasploit
+    ffuf
+    insomnia
 
 
     # # Adds the 'hello' command to your environment. It prints a friendly
