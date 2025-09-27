@@ -22,7 +22,7 @@
   #common.services.vfio.enable = false;
   # AppStores
   common.services.appimage.enable = false;
-  common.services.steam.enable = false;
+  common.services.steam.enable = true;
 
   #services.samba.enable = true;
 
