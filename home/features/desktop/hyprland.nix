@@ -144,7 +144,10 @@ in
           "$mainMod, A, exec, ~/.config/rofi/launchers/type-6/launcher.sh"
           "ALTCTRL, DELETE, exec, htop"
           "$mainMod, W, togglefloating"
-          "$mainMod SHIFT, S, exec, hyprctl keyword animation 'fadeOut,0,0,default'; grimshot --notify copy active; hyprctl keyword animation 'fadeOut,1,4,default'"
+
+          "$mainMod, PrtScr, exec, hyprctl keyword animation 'fadeOut,0,0,default'; grimshot --notify copy active; hyprctl keyword animation 'fadeOut,1,4,default'"
+          "$mainMod SHIFT, S, exec, grimshot savecopy area - | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
+
           "$mainMod SHIFT, R, exec, wf-recorder -a -f ~/Video/recording.mkv & notify-send 'Recordering Started' -i -u -A '^C ,stop' -t 0 -i ~/icons/rec-button.png"
           "$mainMod SHIFT, E, exec, rofimoji"
           "$mainMod, A, exec, ~/.config/hypr/scripts/screenHz.sh"
