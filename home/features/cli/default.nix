@@ -1,5 +1,6 @@
 { pkgs, ... }: {
   imports = [
+    ./btop.nix
     ./fzf.nix
     ./neofetch.nix
     ./neovim.nix
@@ -19,7 +20,6 @@
   home.packages = with pkgs; [
     coreutils
     fd
-    htop
     ripgrep
     tldr
     zip

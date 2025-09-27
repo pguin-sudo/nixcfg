@@ -5,7 +5,7 @@
     ../features/cli
     ../features/desktop
     ../features/themes
-    ./nu/home.nix
+    ./delta/home.nix
   ];
 
   programs.git = {
@@ -23,6 +23,7 @@
 
   features = {
     cli = {
+      btop.enable = true;
       neofetch.enable = true;
       neovim.enable = true;
       zsh.enable = true;

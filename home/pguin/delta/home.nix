@@ -33,7 +33,6 @@
     #tailscale
     #syncthing
     #qsyncthingtray
-    btop
     openvpn
     #nvtopPackages.full
     #exiftool
