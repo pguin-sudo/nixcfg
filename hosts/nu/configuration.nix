@@ -18,8 +18,6 @@
   programs.nix-ld.enable = true; # Non nixos binaries such as mason LSPs
   # Filemanager
   common.services.nautilus.enable = true;
-  # Virtual Box (Virt-Manager) and GPU Passthru. you have to configure hosts/services/vfio.nix for passthrough to work!
-  #common.services.vfio.enable = false;
   # AppStores
   common.services.appimage.enable = false;
   common.services.steam.enable = false;

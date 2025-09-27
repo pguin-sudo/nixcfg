@@ -5,5 +5,6 @@
     ./appimage.nix
     ./nautilus.nix
     ./xdgportal.nix
+    ./vm.nix
   ];
 }
