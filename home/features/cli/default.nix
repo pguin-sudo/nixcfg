@@ -2,6 +2,7 @@
   imports = [
     ./fzf.nix
     ./neofetch.nix
+    ./neovim.nix
     ./zsh.nix
   ];
 

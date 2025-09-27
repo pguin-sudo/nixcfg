@@ -84,7 +84,7 @@
 
 
   environment.systemPackages = with pkgs; [
-    neovim
+    vim
     git
     zsh
     nssmdns

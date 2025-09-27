@@ -4,7 +4,7 @@
 
 { config, lib, pkgs, inputs, ... }:
 
-{
+{ 
   home.username = "pguin";
   home.homeDirectory = lib.mkDefault "/home/${config.home.username}";
   home.stateVersion = "24.05"; # Please read the comment before changing.
@@ -44,26 +44,9 @@
     #wireguard-tools
 
     # Dev
-    #devbox
-    #go
-    #nim
-    #bun
-    #pocketbase
-    #edgedb
-    #bruno
-    #ripgrep
-    #zip
-    #nodejs
+    bun
     gcc
     python3
-    #android-studio
-    #android-tools
-    #jre17_minimal
-
-    # Nvim-Lsps
-    lua-language-server
-    tailwindcss-language-server
-    glow
 
     # Hacks
     nmap

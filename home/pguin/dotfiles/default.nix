@@ -3,7 +3,6 @@
     ./bat.nix
     ./kitty.nix
     ./rofi.nix
-    ./nvim.nix
   ];
 
   home.file.".config/mako" = {

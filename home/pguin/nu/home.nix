@@ -44,25 +44,9 @@
     #wireguard-tools
 
     # Dev
-    #devbox
-    #go
-    #nim
-    #bun
-    #pocketbase
-    #edgedb
-    #bruno
-    #ripgrep
-    #zip
-    #nodejs
+    bun
     gcc
     python3
-    #android-studio
-    #android-tools
-    #jre17_minimal
-    # Nvim-Lsps
-    lua-language-server
-    tailwindcss-language-server
-    glow
 
     # Hacks
     nmap

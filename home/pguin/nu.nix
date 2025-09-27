@@ -24,6 +24,7 @@
   features = {
     cli = {
       neofetch.enable = true;
+      neovim.enable = true;
       zsh.enable = true;
     };
     desktop = {

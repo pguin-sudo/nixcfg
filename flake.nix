@@ -21,6 +21,8 @@
     };
     disko.url = "github:nix-community/disko";
 
+    nvf.url = "github:notashelf/nvf";
+
     dotfiles = {
       url = "github:pguin-sudo/dotfiles";
       flake = false;
@@ -29,7 +31,7 @@
 
 
 
-  outputs = { self, home-manager, nixpkgs, dotfiles, sops-nix, arion, disko, ... }@inputs:
+  outputs = { self, home-manager, nixpkgs, dotfiles, sops-nix, arion, disko, nvf, ... }@inputs:
     let
       inherit (self) outputs;
       systems = [
@@ -39,7 +41,7 @@
         "aarch64-darwin"
         "x86_64-darwin"
       ];
-      forAllSystems = nixpkgs.lib.genAttrs systems;
+      forAllSystems = nixpkgs.lib.genAttrs systems;  
     in
     {
       packages =
@@ -71,6 +73,7 @@
           pkgs = nixpkgs.legacyPackages."x86_64-linux";
           extraSpecialArgs = { inherit inputs outputs; };
           modules = [
+            nvf.homeManagerModules.default
             ./home/pguin/delta.nix
           ];
         };
@@ -79,6 +82,7 @@
           pkgs = nixpkgs.legacyPackages."x86_64-linux";
           extraSpecialArgs = { inherit inputs outputs; };
           modules = [
+            nvf.homeManagerModules.default
             ./home/pguin/nu.nix
           ];
         };
