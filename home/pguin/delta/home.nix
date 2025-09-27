@@ -18,7 +18,9 @@
     #age
     #sops
     #nvd
+    
     # Apps
+    telegram-desktop
     vlc
     #amberol
     #webcord
@@ -40,6 +42,7 @@
     #jellyfin-media-player
     #speedtest-go
     #wireguard-tools
+
     # Dev
     #devbox
     #go
@@ -56,10 +59,12 @@
     #android-studio
     #android-tools
     #jre17_minimal
+
     # Nvim-Lsps
     lua-language-server
     tailwindcss-language-server
     glow
+
     # Hacks
     nmap
     metasploit
