@@ -23,14 +23,14 @@
 
   features = {
     cli = {
-      zsh.enable = true;
       neofetch.enable = true;
+      zsh.enable = true;
     };
     desktop = {
       fonts.enable = true;
       hyprland.enable = true;
       wayland.enable = true;
-      xdg.enable = false;
+      xdg.enable = true;
     };
     themes = {
       gtk.enable = true;

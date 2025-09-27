@@ -12,7 +12,6 @@
   home.packages = with pkgs; [
     # Essentials
     kitty
-    alacritty
     tmux
     firefox
     #google-chrome
@@ -32,7 +31,7 @@
     #tailscale
     #syncthing
     #qsyncthingtray
-    htop
+    btop
     openvpn
     #nvtopPackages.full
     #exiftool
@@ -44,7 +43,6 @@
     # Dev
     #devbox
     #go
-    #python3
     #nim
     #bun
     #pocketbase
@@ -53,8 +51,8 @@
     #ripgrep
     #zip
     #nodejs
-    #gcc
-    #python312Packages.pip
+    gcc
+    python3
     #android-studio
     #android-tools
     #jre17_minimal
@@ -63,7 +61,10 @@
     tailwindcss-language-server
     glow
     # Hacks
-    #responder-patched
+    nmap
+    metasploit
+    ffuf
+    insomnia
 
 
     # # Adds the 'hello' command to your environment. It prints a friendly
@@ -104,7 +105,7 @@
   home.sessionVariables = {
     BROWSER = "firefox";
     EDITOR = "nvim";
-    TERMINAL = "alacritty";
+    TERMINAL = "kitty";
     # NIXOS_OZONE_WL = "1";
     # MOZ_ENABLE_WAYLAND = "1";
     # SDL_VIDEODRIVER = "wayland";

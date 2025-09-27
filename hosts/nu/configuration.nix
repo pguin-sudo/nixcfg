@@ -17,7 +17,7 @@
   common.services.xdgportal.enable = false;
   programs.nix-ld.enable = true; # Non nixos binaries such as mason LSPs
   # Filemanager
-  common.services.nautilus.enable = false;
+  common.services.nautilus.enable = true;
   # Virtual Box (Virt-Manager) and GPU Passthru. you have to configure hosts/services/vfio.nix for passthrough to work!
   #common.services.vfio.enable = false;
   # AppStores
@@ -72,16 +72,8 @@
     enable = true;
   };
 
-  # Keyboard
-  services.xserver = {
-    exportConfiguration = true; # link /usr/share/X11/ properly
-    xkb.layout = "us,ru";
-    xkb.options = "grp:win_space_toggle";
-    xkb.variant = "intl,";
-  };
-
   # Enable CUPS to print documents.
-  services.printing.enable = true;
+  services.printing.enable = false;
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
   services.libinput.touchpad.tapping = true; #tap

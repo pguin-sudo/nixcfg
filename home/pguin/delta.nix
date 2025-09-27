@@ -5,22 +5,32 @@
     ../features/cli
     ../features/desktop
     ../features/themes
-    ./delta/home.nix
+    ./nu/home.nix
   ];
+
+  programs.git = {
+    enable = true;
+    userName = "PGuin";
+    userEmail = "138515193+pguin-sudo@users.noreply.github.com";
+  };
+
+  programs.gh = {
+    enable = true;
+    gitCredentialHelper = {
+      enable = true;
+    };
+  };
 
   features = {
     cli = {
-      zsh.enable = false;
-      nushell.enable = true;
-      fish.enable = true;
-      fzf.enable = true;
       neofetch.enable = true;
+      zsh.enable = true;
     };
     desktop = {
       fonts.enable = true;
-      hyprland.enable = false;
-      wayland.enable = false;
-      xdg.enable = false;
+      hyprland.enable = true;
+      wayland.enable = true;
+      xdg.enable = true;
     };
     themes = {
       gtk.enable = true;

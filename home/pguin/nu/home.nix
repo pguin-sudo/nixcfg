@@ -12,7 +12,6 @@
   home.packages = with pkgs; [
     # Essentials
     kitty
-    alacritty
     tmux
     firefox
     #google-chrome
@@ -106,7 +105,7 @@
   home.sessionVariables = {
     BROWSER = "firefox";
     EDITOR = "nvim";
-    TERMINAL = "alacritty";
+    TERMINAL = "kitty";
     # NIXOS_OZONE_WL = "1";
     # MOZ_ENABLE_WAYLAND = "1";
     # SDL_VIDEODRIVER = "wayland";

@@ -35,9 +35,6 @@
   # Please also change your hostname accordingly:
   #
 
-  # networking.hostName = "unkown"; # Define your hostname.
-
-
   imports = [
     ../common
     ./hardware

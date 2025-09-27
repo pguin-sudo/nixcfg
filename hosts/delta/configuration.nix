@@ -15,50 +15,16 @@
   # System
   common.services.polkit.enable = false;
   common.services.xdgportal.enable = false;
-  common.services.update-report.enable = true;
   programs.nix-ld.enable = true; # Non nixos binaries such as mason LSPs
   # Filemanager
-  common.services.nautilus.enable = false;
+  common.services.nautilus.enable = true;
   # Virtual Box (Virt-Manager) and GPU Passthru. you have to configure hosts/services/vfio.nix for passthrough to work!
-  common.services.vm.enable = true;
   #common.services.vfio.enable = false;
   # AppStores
-  common.services.appimage.enable = true;
-  common.services.steam.enable = true;
-  services.flatpak.enable = false;
-
-  # Gnomede exclude these packages
-  services.xserver = {
-    desktopManager.gnome = {
-      enable = true;
-      extraGSettingsOverridePackages = [ pkgs.mutter ];
-      extraGSettingsOverrides = ''
-        [org.gnome.mutter]
-        experimental-features=['scale-monitor-framebuffer']
-      '';
-    };
-  };
-  programs.kdeconnect = {
-    enable = true;
-    package = pkgs.gnomeExtensions.gsconnect;
-  };
-  environment.gnome.excludePackages = with pkgs; [
-    cheese # photo booth
-    epiphany # web browser
-    simple-scan # document scanner
-    totem # video player
-    yelp # help viewer
-    geary # email client
-
-    # these should be self explanatory
-    gnome-contacts
-    gnome-music
-    gnome-photos
-  ];
-
+  common.services.appimage.enable = false;
+  common.services.steam.enable = false;
 
   #services.samba.enable = true;
-
 
   #Bootloader
   boot.loader.systemd-boot.enable = true;
@@ -67,16 +33,6 @@
   boot.loader.systemd-boot.configurationLimit = 3;
   # Ntfs support
   boot.supportedFilesystems = [ "ntfs" ];
-
-
-  # Enable GDM Login Manager
-  services.xserver.enable = true;
-  services.xserver.displayManager.gdm = {
-    enable = true;
-    wayland = true;
-    banner = "Nomadic Nixos";
-    autoSuspend = true;
-  };
 
   programs.hyprland = {
     enable = true;
@@ -92,10 +48,6 @@
     enable = true;
     nssmdns4 = true;
   };
-  #Hosts 
-  networking.extraHosts = ''
-    192.168.0.200 rancher.local
-  '';
 
   # Bluethooth
   hardware.bluetooth.enable = false;
@@ -120,16 +72,8 @@
     enable = true;
   };
 
-  # Keyboard
-  services.xserver = {
-    exportConfiguration = true; # link /usr/share/X11/ properly
-    xkb.layout = "us,ara";
-    xkb.options = "grp:alt_shift_toggle,ctrl:swapcaps";
-    xkb.variant = "intl,";
-  };
-
   # Enable CUPS to print documents.
-  services.printing.enable = true;
+  services.printing.enable = false;
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
   services.libinput.touchpad.tapping = true; #tap
@@ -140,8 +84,6 @@
 
 
   environment.systemPackages = with pkgs; [
-    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    #  wget
     neovim
     git
     zsh
