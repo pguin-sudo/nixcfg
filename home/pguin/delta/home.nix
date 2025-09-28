@@ -40,7 +40,7 @@
     cmatrix
     #jellyfin-media-player
     #speedtest-go
-    #wireguard-tools
+    wireguard-tools
     qbittorrent
 
     # Dev
