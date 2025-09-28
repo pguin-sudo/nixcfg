@@ -41,6 +41,7 @@
     #jellyfin-media-player
     #speedtest-go
     #wireguard-tools
+    qbittorrent
 
     # Dev
     bun
