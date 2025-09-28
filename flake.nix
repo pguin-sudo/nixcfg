@@ -23,6 +23,11 @@
 
     nvf.url = "github:notashelf/nvf";
 
+    winapps = {
+      url = "github:winapps-org/winapps";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     dotfiles = {
       url = "github:pguin-sudo/dotfiles";
       flake = false;
@@ -31,7 +36,7 @@
 
 
 
-  outputs = { self, home-manager, nixpkgs, dotfiles, sops-nix, arion, disko, nvf, ... }@inputs:
+  outputs = { self, home-manager, nixpkgs, dotfiles, sops-nix, arion, disko, nvf, winapps, ... }@inputs:
     let
       inherit (self) outputs;
       systems = [
@@ -55,9 +60,15 @@
             ./hosts/delta
             sops-nix.nixosModules.sops
             arion.nixosModules.arion
+            ({ pkgs, outputs, ... }: {
+              environment.systemPackages = with pkgs; [
+                inputs.winapps.packages.${system}.winapps
+                inputs.winapps.packages.${system}.winapps-launcher  
+              ];
+            })
           ];
         };
-        
+            
 	nu = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
           modules = [
