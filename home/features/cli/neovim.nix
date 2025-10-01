@@ -1,8 +1,12 @@
-{ config, lib, pkgs, nvf, inputs, ... }:
+{
+  config,
+  lib,
+  inputs,
+  ...
+}:
 with lib; let
   cfg = config.features.cli.neovim;
-in
-{
+in {
   options.features.cli.neovim.enable = mkEnableOption "enable extended neovim configuration";
 
   imports = [
@@ -12,15 +16,19 @@ in
   config = mkIf cfg.enable {
     programs.nvf = {
       enable = true;
-      
+
       settings = {
         vim = {
           viAlias = false;
           vimAlias = true;
 
-          lsp = {
-            enable = true;
-          };  
+          options = {
+            tabstop = 8;
+            softtabstop = 4;
+            shiftwidth = 4;
+            expandtab = true;
+            smarttab = true;
+          };
 
           theme = {
             enable = true;
@@ -33,17 +41,32 @@ in
           telescope.enable = true;
           autocomplete.nvim-cmp.enable = true;
 
+          lsp = {
+            enable = true;
+            formatOnSave = true;
+          };
+
           languages = {
-            enableLSP = true;
             enableTreesitter = true;
-            
+            enableFormat = true;
+
             nix.enable = true;
             rust.enable = true;
             python.enable = true;
             markdown.enable = true;
             clang.enable = true;
           };
-        };  
+
+          filetree = {
+            neo-tree = {
+              enable = true;
+            };
+          };
+
+          tabline = {
+            nvimBufferline.enable = true;
+          };
+        };
       };
     };
   };
