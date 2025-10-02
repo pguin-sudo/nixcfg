@@ -24,6 +24,7 @@
   features = {
     cli = {
       btop.enable = true;
+      fzf.enable = true;
       neofetch.enable = true;
       neovim.enable = true;
       zsh.enable = true;
@@ -39,6 +40,4 @@
       qt.enable = true;
     };
   };
-
 }
-
