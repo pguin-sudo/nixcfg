@@ -30,7 +30,7 @@
     };
     desktop = {
       fonts.enable = true;
-      hyprland.enable = true;
+      sway.enable = true;
       wayland.enable = true;
       xdg.enable = true;
     };
@@ -39,6 +39,4 @@
       qt.enable = true;
     };
   };
-
 }
-

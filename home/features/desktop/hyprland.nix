@@ -1,12 +1,11 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  ...
 }:
 with lib; let
   cfg = config.features.desktop.hyprland;
-in
-{
+in {
   options.features.desktop.hyprland.enable = mkEnableOption "hyprland config";
 
   config = mkIf cfg.enable {
@@ -109,7 +108,7 @@ in
           preserve_split = true;
         };
 
-        master = { };
+        master = {};
 
         gestures = {
           gesture = "3, horizontal, workspace";
@@ -142,7 +141,7 @@ in
           "$mainMod SHIFT, Q, exit"
           "$mainMod, E, exec, nautilus"
           "$mainMod, A, exec, ~/.config/rofi/launchers/type-6/launcher.sh"
-          "ALTCTRL, DELETE, exec, htop"
+          "ALTCTRL, DELETE, exec, btop"
           "$mainMod, W, togglefloating"
 
           "$mainMod, PrtScr, exec, hyprctl keyword animation 'fadeOut,0,0,default'; grimshot --notify copy active; hyprctl keyword animation 'fadeOut,1,4,default'"
@@ -174,7 +173,7 @@ in
           "$mainMod SHIFT, 0, movetoworkspacesilent, 10"
           "ALT, Tab, cyclenext"
 
-          "$mainMod SHIFT, T, exec, telegram-desktop"
+          "$mainMod SHIFT, T, exec, Telegram"
         ];
 
         bindm = [

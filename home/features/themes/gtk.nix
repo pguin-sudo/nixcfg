@@ -1,16 +1,15 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 with lib; let
   cfg = config.features.themes.gtk;
-in
-{
+in {
   options.features.themes.gtk.enable = mkEnableOption "gtk theme";
 
   config = mkIf cfg.enable {
-
     home.pointerCursor = {
       gtk.enable = true;
       x11.enable = true;
@@ -18,7 +17,6 @@ in
       name = "Bibata-Modern-Classic";
       size = 24;
     };
-
 
     # dconf = {
     #   enable = true;
@@ -52,18 +50,12 @@ in
         package = pkgs.bibata-cursors;
       };
 
-
-
       gtk3.extraConfig = {
         gtk-application-prefer-dark-theme = ''1'';
       };
       gtk4.extraConfig = {
         gtk-theme-name = ''Nightfox:Dark'';
       };
-
     };
   };
 }
-
-
-
