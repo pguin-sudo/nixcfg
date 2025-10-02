@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   imports = [
     ./btop.nix
     ./fzf.nix
@@ -11,11 +11,9 @@
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
-    enableNushellIntegration = true;
-    enableFishIntegration = true;
   };
 
-  programs.bat = { enable = true; };
+  programs.bat = {enable = true;};
 
   home.packages = with pkgs; [
     coreutils
