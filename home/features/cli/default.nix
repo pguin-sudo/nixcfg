@@ -4,6 +4,7 @@
     ./fzf.nix
     ./neofetch.nix
     ./neovim.nix
+    ./tmux.nix
     ./zsh.nix
   ];
 

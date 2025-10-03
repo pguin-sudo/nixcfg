@@ -27,6 +27,7 @@
       fzf.enable = true;
       neofetch.enable = true;
       neovim.enable = true;
+      tmux.enable = true;
       zsh.enable = true;
     };
     desktop = {
