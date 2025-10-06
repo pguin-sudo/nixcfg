@@ -1,5 +1,8 @@
-{ pkgs, inputs, ... }: {
-
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -16,8 +19,6 @@
   common.services.polkit.enable = false;
   common.services.xdgportal.enable = false;
   programs.nix-ld.enable = true; # Non nixos binaries such as mason LSPs
-  # Filemanager
-  common.services.nautilus.enable = true;
   # AppStores
   common.services.appimage.enable = false;
   common.services.steam.enable = false;
@@ -30,7 +31,7 @@
   #Boot entries limit
   boot.loader.systemd-boot.configurationLimit = 3;
   # Ntfs support
-  boot.supportedFilesystems = [ "ntfs" ];
+  boot.supportedFilesystems = ["ntfs"];
 
   programs.hyprland = {
     enable = true;
@@ -63,7 +64,6 @@
     # jack.enable = true;
   };
 
-
   # Set your time zone.
   time.timeZone = "Asia/Yekaterinburg";
   services.ntp = {
@@ -76,10 +76,8 @@
   services.libinput.enable = true;
   services.libinput.touchpad.tapping = true; #tap
 
-
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-
 
   environment.systemPackages = with pkgs; [
     vim
@@ -96,7 +94,6 @@
   # Or disable the firewall altogether.
   networking.firewall.enable = false;
   networking.nftables.enable = false;
-
 
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
