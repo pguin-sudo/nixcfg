@@ -31,14 +31,16 @@
       zsh.enable = true;
     };
     desktop = {
+      firefox.enable = true;
       fonts.enable = true;
       hyprland.enable = true;
       wayland.enable = true;
       xdg.enable = true;
     };
     themes = {
-      gtk.enable = true;
-      qt.enable = true;
+      gtk.enable = false;
+      qt.enable = false;
+      stylix.enable = true;
     };
   };
 }

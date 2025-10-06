@@ -1,6 +1,9 @@
-{ inputs, pkgs, ... }: {
+{
+  inputs,
+  pkgs,
+  ...
+}: {
   imports = [
-    ./bat.nix
     ./kitty.nix
     ./rofi.nix
   ];
@@ -31,5 +34,4 @@
     source = "${inputs.dotfiles}/wlogout";
     recursive = true;
   };
-
 }

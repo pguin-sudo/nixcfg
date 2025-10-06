@@ -14,7 +14,9 @@
     enableZshIntegration = true;
   };
 
-  programs.bat = {enable = true;};
+  programs.bat = {
+    enable = true;
+  };
 
   home.packages = with pkgs; [
     coreutils

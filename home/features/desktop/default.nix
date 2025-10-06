@@ -1,5 +1,6 @@
 {...}: {
   imports = [
+    ./firefox.nix
     ./fonts.nix
     ./hyprland.nix
     ./sway.nix

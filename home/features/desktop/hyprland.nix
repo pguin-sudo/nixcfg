@@ -66,8 +66,6 @@ in {
           gaps_in = 3;
           gaps_out = 5;
           border_size = 2;
-          "col.active_border" = "rgba(5faaffee) rgba(5faaffee) 45deg";
-          "col.inactive_border" = "rgba(595959aa)";
           layout = "dwindle";
         };
 
@@ -75,7 +73,6 @@ in {
           rounding = 8;
           shadow = {
             enabled = true;
-            color = "rgba(1E202966)";
             range = 60;
             offset = "1 2";
             render_power = 3;
