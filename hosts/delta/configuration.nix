@@ -17,8 +17,6 @@
   common.services.xdgportal.enable = false;
   common.services.openssh.enable = true;
   programs.nix-ld.enable = true; # Non nixos binaries such as mason LSPs
-  # Filemanager
-  common.services.nautilus.enable = true;
   # VM
   common.services.vm.enable = true;
   # AppStores
