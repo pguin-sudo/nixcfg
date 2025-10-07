@@ -6,5 +6,6 @@
     ./nautilus.nix
     ./xdgportal.nix
     ./vm.nix
+    ./openssh.nix
   ];
 }
