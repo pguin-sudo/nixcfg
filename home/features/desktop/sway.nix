@@ -131,13 +131,6 @@ in {
           }
         ];
 
-        # Floating windows criteria (equivalent to windowrulev2)
-        floating = {
-          criteria = [
-            {title = ".*";}
-          ];
-        };
-
         workspaceAutoBackAndForth = true;
       };
 
