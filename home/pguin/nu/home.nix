@@ -46,7 +46,6 @@
 
     # Dev
     bun
-    gcc
     clang
     python3
 
