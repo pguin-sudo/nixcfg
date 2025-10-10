@@ -5,7 +5,6 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: {
   home.username = "pguin";
@@ -48,6 +47,7 @@
     # Dev
     bun
     gcc
+    clang
     python3
 
     # Hacks
