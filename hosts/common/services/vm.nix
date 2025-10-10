@@ -1,9 +1,12 @@
-{ config, pkgs, lib, ...
+{
+  config,
+  pkgs,
+  lib,
+  ...
 }:
 with lib; let
   cfg = config.common.services.vm;
-in
-{
+in {
   options.common.services.vm.enable = mkEnableOption "enable windows vm";
 
   config = mkIf cfg.enable {
@@ -14,7 +17,8 @@ in
     environment.systemPackages = with pkgs; [
       virt-manager
       virt-viewer
-      spice spice-gtk
+      spice
+      spice-gtk
       spice-protocol
       win-virtio
       win-spice
@@ -26,9 +30,10 @@ in
       libvirtd = {
         enable = true;
         qemu = {
+          vhostUserPackages = with pkgs; [virtiofsd];
           swtpm.enable = true;
           ovmf.enable = true;
-          ovmf.packages = [ pkgs.OVMFFull.fd ];
+          ovmf.packages = [pkgs.OVMFFull.fd];
         };
       };
       spiceUSBRedirection.enable = true;
