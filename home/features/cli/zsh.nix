@@ -14,7 +14,7 @@ in {
 
       shellAliases = {
         nf = "nvim $(fzf)";
-        rebuild = "sudo nixos-rebuild switch --flake /home/pguin/nixcfg/#$(hostname) --cores 16 --max-jobs 64";
+        rebuild = "sudo nixos-rebuild switch --flake /home/pguin/nixcfg/#$(hostname)";
         cleanold = "sudo nix-collect-garbage --delete-old";
         cleanboot = "sudo /run/current-system/bin/switch-to-configuration boot";
       };
