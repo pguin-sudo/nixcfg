@@ -32,8 +32,6 @@ in {
 
           theme = {
             enable = true;
-            name = "catppuccin";
-            style = "auto";
             transparent = true;
           };
 

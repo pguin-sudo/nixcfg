@@ -15,20 +15,10 @@ in {
       xwayland.enable = true; # Moved to top-level option
 
       settings = {
-        # Monitor lines must be strings, not a list of strings
-        monitor = [
-          "eDP-1,1366x768@60.06,0x0,1"
-        ];
-
-        workspace = [
-          # "1, monitor:DP-1, default:true"
-          # "2, monitor:DP-1"
-        ];
-
         exec-once = [
           "waybar"
-          "hyprpaper"
-          "hypridle"
+          "swww-daemon"
+          "swww restore"
           "wl-clipboard-history -t"
           "wl-paste -p -t text --watch clipman store -P --histpath=\"~/.local/share/clipman-primary.json\""
           "poweralertd"
@@ -66,46 +56,77 @@ in {
           gaps_in = 3;
           gaps_out = 5;
           border_size = 2;
-          "col.active_border" = "rgba(5faaffee) rgba(5faaffee) 45deg";
-          "col.inactive_border" = "rgba(595959aa)";
           layout = "dwindle";
         };
 
         decoration = {
           rounding = 8;
+
           shadow = {
             enabled = true;
-            color = "rgba(1E202966)";
             range = 60;
             offset = "1 2";
             render_power = 3;
             scale = 0.97;
           };
+
           blur = {
             enabled = true;
             size = 3;
             passes = 3;
+            noise = 0.0117;
+            contrast = 1.0;
+            brightness = 1.0;
+            vibrancy = 0.1696;
+            vibrancy_darkness = 0.0;
+            special = false;
+            new_optimizations = true;
           };
-          active_opacity = 1;
-          inactive_opacity = 0.95;
+
+          active_opacity = 0.95;
+          inactive_opacity = 0.85;
+          fullscreen_opacity = 1.0;
         };
 
         animations = {
           enabled = true;
-          bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
+
+          bezier = [
+            "linear, 0, 0, 1, 1"
+            "md3_standard, 0.2, 0, 0, 1"
+            "md3_decel, 0.05, 0.7, 0.1, 1"
+            "md3_accel, 0.3, 0, 0.8, 0.15"
+            "overshot, 0.05, 0.9, 0.1, 1.1"
+            "crazyshot, 0.1, 1.5, 0.76, 0.92"
+            "hyprnostretch, 0.05, 0.9, 0.1, 1.0"
+            "menu_decel, 0.1, 1, 0, 1"
+            "menu_accel, 0.38, 0.04, 1, 0.07"
+            "easeInOutCirc, 0.85, 0, 0.15, 1"
+            "easeOutCirc, 0, 0.55, 0.45, 1"
+            "easeOutExpo, 0.16, 1, 0.3, 1"
+            "softAcDecel, 0.26, 0.26, 0.15, 1"
+            "md2, 0.4, 0, 0.2, 1"
+          ];
+
           animation = [
-            "windows, 1, 7, myBezier"
-            "windowsOut, 1, 7, default, popin 80%"
-            "border, 1, 10, default"
-            "borderangle, 1, 8, default"
-            "fade, 1, 7, default"
-            "workspaces, 1, 6, default"
+            "windows, 1, 6, md3_decel, popin 60%"
+            "windowsIn, 1, 6, md3_decel, popin 60%"
+            "windowsOut, 1, 6, md3_accel, popin 60%"
+            "border, 1, 20, default"
+            "fade, 1, 6, md3_decel"
+            "layersIn, 1, 6, menu_decel, slide"
+            "layersOut, 1, 3.2, menu_accel"
+            "fadeLayersIn, 1, 4, menu_decel"
+            "fadeLayersOut, 1, 9, menu_accel"
+            "workspaces, 1, 14, menu_decel, slide"
+            "specialWorkspace, 1, 6, md3_decel, slidevert"
           ];
         };
 
         dwindle = {
           pseudotile = true;
           preserve_split = true;
+          special_scale_factor = 0.8;
         };
 
         master = {};
@@ -115,6 +136,12 @@ in {
         };
 
         misc = {
+          disable_hyprland_logo = true;
+          force_default_wallpaper = 0;
+          animate_manual_resizes = true;
+          animate_mouse_windowdragging = true;
+          enable_swallow = true;
+          focus_on_activate = true;
           vfr = true;
         };
 
@@ -139,8 +166,8 @@ in {
           "$mainMod SHIFT, j, movewindow, d"
           "$mainMod, t, exec, kitty"
           "$mainMod SHIFT, Q, exit"
-          "$mainMod, E, exec, nautilus"
-          "$mainMod, A, exec, ~/.config/rofi/launchers/type-6/launcher.sh"
+          "$mainMod, E, exec, dolphin"
+          "$mainMod, A, exec, rofi -show drun"
           "ALTCTRL, DELETE, exec, btop"
           "$mainMod, W, togglefloating"
 
@@ -148,9 +175,9 @@ in {
           "$mainMod SHIFT, S, exec, grimshot savecopy area - | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
 
           "$mainMod SHIFT, R, exec, wf-recorder -a -f ~/Video/recording.mkv & notify-send 'Recordering Started' -i -u -A '^C ,stop' -t 0 -i ~/icons/rec-button.png"
-          "$mainMod SHIFT, E, exec, rofimoji"
           "$mainMod, A, exec, ~/.config/hypr/scripts/screenHz.sh"
           "$mainMod SHIFT, RETURN, layoutmsg, swapwithmaster"
+          "$mainMod SHIFT, W, exec, sh ~/.config/hypr/scripts/next-wallpaper.sh"
           "$mainMod, 1, workspace, 1"
           "$mainMod, 2, workspace, 2"
           "$mainMod, 3, workspace, 3"
@@ -194,9 +221,11 @@ in {
         ];
 
         windowrulev2 = [
-          # Add your window rules here
+          "opacity 0.8 0.8,class:^(google-chrome)$"
         ];
       };
     };
+
+    home.file.".config/hypr/scripts/next-wallpaper.sh".source = ./scripts/next-wallpaper.sh;
   };
 }
