@@ -130,35 +130,28 @@ in {
         };
       };
 
-      style = ''
+      style = let
+        fonts = config.stylix.fonts;
+      in ''
         * {
           border: none;
           border-radius: 8px;
           font-size: 12px;
           min-height: 0;
+          font-family: "${fonts.sansSerif.name}", sans-serif;
         }
 
         window#waybar {
           background: transparent;
           color: #ebdbb2;
-          border-bottom: none;
         }
-
-        /* window#waybar > box {
-          background: rgba(40, 40, 40, 0.85);
-          border: 2px solid #7FA093;
-          border-radius: 8px;
-          margin: 3px;
-          padding: 0 3px;
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
-        } */
 
         window#waybar > box {
             background: transparent;
             border: none;
             box-shadow: none;
-            margin: 0px 4px;
             padding: 0;
+            margin: 0px 4px 0px 4px;
         }
 
         #workspaces button {
@@ -177,7 +170,8 @@ in {
         #workspaces button.active {
             background: rgba(127, 160, 147, 0.4);
             color: #7FA093;
-            border-color: #80A294; box-shadow: 0 2px 8px rgba(127, 160, 147, 0.4);
+            border-color: #80A294;
+            box-shadow: 0 2px 8px rgba(127, 160, 147, 0.4);
         }
 
         #workspaces button.urgent {

@@ -51,6 +51,8 @@ in {
 
       targets = {
         firefox.enable = false; # Define theme for firefox manually
+
+        waybar.enable = false;
       };
     };
   };
