@@ -47,7 +47,12 @@ in {
         };
       };
 
-      opacity.terminal = 0.3;
+      opacity = {
+        applications = 0.3;
+        terminal = 0.3;
+        desktop = 0.3;
+        popups = 0.3;
+      };
 
       targets = {
         firefox.enable = false; # Define theme for firefox manually
