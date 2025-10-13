@@ -11,14 +11,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    arion = {
-      url = "github:hercules-ci/arion";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     disko.url = "github:nix-community/disko";
 
     nvf.url = "github:notashelf/nvf";
@@ -28,22 +20,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    dotfiles = {
-      url = "github:pguin-sudo/dotfiles";
-      flake = false;
-    };
+    stylix.url = "github:nix-community/stylix";
   };
 
   outputs = {
     self,
     home-manager,
     nixpkgs,
-    dotfiles,
-    sops-nix,
-    arion,
     disko,
     nvf,
     winapps,
+    stylix,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -64,8 +51,6 @@
         specialArgs = {inherit inputs outputs;};
         modules = [
           ./hosts/delta
-          sops-nix.nixosModules.sops
-          arion.nixosModules.arion
           ({
             pkgs,
             outputs,
@@ -83,8 +68,6 @@
         specialArgs = {inherit inputs outputs;};
         modules = [
           ./hosts/nu
-          sops-nix.nixosModules.sops
-          arion.nixosModules.arion
         ];
       };
     };
@@ -95,6 +78,7 @@
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
           nvf.homeManagerModules.default
+          stylix.homeModules.stylix
           ./home/pguin/delta.nix
         ];
       };
@@ -104,6 +88,7 @@
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
           nvf.homeManagerModules.default
+          stylix.homeModules.stylix
           ./home/pguin/nu.nix
         ];
       };

@@ -1,7 +1,6 @@
 {
   imports = [
     ../common
-    ./dotfiles
     ../features/cli
     ../features/desktop
     ../features/themes
@@ -31,14 +30,17 @@
       zsh.enable = true;
     };
     desktop = {
+      firefox.enable = true;
       fonts.enable = true;
       hyprland.enable = true;
       wayland.enable = true;
       xdg.enable = true;
+      kitty.enable = true;
     };
     themes = {
       gtk.enable = true;
-      qt.enable = true;
+      qt.enable = false;
+      stylix.enable = true;
     };
   };
 }
