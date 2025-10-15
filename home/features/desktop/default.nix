@@ -7,5 +7,6 @@
     ./wayland.nix
     ./xdg.nix
     ./kitty.nix
+    ./dolphin.nix
   ];
 }
