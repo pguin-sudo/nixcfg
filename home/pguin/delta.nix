@@ -28,6 +28,7 @@
       neovim.enable = true;
       tmux.enable = true;
       zsh.enable = true;
+      reticulum.enable = true;
     };
     desktop = {
       firefox.enable = true;

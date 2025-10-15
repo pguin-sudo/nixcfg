@@ -6,6 +6,7 @@
     ./neovim.nix
     ./tmux.nix
     ./zsh.nix
+    ./reticulum.nix
   ];
 
   # Starship
