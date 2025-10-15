@@ -76,6 +76,9 @@
   services.libinput.enable = true;
   services.libinput.touchpad.tapping = true; #tap
 
+  # Enable DBus service that allows applications to query and manipulate storage
+  services.udisks2.enable = true;
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
