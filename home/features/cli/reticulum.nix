@@ -14,6 +14,8 @@ in {
       python313Packages.nomadnet
       python313Packages.lxmf
       rns
+
+      i2pd
     ];
   };
 }
