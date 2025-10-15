@@ -48,6 +48,7 @@
     bun
     clang
     python3
+    poetry
 
     # Hacks
     nmap
