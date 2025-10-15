@@ -308,13 +308,6 @@ in {
 
     xdg.configFile."waybar/style.css".enable = true;
 
-    xdg.mimeApps = {
-      enable = true;
-      defaultApplications = {
-        "inode/directory" = ["org.kde.dolphin.desktop"];
-      };
-    };
-
     home.packages = with pkgs; [
       slurp
       wl-clipboard
@@ -332,8 +325,6 @@ in {
       libnotify
 
       swww
-
-      kdePackages.dolphin
 
       xdg-utils
 
@@ -358,9 +349,22 @@ in {
       };
     };
 
-    xdg.portal = {
-      enable = true;
-      extraPortals = [pkgs.xdg-desktop-portal-gtk];
+    xdg = {
+      portal = {
+        enable = true;
+        extraPortals = [
+          pkgs.xdg-desktop-portal-gtk
+          pkgs.xdg-desktop-portal-hyprland
+          pkgs.xdg-desktop-portal-wlr
+        ];
+      };
+
+      mimeApps = {
+        enable = true;
+        defaultApplications = {
+          "inode/directory" = ["org.kde.dolphin.desktop"];
+        };
+      };
     };
   };
 }

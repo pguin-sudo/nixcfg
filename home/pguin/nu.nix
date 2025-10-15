@@ -36,6 +36,7 @@
       wayland.enable = true;
       xdg.enable = true;
       kitty.enable = true;
+      dolphin.enable = true;
     };
     themes = {
       gtk.enable = true;
