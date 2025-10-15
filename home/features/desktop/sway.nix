@@ -91,7 +91,7 @@ in {
             # Basic applications
             "${mod}+T" = "exec ${pkgs.kitty}/bin/kitty";
             "${mod}+B" = "exec firefox";
-            "${mod}+E" = "exec ${pkgs.dolphin}/bin/dolphin";
+            "${mod}+E" = "exec ${pkgs.kdePackages.dolphin}/bin/dolphin";
             "${mod}+A" = "exec rofi -show drun";
 
             # Window management
