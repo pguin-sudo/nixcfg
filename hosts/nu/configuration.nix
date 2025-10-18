@@ -20,7 +20,7 @@
   common.services.xdgportal.enable = false;
   programs.nix-ld.enable = true; # Non nixos binaries such as mason LSPs
   # AppStores
-  common.services.appimage.enable = false;
+  common.services.appimage.enable = true;
   common.services.steam.enable = false;
 
   #services.samba.enable = true;
