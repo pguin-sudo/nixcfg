@@ -1,11 +1,11 @@
-{ config
-, lib
-, ...
+{
+  config,
+  lib,
+  ...
 }:
 with lib; let
   cfg = config.common.services.appimage;
-in
-{
+in {
   options.common.services.appimage.enable = mkEnableOption "enable appimage";
 
   config = mkIf cfg.enable {

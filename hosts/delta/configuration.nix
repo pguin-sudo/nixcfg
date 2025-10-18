@@ -20,7 +20,7 @@
   # VM
   common.services.vm.enable = true;
   # AppStores
-  common.services.appimage.enable = false;
+  common.services.appimage.enable = true;
   common.services.steam.enable = true;
 
   #services.samba.enable = true;
