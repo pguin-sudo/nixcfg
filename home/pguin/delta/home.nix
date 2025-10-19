@@ -43,6 +43,7 @@
     cmatrix
     #jellyfin-media-player
     #speedtest-go
+    yt-dlp
     wireguard-tools
     qbittorrent
 
