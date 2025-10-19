@@ -32,6 +32,8 @@
   boot.loader.systemd-boot.configurationLimit = 3;
   # Ntfs support
   boot.supportedFilesystems = ["ntfs"];
+  # Kernel modules
+  boot.kernelModules = ["i2c-dev" "i2c-piix4" "i2c-i801"];
 
   programs.hyprland = {
     enable = true;
@@ -78,6 +80,9 @@
 
   # Enable DBus service that allows applications to query and manipulate storage
   services.udisks2.enable = true;
+
+  # Enable udev for openrgb
+  services.udev.packages = [pkgs.openrgb];
 
   # I2PD sservice
   services.i2pd.enable = true;

@@ -43,6 +43,7 @@
       gtk.enable = true;
       qt.enable = false;
       stylix.enable = true;
+      rgb.enable = true;
     };
   };
 }
