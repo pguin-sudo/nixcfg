@@ -44,6 +44,7 @@
       qt.enable = false;
       stylix.enable = true;
       rgb.enable = true;
+      plight.enable = true;
     };
   };
 }

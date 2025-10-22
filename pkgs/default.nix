@@ -1,5 +1,3 @@
-{ pkgs, ... }:
-{
-  # Define your custom packages here
-  #  my-package = pkgs.callPackage ./my-package {};
+{pkgs, ...}: {
+  plight = pkgs.callPackage ./plight {};
 }
