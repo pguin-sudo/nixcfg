@@ -46,6 +46,7 @@
     yt-dlp
     wireguard-tools
     qbittorrent
+    qpwgraph
 
     # Dev
     bun
