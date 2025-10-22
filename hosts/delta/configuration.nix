@@ -82,7 +82,13 @@
   services.udisks2.enable = true;
 
   # Enable udev for openrgb
-  services.udev.packages = [pkgs.openrgb];
+  services.udev = {
+    # For plight
+    extraRules = ''
+      SUBSYSTEM=="tty", TAG+="uaccess", MODE="0666"
+    '';
+    packages = [pkgs.openrgb];
+  };
 
   # I2PD sservice
   services.i2pd.enable = true;
