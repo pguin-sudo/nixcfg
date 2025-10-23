@@ -51,16 +51,7 @@
         specialArgs = {inherit inputs outputs;};
         modules = [
           ./hosts/delta
-          ({
-            pkgs,
-            outputs,
-            ...
-          }: {
-            environment.systemPackages = with pkgs; [
-              inputs.winapps.packages.${system}.winapps
-              inputs.winapps.packages.${system}.winapps-launcher
-            ];
-          })
+          disko.nixosModules.disko
         ];
       };
 
