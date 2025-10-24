@@ -28,7 +28,7 @@
     #amberol
     #webcord
     #bottles
-    #cava
+    cava
     #ryubing
     #mullvad-vpn
     #transmission_4-gtk
@@ -53,6 +53,8 @@
     clang
     python3
     poetry
+    black
+    rustup
 
     # Hacks
     nmap
