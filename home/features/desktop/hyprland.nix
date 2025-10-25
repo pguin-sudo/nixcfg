@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib; let
@@ -79,10 +80,11 @@ in {
             brightness = 1.0;
             vibrancy = 0.1696;
             vibrancy_darkness = 0.0;
-            special = false;
+            special = true;
             new_optimizations = true;
           };
 
+          dim_special = 0.2;
           active_opacity = 0.95;
           inactive_opacity = 0.85;
           fullscreen_opacity = 1.0;
@@ -172,12 +174,14 @@ in {
           "$mainMod, W, togglefloating"
 
           "$mainMod, PrtScr, exec, hyprctl keyword animation 'fadeOut,0,0,default'; grimshot --notify copy active; hyprctl keyword animation 'fadeOut,1,4,default'"
-          "$mainMod SHIFT, S, exec, grimshot savecopy area - | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
+          "$mainMod, P, exec, grimshot savecopy area - | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
 
           "$mainMod SHIFT, R, exec, wf-recorder -a -f ~/Video/recording.mkv & notify-send 'Recordering Started' -i -u -A '^C ,stop' -t 0 -i ~/icons/rec-button.png"
           "$mainMod, A, exec, ~/.config/hypr/scripts/screenHz.sh"
           "$mainMod SHIFT, RETURN, layoutmsg, swapwithmaster"
           "$mainMod SHIFT, W, exec, sh ~/.config/hypr/scripts/next-wallpaper.sh"
+
+          # Workspaces
           "$mainMod, 1, workspace, 1"
           "$mainMod, 2, workspace, 2"
           "$mainMod, 3, workspace, 3"
@@ -200,6 +204,10 @@ in {
           "$mainMod SHIFT, 0, movetoworkspacesilent, 10"
           "ALT, Tab, cyclenext"
 
+          # Special workspaces
+          "$mainMod, S, togglespecialworkspace"
+          "$mainMod Shift, S, movetoworkspace, special"
+
           "$mainMod SHIFT, T, exec, Telegram"
         ];
 
@@ -219,13 +227,33 @@ in {
           ", XF86MonBrightnessUp, exec, $HOME/.config/hypr/scripts/brightness up"
           ", XF86MonBrightnessDown, exec, $HOME/.config/hypr/scripts/brightness down"
         ];
-
-        windowrulev2 = [
-          "opacity 0.8 0.8,class:^(google-chrome)$"
-        ];
       };
     };
 
+    # Scratchpad
+    home.file.".config/hypr/pyprland.toml".text = ''
+      [pyprland]
+          # pypr has a lot of plugins, but this is just a basic example config
+          # https://hyprland-community.github.io/pyprland/Plugins.html
+          plugins = [ "scratchpads" ]
+
+      [pyprland.variables]
+          term_with_klass = "kitty --class"
+
+      [scratchpads.console]
+          # This is a drop-down terminal configuration
+          animation = "fromTop"
+          class     = "console-dropdown"
+          command   = "[term_with_class] console-dropdown"
+          max_size  = "90% 100%"
+          size      = "80% 80%"
+    '';
+
+    home.packages = with pkgs; [
+      pyprland
+    ];
+
+    # Custom wallpaper script
     home.file.".config/hypr/scripts/next-wallpaper.sh".source = ./scripts/next-wallpaper.sh;
   };
 }
