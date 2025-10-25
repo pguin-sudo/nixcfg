@@ -10,7 +10,7 @@ in {
   options.features.cli.neovim.enable = mkEnableOption "enable extended neovim configuration";
 
   imports = [
-    inputs.nvf.homeManagerModules.default # Import the nvf module
+    inputs.nvf.homeManagerModules.default
   ];
 
   config = mkIf cfg.enable {
@@ -50,9 +50,22 @@ in {
 
             nix.enable = true;
             rust.enable = true;
-            python.enable = true;
             markdown.enable = true;
             clang.enable = true;
+
+            python = {
+              enable = true;
+              lsp = {
+                enable = false;
+                server = "basedpyright";
+              };
+              treesitter.enable = true;
+              format = {
+                enable = true;
+                type = "ruff";
+              };
+              dap.enable = false;
+            };
           };
 
           diagnostics = {
@@ -73,6 +86,9 @@ in {
           tabline = {
             nvimBufferline.enable = true;
           };
+
+          withPython3 = true;
+          python3Packages = ["pynvim"];
         };
       };
     };

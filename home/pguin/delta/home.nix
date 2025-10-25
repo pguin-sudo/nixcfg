@@ -52,7 +52,8 @@
     clang
     python3
     poetry
-    black
+    basedpyright
+    ruff
     rustup
 
     # Hacks
