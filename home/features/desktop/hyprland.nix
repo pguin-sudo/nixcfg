@@ -227,6 +227,11 @@ in {
           ", XF86MonBrightnessUp, exec, $HOME/.config/hypr/scripts/brightness up"
           ", XF86MonBrightnessDown, exec, $HOME/.config/hypr/scripts/brightness down"
         ];
+
+        windowrulev2 = [
+          "workspace 1, class:^(firefox)$"
+          "workspace special, class:^(org.telegram.desktop)$"
+        ];
       };
     };
 
