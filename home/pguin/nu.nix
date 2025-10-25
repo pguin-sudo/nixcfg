@@ -24,7 +24,7 @@
     cli = {
       btop.enable = true;
       fzf.enable = true;
-      neofetch.enable = true;
+      fastfetch.enable = true;
       neovim.enable = true;
       tmux.enable = true;
       zsh.enable = true;

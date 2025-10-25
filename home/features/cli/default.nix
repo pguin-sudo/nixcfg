@@ -2,7 +2,7 @@
   imports = [
     ./btop.nix
     ./fzf.nix
-    ./neofetch.nix
+    ./fastfetch.nix
     ./neovim.nix
     ./tmux.nix
     ./zsh.nix
