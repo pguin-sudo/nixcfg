@@ -5,6 +5,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }: {
   home.username = "pguin";
@@ -61,10 +62,6 @@
     metasploit
     ffuf
     insomnia
-
-    # Libs
-    stdenv.cc.cc.lib # for matplotlib
-    libGL # for matplotlib
 
     # # Adds the 'hello' command to your environment. It prints a friendly
     # # "Hello, world!" when run.
@@ -132,9 +129,6 @@
     XDG_CONFIG_HOME = "${config.home.homeDirectory}/.config";
     XDG_BIN_HOME = "${config.home.homeDirectory}/.nix-profile/bin";
     XDG_DATA_HOME = "${config.home.homeDirectory}/.local/share";
-
-    # Libs add there
-    # LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.libGL}/lib";
   };
 
   # Let Home Manager install and manage itself.
