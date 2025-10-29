@@ -28,5 +28,6 @@
     exiftool
     chafa
     nvtopPackages.full
+    tree
   ];
 }
