@@ -44,6 +44,7 @@
     #speedtest-go
     yt-dlp
     wireguard-tools
+    lshw
 
     # Dev
     bun

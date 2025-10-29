@@ -47,6 +47,7 @@
     wireguard-tools
     qbittorrent
     qpwgraph
+    lshw
 
     # Dev
     bun
