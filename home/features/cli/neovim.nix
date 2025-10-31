@@ -23,7 +23,7 @@ in {
           vimAlias = true;
 
           options = {
-            tabstop = 8;
+            tabstop = 4;
             softtabstop = 4;
             shiftwidth = 4;
             expandtab = true;
@@ -42,6 +42,8 @@ in {
           lsp = {
             enable = true;
             formatOnSave = true;
+            inlayHints.enable = true;
+            #lspsaga.enable = true;
           };
 
           languages = {
@@ -53,19 +55,7 @@ in {
             markdown.enable = true;
             clang.enable = true;
 
-            python = {
-              enable = true;
-              lsp = {
-                enable = false;
-                server = "basedpyright";
-              };
-              treesitter.enable = true;
-              format = {
-                enable = true;
-                type = "ruff";
-              };
-              dap.enable = false;
-            };
+            python.enable = true;
           };
 
           diagnostics = {
@@ -86,9 +76,6 @@ in {
           tabline = {
             nvimBufferline.enable = true;
           };
-
-          withPython3 = true;
-          python3Packages = ["pynvim"];
         };
       };
     };
