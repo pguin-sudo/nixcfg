@@ -26,14 +26,26 @@
   #services.samba.enable = true;
 
   #Bootloader
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  #Boot entries limit
-  boot.loader.systemd-boot.configurationLimit = 3;
-  # Ntfs support
-  boot.supportedFilesystems = ["ntfs"];
-  # Kernel modules
-  boot.kernelModules = ["i2c-dev" "i2c-piix4" "i2c-i801"];
+  boot.loader = {
+    systemd-boot.enable = false;
+    grub = {
+      enable = true;
+      devices = ["nodev"];
+      efiSupport = true;
+      useOSProber = true;
+
+      efiInstallAsRemovable = false;
+
+      configurationLimit = 5;
+      theme = null;
+      splashImage = null;
+    };
+
+    efi = {
+      canTouchEfiVariables = true;
+      efiSysMountPoint = "/boot/efi";
+    };
+  };
 
   programs.hyprland = {
     enable = true;
@@ -102,6 +114,8 @@
     zsh
     nssmdns
     i2pd
+
+    os-prober
   ];
 
   #Firewall
