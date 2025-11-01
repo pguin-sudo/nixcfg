@@ -19,6 +19,8 @@ in {
         cleanboot = "sudo /run/current-system/bin/switch-to-configuration boot";
 
         ssh = "kitty +kitten ssh";
+
+        notepad = "~/Documents/notepad/sync.sh && nvim ~/Documents/notepad && (~/Documents/notepad/sync.sh > /dev/null 2>&1 &)";
       };
 
       initContent = '''';
