@@ -50,6 +50,7 @@
     lshw
 
     # Dev
+    docker-compose
     bun
     clang
     python3
