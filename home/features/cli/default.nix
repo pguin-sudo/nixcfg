@@ -29,5 +29,6 @@
     chafa
     nvtopPackages.full
     tree
+    file
   ];
 }
