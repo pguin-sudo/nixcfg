@@ -44,6 +44,9 @@ in {
           kb_options = "grp:win_space_toggle";
           follow_mouse = 1;
 
+          repeat_delay = 200;
+          repeat_rate = 40;
+
           touchpad = {
             natural_scroll = true;
             disable_while_typing = 1;
