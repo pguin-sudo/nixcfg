@@ -26,11 +26,9 @@ in {
           "syncthing"
           "sleep 3; qsyncthingtray"
           "kdeconnect-indicator"
-          # Critical: Fixed typo and use systemd environment import
           "dbus-update-activation-environment --systemd --all"
         ];
 
-        # Environment variables as Nix attributes, not strings
         env = [
           "XCURSOR_SIZE,24"
           "NIXOS_OZONE_WL,1"

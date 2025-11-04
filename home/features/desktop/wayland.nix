@@ -22,16 +22,49 @@ in {
 
           modules-left = ["hyprland/workspaces"];
           modules-center = ["mpris"];
-          modules-right = ["cpu" "memory" "network" "pulseaudio" "backlight" "battery" "tray" "clock"];
+          modules-right = ["cpu" "memory" "custom/nvidia" "network" "custom/vpn" "pulseaudio" "backlight" "battery" "tray" "clock"];
+
+          "custom/vpn" = {
+            exec = ''
+              if nmcli -t -f name,type,state connection show --active | grep -E 'vpn|wireguard|openvpn' > /dev/null; then
+                vpn_name=$(nmcli -t -f name,type,state connection show --active | grep -E 'vpn|wireguard|openvpn' | head -1 | cut -d: -f1)
+                echo "{\"text\": \"󰖂\", \"class\": \"connected\"}"
+              else
+                echo "{\"text\": \"󰌙\", \"class\": \"disconnected\"}"
+              fi
+            '';
+            return-type = "json";
+            exec-if = "which nmcli";
+            format = "{}";
+            tooltip = false;
+            on-click = ''
+              if nmcli -t -f name,type,state connection show --active | grep -E "vpn|wireguard|openvpn" > /dev/null; then
+                nmcli connection down $(nmcli -t -f name,type,state connection show --active | grep -E "vpn|wireguard|openvpn" | head -1 | cut -d: -f1)
+              else
+                vpn_list=$(nmcli -t -f name,type connection show | grep -E "vpn|wireguard|openvpn" | cut -d: -f1 | head -1)
+                if [ -n "$vpn_list" ]; then
+                  nmcli connection up "$vpn_list"
+                fi
+              fi
+            '';
+            max-length = 20;
+            interval = 5;
+          };
+
+          "custom/nvidia" = {
+            exec = "nvidia-smi --query-gpu=utilization.gpu --format=csv,nounits,noheader";
+            format = "󰢮 {}%";
+            interval = 2;
+          };
 
           "hyprland/workspaces" = {
-            format = "{icon}";
+            format = "{id}{icon}";
             all-outputs = true;
             on-click = "activate";
             format-icons = {
-              active = "󰮯";
-              default = "󰍹";
-              urgent = "󰈸";
+              active = "";
+              default = "";
+              urgent = "   󰈸";
             };
           };
 
@@ -138,7 +171,7 @@ in {
           border-radius: 8px;
           font-size: 12px;
           min-height: 0;
-          font-family: "${fonts.sansSerif.name}", sans-serif;
+          font-family: "${fonts.monospace.name}", monospace;
         }
 
         window#waybar {
@@ -190,6 +223,8 @@ in {
         #cpu,
         #memory,
         #network,
+        #custom-vpn,
+        #custom-nvidia,
         #pulseaudio,
         #backlight,
         #battery,
@@ -203,6 +238,13 @@ in {
           color: #ebdbb2;
           font-weight: bold;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #custom-vpn.disconnected {
+          background: rgba(204, 36, 29, 0.3);
+          border-color: #cc241d;
+          color: #fb4934;
+          animation: blink 2s infinite;
         }
 
         #mpris {
@@ -280,6 +322,8 @@ in {
         #cpu:hover,
         #memory:hover,
         #network:hover,
+        #custom-vpn:hover,
+        #custom-nvidia:hover,
         #pulseaudio:hover,
         #backlight:hover,
         #battery:hover,
@@ -291,6 +335,8 @@ in {
         }
       '';
     };
+
+    xdg.configFile."waybar/style.css".enable = true;
 
     programs.rofi = {
       enable = true;
@@ -305,8 +351,6 @@ in {
         window-format = "{w} {i} {t}";
       };
     };
-
-    xdg.configFile."waybar/style.css".enable = true;
 
     home.packages = with pkgs; [
       slurp
