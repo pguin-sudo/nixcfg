@@ -23,7 +23,8 @@ in {
         notepad = "~/Documents/notepad/sync.sh && nvim ~/Documents/notepad && (~/Documents/notepad/sync.sh > /dev/null 2>&1 &)";
       };
 
-      initContent = '''';
+      initContent = ''
+      '';
 
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;
