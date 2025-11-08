@@ -6,6 +6,17 @@
 }:
 with lib; let
   cfg = config.features.cli.reticulum;
+
+  meshchat = pkgs.fetchurl {
+    name = "meshchat-appimage";
+    url = "https://github.com/liamcottle/reticulum-meshchat/releases/download/v2.2.1/ReticulumMeshChat-v2.2.1-linux.AppImage";
+    sha256 = "sha256-Q88V+cbtdh1sbH6jjLGTOFSJ/SdUWXga/8mdvKzGldA=";
+    executable = true;
+  };
+
+  meshchat-wrapper = pkgs.writeShellScriptBin "meshchat" ''
+    exec "${meshchat}" "$@"
+  '';
 in {
   options.features.cli.reticulum.enable = mkEnableOption "enable reticulum";
 
@@ -14,7 +25,19 @@ in {
       python313Packages.nomadnet
       python313Packages.lxmf
       rns
+      meshchat-wrapper
     ];
+
+    xdg.desktopEntries.meshchat = {
+      name = "MeshChat";
+      genericName = "Reticulum Mesh Chat";
+      comment = "Decentralized mesh messaging client";
+      exec = "meshchat";
+      icon = "application-internet";
+      terminal = false;
+      categories = ["Network" "InstantMessaging"];
+      type = "Application";
+    };
 
     home.file.".nomadnetwork/config".text = ''
       # This is the default Nomad Network config file.
@@ -423,12 +446,6 @@ in {
           target_host = 164.90.180.40
           target_port = 37500
 
-        [[vicinanza]]
-          type = TCPClientInterface
-          enabled = yes
-          target_host = reticulum.vicinanza.org
-          target_port = 4242
-
         [[undique]]
           type = TCPClientInterface
           enabled = yes
@@ -440,12 +457,6 @@ in {
           enabled = yes
           target_host = 193.26.158.230
           target_port = 4965
-
-        [[HiddenPath]]
-          type = TCPClientInterface
-          enabled = yes
-          target_host = hiddenpath.network
-          target_port = 4242
 
         [[N7EKB]]
           type = TCPClientInterface
@@ -477,28 +488,10 @@ in {
           target_host = node01.rns.bnz.se
           target_port = 4242
 
-        [[RNS Belgium]]
-          type = TCPClientInterface
-          enabled = yes
-          target_host = be.rns.hamesh.eu
-          target_port = 8694
-
         [[RNS Node Spain]]
           type = TCPClientInterface
           enabled = yes
           target_host = reticulum.quixote.network
-          target_port = 4242
-
-        [[Rothbard Node]]
-          type = TCPClientInterface
-          enabled = yes
-          target_host = rothbard.lab.networks.deavmi.assigned.ne
-          target_port = 4242
-
-        [[Chicago Potato]]
-          type = TCPClientInterface
-          enabled = yes
-          target_host = rns.rishipanthee.com
           target_port = 4242
 
         [[GhostNet LoRa]]
@@ -519,24 +512,6 @@ in {
           target_host = rns.jaykayenn.net
           target_port = 4242
 
-        [[rtclm.de]]
-          type = TCPClientInterface
-          enabled = yes
-          target_host = rtclm.de
-          target_port = 4242
-
-        [[chloe serv]]
-          type = TCPClientInterface
-          enabled = yes
-          target_host = pvvv.vea.st
-          target_port = 4242
-
-        [[ON6ZQ]]
-          type = TCPClientInterface
-          enabled = yes
-          target_host = reticulum.on6zq.be
-          target_port = 4965
-
         [[Jon]]
           type = TCPClientInterface
           enabled = yes
@@ -554,6 +529,22 @@ in {
           enabled = yes
           target_host = 93.95.227.8
           target_port = 49952
+
+        [[SPB_TCP]]
+          type = TCPClientInterface
+          enabled = yes
+          target_host = 31.129.33.146
+          target_port = 4242
+
+        [[LoraHeltec]]
+          type = RNodeInterface
+          enabled = yes
+          port = /dev/ttyUSB1
+          frequency = 869525000
+          bandwidth = 125000
+          txpower = 22
+          spreadingfactor = 7
+          codingrate = 7
     '';
   };
 }
