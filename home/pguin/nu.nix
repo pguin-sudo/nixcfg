@@ -3,6 +3,7 @@
     ../common
     ../features/cli
     ../features/desktop
+    ../features/suites
     ../features/themes
     ./nu/home.nix
   ];
@@ -39,6 +40,12 @@
       xdg.enable = true;
       kitty.enable = true;
       dolphin.enable = true;
+    };
+    suites = {
+      development.enable = true;
+      multimedia.enable = true;
+      pentest.enable = true;
+      productivity.enable = true;
     };
     themes = {
       gtk.enable = true;

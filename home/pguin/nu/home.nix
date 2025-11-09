@@ -12,69 +12,6 @@
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
   home.packages = with pkgs; [
-    # Essentials
-    kitty
-    tmux
-    firefox
-    #google-chrome
-    #age
-    #sops
-    #nvd
-
-    # Apps
-    telegram-desktop
-    vlc
-    #amberol
-    #webcord
-    #bottles
-    #cava
-    #ryubing
-    #mullvad-vpn
-    #transmission_4-gtk
-    obsidian
-    #tailscale
-    #syncthing
-    #qsyncthingtray
-    openvpn
-    #nvtopPackages.full
-    #exiftool
-    #moonlight-qt
-    cmatrix
-    #jellyfin-media-player
-    #speedtest-go
-    yt-dlp
-    wireguard-tools
-    lshw
-
-    # Dev
-    bun
-    clang
-    python3
-    poetry
-
-    # Hacks
-    nmap
-    metasploit
-    ffuf
-    insomnia
-    arp-scan
-
-    # # Adds the 'hello' command to your environment. It prints a friendly
-    # # "Hello, world!" when run.
-    # pkgs.hello
-
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
-
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
   ];
 
   home.file = {};
