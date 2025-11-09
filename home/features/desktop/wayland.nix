@@ -375,10 +375,6 @@ in {
       grim
       swappy
       sway-contrib.grimshot
-      activate-linux
-
-      # TODO: Move this to other module
-      libreoffice
     ];
 
     home.file."Wallpapers" = {

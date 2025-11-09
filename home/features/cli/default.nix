@@ -4,9 +4,10 @@
     ./fzf.nix
     ./fastfetch.nix
     ./neovim.nix
+    ./reticulum.nix
+    ./system-tools.nix
     ./tmux.nix
     ./zsh.nix
-    ./reticulum.nix
   ];
 
   programs.starship = {
