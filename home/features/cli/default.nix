@@ -31,6 +31,7 @@
     ripgrep
     tldr
     zip
+    unzip
     exiftool
     chafa
     nvtopPackages.full
