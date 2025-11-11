@@ -3,7 +3,7 @@
   stdenv,
   ...
 }: let
-  rev = "2d88511b7cb7f017a338a0c9a79ea7fed699a14c";
+  rev = "cd6a836b820d8277f5cc06410ad8629e42793ae2";
   plightFlake = builtins.getFlake "github:pguin-sudo/plight/${rev}";
   pkg = plightFlake.packages.${stdenv.hostPlatform.system}.default;
 in
