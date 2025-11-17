@@ -19,6 +19,8 @@ in {
       #bottles
       #tailscale
       #syncthing
+
+      libreoffice
     ];
   };
 }
