@@ -149,41 +149,34 @@ in {
         };
 
         "$mainMod" = "SUPER";
+        "$terminal" = "kitty";
 
         bind = [
+          # Power
           "$mainMod, Escape, exec, wlogout -p layer-shell"
           "$mainMod, Backspace, exec, systemctl suspend"
           "$mainMod, Delete, exec, shutdown now"
 
+          # Windows
           "$mainMod, mouse_down, workspace, e+1"
           "$mainMod, mouse_up, workspace, e-1"
           "$mainMod, F1, exec, $HOME/.config/hypr/scripts/keybind.sh"
           "$mainMod, Q, killactive"
-          "$mainMod, B, exec, firefox"
           "$mainMod, F, fullscreen"
           "$mainMod, V, togglesplit"
           "$mainMod, j, movefocus, d"
-          "$mainMod, k, movefocus, u"
-          "$mainMod, h, movefocus, l"
-          "$mainMod, l, movefocus, r"
-          "$mainMod SHIFT, h, movewindow, l"
-          "$mainMod SHIFT, l, movewindow, r"
+          "$mainMod, K, movefocus, u"
+          "$mainMod, H, movefocus, l"
+          "$mainMod, L, movefocus, r"
+          "$mainMod SHIFT, H, movewindow, l"
+          "$mainMod SHIFT, L, movewindow, r"
           "$mainMod SHIFT, k, movewindow, u"
-          "$mainMod SHIFT, j, movewindow, d"
-          "$mainMod, t, exec, kitty"
+          "$mainMod SHIFT, J, movewindow, d"
           "$mainMod SHIFT, Q, exit"
-          "$mainMod, E, exec, dolphin"
-          "$mainMod, A, exec, rofi -show drun"
-          "ALTCTRL, DELETE, exec, btop"
           "$mainMod, W, togglefloating"
 
-          "$mainMod, PrtScr, exec, hyprctl keyword animation 'fadeOut,0,0,default'; grimshot --notify copy active; hyprctl keyword animation 'fadeOut,1,4,default'"
+          # System (Overlays)
           "$mainMod, P, exec, grimshot savecopy area - | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
-
-          "$mainMod SHIFT, R, exec, wf-recorder -a -f ~/Video/recording.mkv & notify-send 'Recordering Started' -i -u -A '^C ,stop' -t 0 -i ~/icons/rec-button.png"
-          "$mainMod, A, exec, ~/.config/hypr/scripts/screenHz.sh"
-          "$mainMod SHIFT, RETURN, layoutmsg, swapwithmaster"
-          "$mainMod SHIFT, W, exec, sh ~/.config/hypr/scripts/next-wallpaper.sh"
 
           # Workspaces
           "$mainMod, 1, workspace, 1"
@@ -212,7 +205,18 @@ in {
           "$mainMod, S, togglespecialworkspace"
           "$mainMod Shift, S, movetoworkspace, special"
 
+          # Scripts
+          "$mainMod SHIFT, W, exec, sh ~/.config/hypr/scripts/next-wallpaper.sh"
+
+          # Apps
+          "$mainMod, T, exec, $terminal"
           "$mainMod SHIFT, T, exec, Telegram"
+          "$mainMod, B, exec, firefox"
+          "$mainMod, E, exec, dolphin"
+          "$mainMod, A, exec, rofi -show drun"
+
+          "ALTCTRL, DELETE, exec, $terminal btop"
+          "$mainMod, N, exec, $terminal -e zsh -ic \"notepad; exit\""
         ];
 
         bindm = [
