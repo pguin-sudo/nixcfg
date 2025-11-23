@@ -152,6 +152,9 @@ in {
 
         bind = [
           "$mainMod, Escape, exec, wlogout -p layer-shell"
+          "$mainMod, Backspace, exec, systemctl suspend"
+          "$mainMod, Delete, exec, shutdown now"
+
           "$mainMod, mouse_down, workspace, e+1"
           "$mainMod, mouse_up, workspace, e-1"
           "$mainMod, F1, exec, $HOME/.config/hypr/scripts/keybind.sh"
