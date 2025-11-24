@@ -156,6 +156,7 @@ in {
           "$mainMod, Escape, exec, wlogout -p layer-shell"
           "$mainMod, Backspace, exec, systemctl suspend"
           "$mainMod, Delete, exec, shutdown now"
+          "$mainMod SHIFT, Backspace, exec, reboot"
 
           # Windows
           "$mainMod, mouse_down, workspace, e+1"
