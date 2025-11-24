@@ -20,6 +20,7 @@ in {
       basedpyright
       ruff
       rustup
+      nodePackages.npm
     ];
   };
 }
