@@ -13,14 +13,20 @@ in {
     home.packages = with pkgs; [
       # Dev
       docker-compose
-      bun
+
       clang
-      python3
-      poetry
+
+      bun
       basedpyright
       ruff
+
+      python3
       rustup
+
+      poetry
       nodePackages.npm
+
+      openssl
     ];
   };
 }
