@@ -11,24 +11,29 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      # Dev
-      docker-compose
-
-      clang
-
-      bun
+      # Python
+      python3
+      poetry
       basedpyright
       ruff
 
-      python3
+      # Rust
       rustup
 
-      poetry
+      # JS
       nodePackages.npm
+      bun
 
+      # C
+      clang
+
+      # Tools
+      docker-compose
       openssl
-
       pgadmin4-desktopmode
+
+      # AI
+      aider-chat-full
     ];
   };
 }
