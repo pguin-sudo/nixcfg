@@ -27,6 +27,8 @@ in {
       nodePackages.npm
 
       openssl
+
+      pgadmin4-desktopmode
     ];
   };
 }
