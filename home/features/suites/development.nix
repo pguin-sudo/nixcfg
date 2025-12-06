@@ -34,6 +34,7 @@ in {
 
       # AI
       aider-chat-full
+      cursor-cli
     ];
   };
 }
