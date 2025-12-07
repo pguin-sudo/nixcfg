@@ -20,7 +20,7 @@ in {
       #tailscale
       #syncthing
 
-      libreoffice
+      onlyoffice-desktopeditors
     ];
   };
 }
