@@ -46,6 +46,10 @@
       efiSysMountPoint = "/boot/efi";
     };
   };
+  boot.plymouth = {
+    enable = true;
+    theme = "solar";
+  };
 
   programs.hyprland = {
     enable = true;
