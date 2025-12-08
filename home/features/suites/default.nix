@@ -5,5 +5,6 @@
     ./multimedia.nix
     ./pentest.nix
     ./productivity.nix
+    ./studio.nix
   ];
 }

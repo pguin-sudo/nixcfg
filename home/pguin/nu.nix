@@ -47,6 +47,7 @@
       multimedia.enable = true;
       pentest.enable = true;
       productivity.enable = true;
+      studio.enable = false;
     };
     themes = {
       gtk.enable = true;
