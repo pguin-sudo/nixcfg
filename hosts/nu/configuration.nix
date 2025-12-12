@@ -93,6 +93,13 @@
     i2pd
   ];
 
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = true;
+    enableNvidia = false;
+    extraOptions = ''--data-root=/home/pguin/docker-data'';
+  };
+
   #Firewall
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
