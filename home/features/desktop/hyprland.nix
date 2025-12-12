@@ -47,11 +47,12 @@ in {
 
           touchpad = {
             natural_scroll = true;
-            disable_while_typing = 1;
+            disable_while_typing = 0;
             tap-to-click = 1;
           };
 
-          sensitivity = 0.25;
+          sensitivity = 0;
+          accel_profile = "linear";
         };
 
         general = {
@@ -150,13 +151,16 @@ in {
 
         "$mainMod" = "SUPER";
         "$terminal" = "kitty";
+        "$explorer" = "dolphin";
+        "$browser" = "firefox";
+        "$top" = "btop";
 
         bind = [
           # Power
-          "$mainMod, Escape, exec, wlogout -p layer-shell"
-          "$mainMod, Backspace, exec, systemctl suspend"
+          #"$mainMod, Escape, exec, wlogout -p layer-shell"
+          "$mainMod Shift, Delete, exec, systemctl suspend"
           "$mainMod, Delete, exec, shutdown now"
-          "$mainMod SHIFT, Backspace, exec, reboot"
+          "$mainMod Ctrl, Delete, exec, reboot"
 
           # Windows
           "$mainMod, mouse_down, workspace, e+1"
@@ -169,11 +173,11 @@ in {
           "$mainMod, K, movefocus, u"
           "$mainMod, H, movefocus, l"
           "$mainMod, L, movefocus, r"
-          "$mainMod SHIFT, H, movewindow, l"
-          "$mainMod SHIFT, L, movewindow, r"
-          "$mainMod SHIFT, k, movewindow, u"
-          "$mainMod SHIFT, J, movewindow, d"
-          "$mainMod SHIFT, Q, exit"
+          "$mainMod Shift, H, movewindow, l"
+          "$mainMod Shift, L, movewindow, r"
+          "$mainMod Shift, k, movewindow, u"
+          "$mainMod Shift, J, movewindow, d"
+          "$mainMod Shift, Q, exit"
           "$mainMod, W, togglefloating"
 
           # System (Overlays)
@@ -190,33 +194,33 @@ in {
           "$mainMod, 8, workspace, 8"
           "$mainMod, 9, workspace, 9"
           "$mainMod, 0, workspace, 10"
-          "$mainMod SHIFT, 1, movetoworkspacesilent, 1"
-          "$mainMod SHIFT, 2, movetoworkspacesilent, 2"
-          "$mainMod SHIFT, 3, movetoworkspacesilent, 3"
-          "$mainMod SHIFT, 4, movetoworkspacesilent, 4"
-          "$mainMod SHIFT, 5, movetoworkspacesilent, 5"
-          "$mainMod SHIFT, 6, movetoworkspacesilent, 6"
-          "$mainMod SHIFT, 7, movetoworkspacesilent, 7"
-          "$mainMod SHIFT, 8, movetoworkspacesilent, 8"
-          "$mainMod SHIFT, 9, movetoworkspacesilent, 9"
-          "$mainMod SHIFT, 0, movetoworkspacesilent, 10"
-          "ALT, Tab, cyclenext"
+          "$mainMod Shift, 1, movetoworkspacesilent, 1"
+          "$mainMod Shift, 2, movetoworkspacesilent, 2"
+          "$mainMod Shift, 3, movetoworkspacesilent, 3"
+          "$mainMod Shift, 4, movetoworkspacesilent, 4"
+          "$mainMod Shift, 5, movetoworkspacesilent, 5"
+          "$mainMod Shift, 6, movetoworkspacesilent, 6"
+          "$mainMod Shift, 7, movetoworkspacesilent, 7"
+          "$mainMod Shift, 8, movetoworkspacesilent, 8"
+          "$mainMod Shift, 9, movetoworkspacesilent, 9"
+          "$mainMod Shift, 0, movetoworkspacesilent, 10"
+          "Alt, Tab, cyclenext"
 
           # Special workspaces
           "$mainMod, S, togglespecialworkspace"
           "$mainMod Shift, S, movetoworkspace, special"
 
           # Scripts
-          "$mainMod SHIFT, W, exec, sh ~/.config/hypr/scripts/next-wallpaper.sh"
+          "$mainMod Shift, W, exec, sh ~/.config/hypr/scripts/next-wallpaper.sh"
 
           # Apps
           "$mainMod, T, exec, $terminal"
-          "$mainMod SHIFT, T, exec, Telegram"
-          "$mainMod, B, exec, firefox"
-          "$mainMod, E, exec, dolphin"
+          "$mainMod Shift, T, exec, Telegram"
+          "$mainMod, B, exec, $browser"
+          "$mainMod, E, exec, $explorer"
           "$mainMod, A, exec, rofi -show drun"
 
-          "ALTCTRL, DELETE, exec, $terminal btop"
+          "Ctrl Shift, Escape, exec, $terminal $top"
           "$mainMod, N, exec, $terminal -e zsh -ic \"notepad; exit\""
         ];
 
