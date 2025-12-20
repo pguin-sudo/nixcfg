@@ -14,13 +14,14 @@ in {
 
       shellAliases = {
         nf = "nvim $(fzf)";
-        rebuild = "sudo nixos-rebuild switch --flake /home/pguin/nixcfg/#$(hostname)";
+        rebuild = "sudo nixos-rebuild switch --flake /home/pguin/nixcfg/#$(hostname) && notify-send \"Rebuild completed\"";
+
         cleanold = "sudo nix-collect-garbage --delete-old";
         cleanboot = "sudo /run/current-system/bin/switch-to-configuration boot";
 
         ssh = "kitty +kitten ssh";
 
-        notepad = "~/Documents/notepad/sync.sh && nvim ~/Documents/notepad && (~/Documents/notepad/sync.sh > /dev/null 2>&1 &)";
+        notepad = "~/Documents/notepad/sync.sh && nvim ~/Documents/notepad && (~/Documents/notepad/sync.sh > /dev/null 2>&1 &) && notify-send \"Notepad synchronized\"";
       };
 
       initContent = ''
