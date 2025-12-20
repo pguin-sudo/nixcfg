@@ -29,7 +29,6 @@
       neovim.enable = true;
       tmux.enable = true;
       zsh.enable = true;
-      reticulum.enable = true;
     };
     desktop = {
       firefox.enable = true;
@@ -44,6 +43,7 @@
     suites = {
       development.enable = true;
       gaming.enable = true;
+      mesh.enable = true;
       multimedia.enable = true;
       pentest.enable = true;
       productivity.enable = true;
