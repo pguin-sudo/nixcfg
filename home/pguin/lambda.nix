@@ -50,7 +50,7 @@
     };
     themes = {
       gtk.enable = true;
-      qt.enable = false;
+      qt.enable = true;
       stylix.enable = true;
       rgb.enable = true;
       plight.enable = false;
