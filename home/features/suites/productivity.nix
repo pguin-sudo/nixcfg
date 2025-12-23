@@ -21,6 +21,7 @@ in {
       #syncthing
 
       onlyoffice-desktopeditors
+      obs-studio
     ];
   };
 }

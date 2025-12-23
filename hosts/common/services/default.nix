@@ -6,5 +6,6 @@
     ./xdgportal.nix
     ./vm.nix
     ./openssh.nix
+    ./obs-studio.nix
   ];
 }

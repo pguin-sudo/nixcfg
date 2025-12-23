@@ -20,6 +20,8 @@
   # AppStores
   common.services.appimage.enable = true;
   common.services.steam.enable = true;
+  # Enable kernel modules for obs-studio
+  common.services.obs-studio.enable = true;
 
   #services.samba.enable = true;
 
