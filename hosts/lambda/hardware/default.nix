@@ -1,5 +1,5 @@
 {
   imports = [
-    ./nvidia.nix
+    ./battery.nix
   ];
 }
