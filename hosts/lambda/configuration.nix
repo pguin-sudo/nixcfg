@@ -6,8 +6,7 @@
   ];
 
   # Hardware
-  # Nvidia
-  hardware.nvidia.enable = true;
+  hardware.battery.enable = true;
 
   # Common
   # System
@@ -16,10 +15,10 @@
   common.services.openssh.enable = true;
   programs.nix-ld.enable = true; # Non nixos binaries such as mason LSPs
   # VM
-  common.services.vm.enable = true;
+  common.services.vm.enable = false;
   # AppStores
   common.services.appimage.enable = true;
-  common.services.steam.enable = true;
+  common.services.steam.enable = false;
 
   #services.samba.enable = true;
 
@@ -47,7 +46,7 @@
 
   #Network
   #Define your hostname
-  networking.hostName = "delta";
+  networking.hostName = "lambda";
   # Enable networking
   networking.networkmanager.enable = true;
   services.avahi = {
@@ -56,8 +55,8 @@
   };
 
   # Bluethooth
-  hardware.bluetooth.enable = false;
-  services.blueman.enable = false;
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
@@ -85,15 +84,6 @@
 
   # Enable DBus service that allows applications to query and manipulate storage
   services.udisks2.enable = true;
-
-  # Enable udev for openrgb
-  services.udev = {
-    # For plight
-    extraRules = ''
-      SUBSYSTEM=="tty", TAG+="uaccess", MODE="0666"
-    '';
-    packages = [pkgs.openrgb];
-  };
 
   # I2PD sservice
   services.i2pd.enable = true;

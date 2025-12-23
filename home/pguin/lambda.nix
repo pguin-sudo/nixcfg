@@ -5,7 +5,7 @@
     ../features/desktop
     ../features/suites
     ../features/themes
-    ./nu/home.nix
+    ./lambda/home.nix
   ];
 
   programs.git = {
@@ -33,7 +33,6 @@
     desktop = {
       firefox.enable = true;
       fonts.enable = true;
-      sway.enable = false;
       hyprland.enable = true;
       wayland.enable = true;
       xdg.enable = true;
@@ -42,7 +41,7 @@
     };
     suites = {
       development.enable = true;
-      gaming.enable = true;
+      gaming.enable = false;
       mesh.enable = true;
       multimedia.enable = true;
       pentest.enable = true;
@@ -51,8 +50,10 @@
     };
     themes = {
       gtk.enable = true;
-      qt.enable = true;
+      qt.enable = false;
       stylix.enable = true;
+      rgb.enable = true;
+      plight.enable = false;
     };
   };
 }

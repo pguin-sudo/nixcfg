@@ -1,8 +1,4 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -32,11 +28,6 @@
   boot.loader.systemd-boot.configurationLimit = 3;
   # Ntfs support
   boot.supportedFilesystems = ["ntfs"];
-
-  programs.hyprland = {
-    enable = true;
-    xwayland.enable = true;
-  };
 
   #Network
   #Define your hostname
