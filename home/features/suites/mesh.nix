@@ -15,6 +15,7 @@ in {
       python313Packages.lxmf
       rns
       meshchat # Custom pkg
+      meshradar # Custom pkg
     ];
   };
 }
