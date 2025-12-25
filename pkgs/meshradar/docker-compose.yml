@@ -1,0 +1,26 @@
+services:
+  meshradar:
+    build: .
+    container_name: meshradar
+    ports:
+      - "5173:80"
+    volumes:
+      - meshradar_data:/app/backend/data
+    environment:
+      - DATABASE_PATH=${DATABASE_PATH:-/app/backend/data/meshradar.db}
+    restart: unless-stopped
+    # To use USB device connection, uncomment the lines below and set your device path:
+    devices:
+      - /dev/ttyUSB1:/dev/serial/by-ideusb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0
+    privileged: true
+
+    # To use BLE (Bluetooth) connection on Linux, uncomment the lines below:
+    # privileged: true
+    # volumes:
+    #   - meshradar_data:/app/backend/data
+    #   - /var/run/dbus:/var/run/dbus
+    #   - /run/bluetooth:/run/bluetooth
+
+
+volumes:
+  meshradar_data:
