@@ -244,6 +244,7 @@ in {
         windowrulev2 = [
           "workspace 1, class:^(firefox)$"
           "workspace special, class:^(org.telegram.desktop)$"
+          "workspace special, class:^(vesktop)$"
         ];
       };
     };
