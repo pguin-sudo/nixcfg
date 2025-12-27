@@ -22,7 +22,7 @@ in {
 
           modules-left = ["hyprland/workspaces"];
           modules-center = ["mpris"];
-          modules-right = ["cpu" "memory" "custom/nvidia" "network" "custom/vpn" "pulseaudio" "backlight" "battery" "tray" "clock"];
+          modules-right = ["cpu" "memory" "network" "custom/vpn" "pulseaudio" "backlight" "battery" "tray" "clock"];
 
           "custom/vpn" = {
             exec = ''
@@ -49,12 +49,6 @@ in {
             '';
             max-length = 20;
             interval = 5;
-          };
-
-          "custom/nvidia" = {
-            exec = "nvidia-smi --query-gpu=utilization.gpu --format=csv,nounits,noheader";
-            format = "󰢮 {}%";
-            interval = 2;
           };
 
           "hyprland/workspaces" = {
@@ -224,7 +218,6 @@ in {
         #memory,
         #network,
         #custom-vpn,
-        #custom-nvidia,
         #pulseaudio,
         #backlight,
         #battery,
@@ -323,7 +316,6 @@ in {
         #memory:hover,
         #network:hover,
         #custom-vpn:hover,
-        #custom-nvidia:hover,
         #pulseaudio:hover,
         #backlight:hover,
         #battery:hover,

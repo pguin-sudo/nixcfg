@@ -4,11 +4,16 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: {
   home.username = "pguin";
   home.homeDirectory = lib.mkDefault "/home/${config.home.username}";
   home.stateVersion = "24.05";
+
+  home.packages = with pkgs; [
+    nvtopPackages.amd
+  ];
 
   home.file = {};
 

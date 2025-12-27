@@ -55,6 +55,13 @@
         ];
       };
 
+      lambda = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs outputs;};
+        modules = [
+          ./hosts/lambda
+        ];
+      };
+
       nu = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs outputs;};
         modules = [
@@ -71,6 +78,16 @@
           nvf.homeManagerModules.default
           stylix.homeModules.stylix
           ./home/pguin/delta.nix
+        ];
+      };
+
+      "pguin@lambda" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages."x86_64-linux";
+        extraSpecialArgs = {inherit inputs outputs;};
+        modules = [
+          nvf.homeManagerModules.default
+          stylix.homeModules.stylix
+          ./home/pguin/lambda.nix
         ];
       };
 
