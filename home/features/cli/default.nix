@@ -33,7 +33,6 @@
     unzip
     exiftool
     chafa
-    nvtopPackages.full
     tree
     file
   ];

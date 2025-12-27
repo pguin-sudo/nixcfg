@@ -5,9 +5,6 @@
   ];
 
   # Hardware
-  # Nvidia
-  hardware.nvidia.enable = false;
-  # Battery
   hardware.battery.enable = false;
 
   # Common

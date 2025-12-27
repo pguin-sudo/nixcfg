@@ -2,11 +2,10 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./partitioning.nix
   ];
 
   # Hardware
-  hardware.battery.enable = true;
+  hardware.battery.enable = false;
 
   # Common
   # System
@@ -18,30 +17,29 @@
   common.services.vm.enable = false;
   # AppStores
   common.services.appimage.enable = true;
-  common.services.steam.enable = false;
+  common.services.steam.enable = true;
 
   #services.samba.enable = true;
 
-  #Bootloader
-  boot.loader = {
-    systemd-boot.enable = false;
-    grub = {
-      enable = true;
-      devices = ["nodev"];
-      efiSupport = true;
-      useOSProber = true;
+  # Bootloader
+  boot = {
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
+    loader.systemd-boot.configurationLimit = 3;
+    kernelPackages = pkgs.linuxPackages_6_12;
+    kernelParams = ["processor.max_cstate=5" "idle=nomwait"];
+  };
 
-      efiInstallAsRemovable = false;
+  hardware.enableRedistributableFirmware = true;
 
-      configurationLimit = 5;
-      theme = null;
-      splashImage = null;
-    };
-
-    efi = {
-      canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot/efi";
-    };
+  #Graphics
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      amdvlk
+      rocmPackages.clr
+      rocmPackages.clr.icd
+    ];
   };
 
   #Network
@@ -86,7 +84,7 @@
   services.udisks2.enable = true;
 
   # I2PD sservice
-  services.i2pd.enable = true;
+  services.i2pd.enable = false;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;

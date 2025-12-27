@@ -12,6 +12,7 @@
   home.stateVersion = "24.05"; # Please read the comment before changing.
 
   home.packages = with pkgs; [
+    nvtopPackages.intel
   ];
 
   home.file = {};
