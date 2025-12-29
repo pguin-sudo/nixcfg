@@ -20,7 +20,7 @@ in {
       spice
       spice-gtk
       spice-protocol
-      win-virtio
+      virtio-win
       win-spice
       adwaita-icon-theme
     ];
@@ -32,8 +32,6 @@ in {
         qemu = {
           vhostUserPackages = with pkgs; [virtiofsd];
           swtpm.enable = true;
-          ovmf.enable = true;
-          ovmf.packages = [pkgs.OVMFFull.fd];
         };
       };
       spiceUSBRedirection.enable = true;

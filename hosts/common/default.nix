@@ -17,6 +17,8 @@
     backupFileExtension = "backup";
   };
 
+  environment.pathsToLink = ["/share/applications" "/share/xdg-desktop-portal"];
+
   nixpkgs = {
     # You can add overlays here
     overlays = [
