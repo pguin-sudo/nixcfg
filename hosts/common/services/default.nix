@@ -1,11 +1,12 @@
 {
   imports = [
-    ./steam.nix
-    ./polkit.nix
     ./appimage.nix
-    ./xdgportal.nix
-    ./vm.nix
-    ./openssh.nix
+    ./i2p.nix
     ./obs-studio.nix
+    ./openssh.nix
+    ./polkit.nix
+    ./steam.nix
+    ./vm.nix
+    ./xdgportal.nix
   ];
 }

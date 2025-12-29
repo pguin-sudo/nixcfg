@@ -22,6 +22,8 @@
   common.services.steam.enable = true;
   # Enable kernel modules for obs-studio
   common.services.obs-studio.enable = true;
+  # I2P
+  common.services.i2p.enable = true;
 
   #services.samba.enable = true;
 
@@ -97,9 +99,6 @@
     packages = [pkgs.openrgb];
   };
 
-  # I2PD sservice
-  services.i2pd.enable = true;
-
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -108,7 +107,6 @@
     git
     zsh
     nssmdns
-    i2pd
 
     os-prober
   ];
