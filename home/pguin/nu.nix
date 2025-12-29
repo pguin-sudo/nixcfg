@@ -10,8 +10,10 @@
 
   programs.git = {
     enable = true;
-    userName = "PGuin";
-    userEmail = "138515193+pguin-sudo@users.noreply.github.com";
+    settings = {
+      user.name = "PGuin";
+      user.email = "138515193+pguin-sudo@users.noreply.github.com";
+    };
   };
 
   programs.gh = {

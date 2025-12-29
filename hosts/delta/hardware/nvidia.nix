@@ -1,21 +1,20 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 with lib; let
   cfg = config.hardware.nvidia;
-in
-{
+in {
   options.hardware.nvidia.enable = mkEnableOption "nvidia driver";
 
   config = mkIf cfg.enable {
     #Allow unfree packages
     nixpkgs.config.allowUnfree = true;
 
-
     services.xserver = {
-      videoDrivers = [ "nvidia" ];
+      videoDrivers = ["nvidia"];
     };
 
     hardware = {
@@ -24,15 +23,11 @@ in
       graphics.enable32Bit = true;
       graphics = {
         extraPackages = with pkgs; [
-          intel-media-driver # LIBVA_DRIVER_NAME=iHD
-          # intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
           libvdpau-va-gl
-          vaapiVdpau
+          libva-vdpau-driver
           mesa
         ];
       };
-
-
 
       nvidia.nvidiaSettings = true;
       nvidia.powerManagement.enable = true;
@@ -69,12 +64,10 @@ in
       };
     };
 
-
     # Nvidia in Docker
     virtualisation.docker = {
       enable = true;
       enableOnBoot = true;
-      enableNvidia = true;
       extraOptions = ''--data-root=/home/pguin/docker-data'';
     };
 
@@ -85,7 +78,3 @@ in
     ];
   };
 }
-
-
-
-

@@ -23,11 +23,10 @@ in {
       nerd-fonts.hack
       nerd-fonts.mononoki
 
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       twitter-color-emoji
 
       noto-fonts
-      noto-fonts-extra
       dejavu_fonts
       liberation_ttf
     ];

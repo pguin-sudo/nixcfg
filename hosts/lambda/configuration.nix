@@ -36,7 +36,6 @@
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
-      amdvlk
       rocmPackages.clr
       rocmPackages.clr.icd
     ];
