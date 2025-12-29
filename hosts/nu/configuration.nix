@@ -67,9 +67,6 @@
   # Enable DBus service that allows applications to query and manipulate storage
   services.udisks2.enable = true;
 
-  # I2PD sservice
-  services.i2pd.enable = true;
-
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -78,7 +75,6 @@
     git
     zsh
     nssmdns
-    i2pd
   ];
 
   virtualisation.docker = {
