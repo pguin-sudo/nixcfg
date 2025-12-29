@@ -2,7 +2,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./partitioning.nix
+    #./partitioning.nix
   ];
 
   # Hardware
@@ -45,7 +45,7 @@
 
     efi = {
       canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot/efi";
+      efiSysMountPoint = "/boot";
     };
   };
 
