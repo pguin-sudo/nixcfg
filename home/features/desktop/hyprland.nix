@@ -12,8 +12,14 @@ in {
   config = mkIf cfg.enable {
     wayland.windowManager.hyprland = {
       enable = true;
-      systemd.enable = true; # Better systemd integration
-      xwayland.enable = true; # Moved to top-level option
+      systemd.enable = true;
+
+      xwayland.enable = true;
+      settings = {
+        xwayland = {
+          force_zero_scaling = true;
+        };
+      };
 
       settings = {
         exec-once = [
