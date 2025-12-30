@@ -22,6 +22,11 @@
     };
 
     stylix.url = "github:nix-community/stylix";
+
+    asus-numpad-driver = {
+      url = "github:asus-linux-drivers/asus-numberpad-driver";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -33,6 +38,7 @@
     nvf,
     winapps,
     stylix,
+    asus-numpad-driver,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -69,6 +75,7 @@
           nixos-hardware.nixosModules.common-pc-laptop
           nixos-hardware.nixosModules.common-pc-laptop-ssd
           nixos-hardware.nixosModules.asus-battery
+          asus-numpad-driver.nixosModules.default
           ./hosts/lambda
         ];
       };
