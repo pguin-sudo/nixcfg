@@ -11,7 +11,7 @@ services:
     restart: unless-stopped
     # To use USB device connection, uncomment the lines below and set your device path:
     devices:
-      - /dev/ttyUSB1:/dev/serial/by-ideusb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0
+      - /dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0:/dev/ttyUSB1:rwm
     privileged: true
 
     # To use BLE (Bluetooth) connection on Linux, uncomment the lines below:
