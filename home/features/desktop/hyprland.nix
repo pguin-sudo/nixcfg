@@ -234,11 +234,12 @@ in {
           "$mainMod, right, resizeactive, 40 0"
           "$mainMod, up, resizeactive, 0 -40"
           "$mainMod, down, resizeactive, 0 40"
-          ", XF86AudioMute, exec, $HOME/.config/hypr/scripts/volume mute"
-          ", XF86AudioLowerVolume, exec, $HOME/.config/hypr/scripts/volume down"
-          ", XF86AudioRaiseVolume, exec, $HOME/.config/hypr/scripts/volume up"
-          ", XF86MonBrightnessUp, exec, $HOME/.config/hypr/scripts/brightness up"
-          ", XF86MonBrightnessDown, exec, $HOME/.config/hypr/scripts/brightness down"
+          ", XF86AudioMute, exec, pamixer -t"
+          ", XF86AudioLowerVolume, exec, pamixer -d 2"
+          ", XF86AudioRaiseVolume, exec, pamixer -i 2"
+          ", XF86MonBrightnessUp, exec, brightnessctl set 1%+"
+          ", XF86MonBrightnessDown, exec, brightnessctl set 1%-"
+          ", XF86AudioMicMute, exec, echo \"MicMuted\""
         ];
 
         windowrulev2 = [

@@ -94,8 +94,8 @@ in {
             device = "intel_backlight";
             format = "{icon} {percent}%";
             format-icons = ["󰃞" "󰃟" "󰃠"];
-            on-scroll-up = "brightnessctl set 2%+";
-            on-scroll-down = "brightnessctl set 2%-";
+            on-scroll-up = "brightnessctl set 1%+";
+            on-scroll-down = "brightnessctl set 1%-";
             tooltip-format = "Brightness: {percent}%";
           };
 
@@ -115,8 +115,8 @@ in {
               default = ["󰕿" "󰖀" "󰕾"];
             };
             on-click = "pamixer -t";
-            on-scroll-up = "pamixer -i 2";
-            on-scroll-down = "pamixer -d 2";
+            on-scroll-up = "pamixer -i 1";
+            on-scroll-down = "pamixer -d 1";
             on-click-right = "pavucontrol";
             tooltip-format = "{desc} - {volume}%";
             scroll-step = 2;
