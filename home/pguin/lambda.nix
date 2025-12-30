@@ -43,7 +43,7 @@
     };
     suites = {
       development.enable = true;
-      gaming.enable = false;
+      gaming.enable = true;
       mesh.enable = true;
       multimedia.enable = true;
       pentest.enable = true;
