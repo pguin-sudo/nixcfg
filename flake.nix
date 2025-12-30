@@ -12,6 +12,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     disko.url = "github:nix-community/disko";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     nvf.url = "github:notashelf/nvf";
 
@@ -25,9 +26,10 @@
 
   outputs = {
     self,
-    home-manager,
     nixpkgs,
+    home-manager,
     disko,
+    nixos-hardware,
     nvf,
     winapps,
     stylix,
@@ -50,6 +52,8 @@
       delta = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs outputs;};
         modules = [
+          nixos-hardware.nixosModules.common-cpu-amd
+          nixos-hardware.nixosModules.common-pc
           ./hosts/delta
           disko.nixosModules.disko
         ];
@@ -58,6 +62,13 @@
       lambda = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs outputs;};
         modules = [
+          nixos-hardware.nixosModules.common-cpu-amd
+          nixos-hardware.nixosModules.common-cpu-amd-pstate
+          nixos-hardware.nixosModules.common-gpu-amd
+          nixos-hardware.nixosModules.common-pc
+          nixos-hardware.nixosModules.common-pc-laptop
+          nixos-hardware.nixosModules.common-pc-laptop-ssd
+          nixos-hardware.nixosModules.asus-battery
           ./hosts/lambda
         ];
       };
