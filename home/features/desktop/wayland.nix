@@ -367,6 +367,9 @@ in {
       grim
       swappy
       sway-contrib.grimshot
+
+      # For checking keybinds
+      wev
     ];
 
     home.file."Wallpapers" = {

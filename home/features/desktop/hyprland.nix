@@ -160,6 +160,7 @@ in {
         "$explorer" = "dolphin";
         "$browser" = "firefox";
         "$top" = "btop";
+        "$editor" = "nvim";
 
         bind = [
           # Power
@@ -228,6 +229,9 @@ in {
 
           "Ctrl Shift, Escape, exec, $terminal $top"
           "$mainMod, N, exec, $terminal -e zsh -ic \"notepad; exit\""
+          # COPILOT KEY
+          "SUPER SHIFT, code:201, exec, $terminal $editor ~/nixcfg"
+          ", code:156, exec, notify-send \"Just strange button :)\""
         ];
 
         bindm = [
@@ -245,7 +249,7 @@ in {
           ", XF86AudioRaiseVolume, exec, pamixer -i 2"
           ", XF86MonBrightnessUp, exec, brightnessctl set 1%+"
           ", XF86MonBrightnessDown, exec, brightnessctl set 1%-"
-          ", XF86AudioMicMute, exec, echo \"MicMuted\""
+          ", XF86AudioMicMute, exec, notify-send \"Mic mute\""
         ];
 
         windowrulev2 = [
