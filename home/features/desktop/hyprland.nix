@@ -224,6 +224,7 @@ in {
           "$mainMod, T, exec, $terminal"
           "$mainMod Shift, T, exec, Telegram"
           "$mainMod, B, exec, $browser"
+          "$mainMod Shift, B, exec, $browser -P I2P"
           "$mainMod, E, exec, $explorer"
           "$mainMod, A, exec, rofi -show drun"
 
