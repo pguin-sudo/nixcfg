@@ -64,13 +64,6 @@ in {
       };
     };
 
-    # Nvidia in Docker
-    virtualisation.docker = {
-      enable = true;
-      enableOnBoot = true;
-      extraOptions = ''--data-root=/home/pguin/docker-data'';
-    };
-
     hardware.nvidia-container-toolkit.enable = true;
 
     environment.systemPackages = with pkgs; [

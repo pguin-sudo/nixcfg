@@ -25,6 +25,7 @@
         "docker"
         "key"
         "wireshark"
+        "dialout"
       ];
       packages = [inputs.home-manager.packages.${pkgs.system}.default];
 

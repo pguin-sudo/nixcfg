@@ -23,6 +23,8 @@
   common.services.obs-studio.enable = true;
   # I2P
   common.services.i2p.enable = true;
+  # Docker
+  common.services.docker.enable = true;
 
   #services.samba.enable = true;
 
