@@ -284,6 +284,9 @@ in {
       pyprland
     ];
 
+    # Small fix for home-manager
+    dconf.enable = false;
+
     # Custom wallpaper script
     home.file.".config/hypr/scripts/next-wallpaper.sh".source = ./scripts/next-wallpaper.sh;
   };
