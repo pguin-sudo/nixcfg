@@ -14,8 +14,11 @@ in {
       python313Packages.nomadnet
       python313Packages.lxmf
       rns
-      meshchat # Custom pkg
-      meshradar # Custom pkg
+
+      # Custom
+      chromium
+      meshchat
+      #meshradar
     ];
   };
 }
