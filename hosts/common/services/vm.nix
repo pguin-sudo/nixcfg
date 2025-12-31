@@ -10,9 +10,6 @@ in {
   options.common.services.vm.enable = mkEnableOption "enable windows vm";
 
   config = mkIf cfg.enable {
-    # Enable dconf (System Management Tool)
-    programs.dconf.enable = true;
-
     # Install necessary packages
     environment.systemPackages = with pkgs; [
       virt-manager

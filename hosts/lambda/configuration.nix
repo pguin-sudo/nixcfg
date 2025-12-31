@@ -6,7 +6,7 @@
 
   # Hardware
   hardware.battery.enable = false;
-  hardware.asus-numpad.enable = true;
+  hardware.asus-numpad.enable = false;
 
   # Common
   # System
