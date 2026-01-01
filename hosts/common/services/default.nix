@@ -9,5 +9,6 @@
     ./steam.nix
     ./vm.nix
     ./xdgportal.nix
+    ./zapret.nix
   ];
 }

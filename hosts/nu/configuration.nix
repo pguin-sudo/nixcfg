@@ -15,6 +15,8 @@
   # AppStores
   common.services.appimage.enable = true;
   common.services.steam.enable = false;
+  # Zapret
+  common.services.zapret.enable = true;
 
   #services.samba.enable = true;
 
@@ -76,15 +78,6 @@
     zsh
     nssmdns
   ];
-
-  #Firewall
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # For Chromecast from chrome
-  # networking.firewall.allowedUDPPortRanges = [ { from = 32768; to = 60999; } ];
-  # Or disable the firewall altogether.
-  networking.firewall.enable = false;
-  networking.nftables.enable = false;
 
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
