@@ -10,7 +10,7 @@ in {
 
   config = mkIf cfg.enable {
     services.zapret = {
-      enable = true;
+      enable = false;
       params = [
         "--dpi-desync=fake,multidisorder"
         "--dpi-desync-fake-tls=0x00000000"

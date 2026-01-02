@@ -27,6 +27,8 @@
       url = "github:asus-linux-drivers/asus-numberpad-driver";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nixpkgs-howdy.url = "github:fufexan/nixpkgs/howdy";
   };
 
   outputs = {
@@ -39,6 +41,7 @@
     winapps,
     stylix,
     asus-numpad-driver,
+    nixpkgs-howdy,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -50,6 +53,7 @@
       "x86_64-darwin"
     ];
     forAllSystems = nixpkgs.lib.genAttrs systems;
+    howdy = inputs.nixpkgs-howdy;
   in {
     packages =
       forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
@@ -68,6 +72,7 @@
       lambda = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs outputs;};
         modules = [
+          # NixOS hardware
           nixos-hardware.nixosModules.common-cpu-amd
           nixos-hardware.nixosModules.common-cpu-amd-pstate
           nixos-hardware.nixosModules.common-gpu-amd
@@ -76,6 +81,12 @@
           nixos-hardware.nixosModules.common-pc-laptop-ssd
           nixos-hardware.nixosModules.asus-battery
           asus-numpad-driver.nixosModules.default
+          # Howdy
+          {disabledModules = ["security/pam.nix"];}
+          "${howdy}/nixos/modules/security/pam.nix"
+          "${howdy}/nixos/modules/services/security/howdy"
+          "${howdy}/nixos/modules/services/misc/linux-enable-ir-emitter.nix"
+          # Host config
           ./hosts/lambda
         ];
       };

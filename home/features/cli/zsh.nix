@@ -14,7 +14,7 @@ in {
 
       shellAliases = {
         nf = "nvim $(fzf)";
-        rebuild = "sudo nixos-rebuild switch --flake /home/pguin/nixcfg/#$(hostname) && notify-send \"Rebuild completed\"";
+        rebuild = "notify-send \"Rebuild started\" && sudo nixos-rebuild switch --flake /home/pguin/nixcfg/#$(hostname) && notify-send \"Rebuild completed\"";
 
         cleanold = "sudo nix-collect-garbage --delete-old";
         cleanboot = "sudo /run/current-system/bin/switch-to-configuration boot";

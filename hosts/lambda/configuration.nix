@@ -5,8 +5,8 @@
   ];
 
   # Hardware
-  hardware.battery.enable = false;
   hardware.asus-numpad.enable = false;
+  hardware.battery.enable = false;
 
   # Common
   # System
@@ -21,12 +21,13 @@
   common.services.steam.enable = true;
   # Enable kernel modules for obs-studio
   common.services.obs-studio.enable = true;
-  # I2P
+  # Networking
   common.services.i2p.enable = true;
-  # Docker
-  common.services.docker.enable = true;
-  # Zapret
   common.services.zapret.enable = true;
+  # Dev
+  common.services.docker.enable = true;
+  # Howdy
+  common.services.howdy.enable = true;
 
   #services.samba.enable = true;
 
