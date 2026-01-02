@@ -168,6 +168,7 @@ in {
           "$mainMod Shift, Delete, exec, systemctl suspend"
           "$mainMod, Delete, exec, shutdown now"
           "$mainMod Ctrl, Delete, exec, reboot"
+          "$mainMod, L, exec, hyprlock"
 
           # Windows
           "$mainMod, mouse_down, workspace, e+1"
@@ -284,6 +285,10 @@ in {
     home.packages = with pkgs; [
       pyprland
     ];
+
+    programs.hyprlock = {
+      enable = true;
+    };
 
     # Small fix for home-manager
     dconf.enable = false;
