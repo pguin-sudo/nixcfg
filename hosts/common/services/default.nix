@@ -2,6 +2,7 @@
   imports = [
     ./appimage.nix
     ./docker.nix
+    ./howdy.nix
     ./i2p.nix
     ./obs-studio.nix
     ./openssh.nix

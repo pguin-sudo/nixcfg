@@ -230,9 +230,10 @@ in {
 
           "Ctrl Shift, Escape, exec, $terminal $top"
           "$mainMod, N, exec, $terminal -e zsh -ic \"notepad; exit\""
-          # COPILOT KEY
+          # Notebook keys
           "SUPER SHIFT, code:201, exec, $terminal $editor ~/nixcfg"
-          ", code:156, exec, notify-send \"Just strange button :)\""
+          "SUPER, code:60, exec, sudo -E howdy test"
+          ", code:156, exec, $terminal -e zsh -ic \"rebuild\""
         ];
 
         bindm = [
