@@ -29,6 +29,9 @@
   # Howdy
   common.services.howdy.enable = true;
 
+  # User
+  common.services.dm.enable = true;
+
   #services.samba.enable = true;
 
   # Bootloader

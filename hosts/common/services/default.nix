@@ -1,6 +1,7 @@
 {
   imports = [
     ./appimage.nix
+    ./dm.nix
     ./docker.nix
     ./howdy.nix
     ./i2p.nix
