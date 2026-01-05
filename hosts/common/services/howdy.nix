@@ -7,14 +7,23 @@
 }: let
   cfg = config.common.services.howdy;
   inherit (pkgs.stdenv.hostPlatform) system;
+  howdyInput = inputs.nixpkgs-howdy;
 in {
+  imports = [
+    "${howdyInput}/nixos/modules/security/pam.nix"
+    "${howdyInput}/nixos/modules/services/security/howdy"
+    "${howdyInput}/nixos/modules/services/misc/linux-enable-ir-emitter.nix"
+  ];
+
+  disabledModules = ["security/pam.nix"];
+
   options.common.services.howdy.enable = lib.mkEnableOption "enable Howdy facial recognition authentication";
 
   config = lib.mkIf cfg.enable {
     services = {
       howdy = {
         enable = true;
-        package = inputs.nixpkgs-howdy.legacyPackages.${system}.howdy;
+        package = howdyInput.legacyPackages.${system}.howdy;
         settings = {
           core = {
             no_confirmation = true;
@@ -26,10 +35,9 @@ in {
           };
         };
       };
-
       linux-enable-ir-emitter = {
         enable = true;
-        package = inputs.nixpkgs-howdy.legacyPackages.${system}.linux-enable-ir-emitter;
+        package = howdyInput.legacyPackages.${system}.linux-enable-ir-emitter;
       };
     };
   };
