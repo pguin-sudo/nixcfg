@@ -36,5 +36,7 @@ in {
       aider-chat-full
       cursor-cli
     ];
+
+    services.remmina.enable = true;
   };
 }
