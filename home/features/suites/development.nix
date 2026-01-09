@@ -37,6 +37,9 @@ in {
       cursor-cli
     ];
 
-    services.remmina.enable = true;
+    services.remmina = {
+      enable = true;
+      systemdService.enable = false;
+    };
   };
 }
