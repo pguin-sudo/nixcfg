@@ -20,5 +20,7 @@ in {
       #amberol
       #jellyfin-media-player
     ];
+
+    services.nextcloud-client.enable = true;
   };
 }
