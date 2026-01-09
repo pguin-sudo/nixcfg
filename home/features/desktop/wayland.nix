@@ -362,11 +362,15 @@ in {
 
       swww
 
+      # Mime & xdg
       xdg-utils
+      shared-mime-info
 
+      # Images
       grim
       swappy
       sway-contrib.grimshot
+      swayimg
 
       # For checking keybinds
       wev
@@ -400,8 +404,50 @@ in {
 
       mimeApps = {
         enable = true;
+
         defaultApplications = {
           "inode/directory" = ["org.kde.dolphin.desktop"];
+          "x-scheme-handler/file" = ["org.kde.dolphin.desktop"];
+
+          "x-scheme-handler/http" = ["firefox.desktop"];
+          "x-scheme-handler/https" = ["firefox.desktop"];
+          "x-scheme-handler/about" = ["firefox.desktop"];
+          "x-scheme-handler/unknown" = ["firefox.desktop"];
+
+          "image/jpeg" = ["swayimg.desktop"];
+          "image/jpg" = ["swayimg.desktop"];
+          "image/png" = ["swayimg.desktop"];
+          "image/gif" = ["swayimg.desktop"];
+          "image/webp" = ["swayimg.desktop"];
+          "image/tiff" = ["swayimg.desktop"];
+          "image/bmp" = ["swayimg.desktop"];
+          "image/svg+xml" = ["swayimg.desktop"];
+          "image/x-icon" = ["swayimg.desktop"];
+
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = ["onlyoffice-desktopeditors.desktop"]; # .docx
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = ["onlyoffice-desktopeditors.desktop"]; # .xlsx
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation" = ["onlyoffice-desktopeditors.desktop"]; # .pptx
+          "application/msword" = ["onlyoffice-desktopeditors.desktop"];
+          "application/vnd.ms-excel" = ["onlyoffice-desktopeditors.desktop"];
+          "application/vnd.ms-powerpoint" = ["onlyoffice-desktopeditors.desktop"];
+          "application/vnd.oasis.opendocument.text" = ["onlyoffice-desktopeditors.desktop"];
+          "application/vnd.oasis.opendocument.spreadsheet" = ["onlyoffice-desktopeditors.desktop"];
+          "application/vnd.oasis.opendocument.presentation" = ["onlyoffice-desktopeditors.desktop"];
+
+          "text/plain" = ["nvim.desktop"];
+          "text/x-c" = ["nvim.desktop"];
+          "text/x-c++" = ["nvim.desktop"];
+          "text/x-python" = ["nvim.desktop"];
+          "text/x-shellscript" = ["nvim.desktop"];
+          "text/markdown" = ["nvim.desktop"];
+          "text/x-diff" = ["nvim.desktop"];
+          "application/x-yaml" = ["nvim.desktop"];
+
+          "video" = ["vlc.desktop"];
+
+          "application/octet-stream" = ["kitty.desktop"];
+          "application/x-executable" = ["kitty.desktop"];
+          "application/x-shellscript" = ["kitty.desktop"];
         };
       };
     };

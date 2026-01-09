@@ -11,25 +11,18 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs.kdePackages; [
-      dolphin # KDE file manager
-      qtimageformats # Image format support for Qt5
-      ffmpegthumbs # Video thumbnail support
-      kde-cli-tools # KDE command line utilities
-      kdegraphics-thumbnailers # KDE graphics thumbnails
-      kimageformats # Additional image format support for KDE
-      qtsvg # SVG support
-      kio # KDE I/O framework
-      kio-extras # Additional KDE I/O protocols
-      kwayland # KDE Wayland integration
+      dolphin
+      ffmpegthumbs
+      kdegraphics-thumbnailers
+      kimageformats
+      qtimageformats
+      qtsvg
+      kio
+      kio-extras
+      kwayland
+      kde-cli-tools
+      kservice
     ];
-
-    xdg.mimeApps = {
-      defaultApplications = {
-        "inode/directory" = ["org.kde.dolphin.desktop"];
-        "x-scheme-handler/file" = ["org.kde.dolphin.desktop"];
-        "x-scheme-handler/about" = ["org.kde.dolphin.desktop"];
-      };
-    };
 
     xdg.configFile."menus//applications.menu".text = ''       
        <!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
@@ -455,7 +448,21 @@ in {
       [Behavior]
       ConfirmDelete=true
       ConfirmTrash=true
-      :onfirmDeleteEmptyTrash=false
+      ConfirmDeleteEmptyTrash=false
+
+      [KFileDialog Settings]
+      Recent Files[$e]=$HOME/
+      Recent URLs[$e]=$HOME/
+
+      [MainWindow]
+
+      State=AAAA/wAAAAD9AAAAAAAAAAMAAAALAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAgAAAAEAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgAAAAAA/////wAAAAAAAAAAAAAD6AAAAAUAAABNAGEAaQBuAFQAbwBvAGwAQgBhAHIAAAAAAP////8AAAAAAAAAAAAD6AAAAAUAAABNAGEAaQBuAFQAbwBvAGwAQgBhAHIAAAAAAP////8AAAAAAAAAAAAD6AAAAAUAAABNAGEAaQBuAFQAbwBvAGwAQgBhAHIAAAAAAP////8AAAAAAAAAAAAD6AAAAAUAAABNAGEAaQBuAFQAbwBvAGwAQgBhAHIAAAAAAP////8AAAAAAAAAAA==
+      ToolBarsMovable=Disabled
+
+      [Search]
+      Location=LocalFiles
     '';
+
+    xdg.configFile."menus/plasma-applications.menu".source = "${pkgs.kdePackages.plasma-workspace}/etc/xdg/menus/plasma-applications.menu";
   };
 }

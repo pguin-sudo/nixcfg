@@ -24,7 +24,7 @@ in {
       settings = {
         exec-once = [
           "waybar"
-          "swww-daemon"
+          #"swww-daemon"
           "swww restore"
           "wl-clipboard-history -t"
           "wl-paste -p -t text --watch clipman store -P --histpath=\"~/.local/share/clipman-primary.json\""
@@ -41,6 +41,7 @@ in {
           "GTK_THEME,Nightfox-Dark"
           "QT_AUTO_SCREEN_SCALE_FACTOR,1"
           "ELECTRON_EXTRA_FLAGS,--force-device-scale-factor=1.5"
+          "XDG_MENU_PREFIX,plasma-"
         ];
 
         input = {
