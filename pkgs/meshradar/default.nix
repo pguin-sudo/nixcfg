@@ -1,76 +1,69 @@
-{
-  stdenv,
-  fetchFromGitHub,
-  makeWrapper,
-  docker-compose,
-  lib,
-  customComposeYml ? ./docker-compose.yml,
-}:
-stdenv.mkDerivation rec {
+# default.nix
+{pkgs ? import <nixpkgs> {}}:
+pkgs.stdenv.mkDerivation rec {
   pname = "meshradar";
-  version = "serial-choose";
-  src = fetchFromGitHub {
+  version = "unstable-2026-01-09";
+
+  src = pkgs.fetchFromGitHub {
     owner = "curlysasha";
     repo = "MeshRadar";
-    rev = "dd930151b04ccc8ba6009f9300af301886d6efa6";
-    sha256 = "sha256-WwuEo/3u1DnZZcr0i6iPf5gt6hh48rUxTgmSI4N9qVM=";
+    rev = "master";
+    hash = "sha256-MiKV0VvrfmXPfG41yNGhWL7AXrWUrovmBNHXubz4cz4=";
   };
-  nativeBuildInputs = [makeWrapper];
-  buildInputs = [];
-  dontConfigure = true;
-  dontBuild = true;
+
   installPhase = ''
-    runHook preInstall
+    mkdir -p $out/share/meshradar
+    cp -r ./* $out/share/meshradar
 
-    # Copy main files
-    mkdir -p $out/share/${pname}
-    cp -r $src/* $out/share/${pname}
+    # Overwrite docker-compose.yml with custom version
+    install -D ${./docker-compose.yml} $out/share/meshradar/docker-compose.yml
 
-    # Fix line endings in entrypoint.sh using tr
-    tr -d '\r' < $out/share/${pname}/entrypoint.sh > temp.sh
-    mv temp.sh $out/share/${pname}/entrypoint.sh
+    # Ensure entrypoint.sh is executable
+    chmod +x $out/share/meshradar/entrypoint.sh
 
-    # Set shebang to /bin/sh
-    chmod +x $out/share/${pname}/entrypoint.sh
-
-    # Fix other scripts if present
-    if [ -f $out/share/${pname}/dev.sh ]; then
-      tr -d '\r' < $out/share/${pname}/dev.sh > temp_dev.sh
-      mv temp_dev.sh $out/share/${pname}/dev.sh
-      sed -i '1s|.*|#!/bin/sh|' $out/share/${pname}/dev.sh
-      chmod +x $out/share/${pname}/dev.sh
-    fi
-
-    # Replace docker-compose.yml with custom one
-    rm -f $out/share/${pname}/docker-compose.yml
-    cp ${customComposeYml} $out/share/${pname}/docker-compose.yml
-
-    # Create executable wrapper
     mkdir -p $out/bin
-    makeWrapper "${docker-compose}/bin/docker-compose" $out/bin/${pname} \
-      --run "cd $out/share/${pname}" \
-      --set COMPOSE_DOCKER_CLI_BUILD 0 \
-      --add-flags "up -d --build"
-
-    # Create .desktop file for app launchers
-    mkdir -p $out/share/applications
-    cat > $out/share/applications/${pname}.desktop <<EOF
-    [Desktop Entry]
-    Type=Application
-    Name=MeshRadar
-    Comment=Docker Compose wrapper for MeshRadar with custom configuration
-    Icon=network-wired
-    Exec=$out/bin/${pname}
-    Terminal=true
-    Categories=Network;Utility;
+    cat > $out/bin/meshradar <<EOF
+    #!/bin/sh
+    cd $out/share/meshradar
+    ${pkgs.docker-compose}/bin/docker-compose up
     EOF
-    runHook postInstall
+    chmod +x $out/bin/meshradar
+
+    # Additional bin for terminal execution
+    cat > $out/bin/meshradar-terminal <<EOF
+    #!/bin/sh
+    ${pkgs.gnome-terminal}/bin/gnome-terminal -- sh -c "cd $out/share/meshradar; ${pkgs.docker-compose}/bin/docker-compose up; exec bash"
+    EOF
+    chmod +x $out/bin/meshradar-terminal
+
+    mkdir -p $out/share/applications
+    cat > $out/share/applications/meshradar.desktop <<EOF
+    [Desktop Entry]
+    Name=MeshRadar
+    Exec=$out/bin/meshradar
+    Icon=$out/share/meshradar/ico.png
+    Type=Application
+    Categories=Network;
+    Terminal=false
+    EOF
+
+    # Desktop entry for terminal version (e.g., for rofi launch with terminal)
+    cat > $out/share/applications/meshradar-terminal.desktop <<EOF
+    [Desktop Entry]
+    Name=MeshRadar (Terminal)
+    Exec=$out/bin/meshradar-terminal
+    Icon=$out/share/meshradar/ico.png
+    Type=Application
+    Categories=Network;
+    Terminal=true
+    EOF
   '';
-  meta = with lib; {
-    description = "Docker Compose wrapper for MeshRadar with custom configuration";
+
+  meta = with pkgs.lib; {
+    description = "Modern web interface for Meshtastic mesh network nodes";
     homepage = "https://github.com/curlysasha/MeshRadar";
-    license = licenses.mit;
+    license = licenses.gpl3Plus;
     maintainers = [];
-    platforms = platforms.all;
+    platforms = platforms.linux;
   };
 }
