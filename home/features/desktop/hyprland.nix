@@ -24,7 +24,7 @@ in {
       settings = {
         exec-once = [
           "waybar"
-          #"swww-daemon"
+          "swww-daemon"
           "swww restore"
           "wl-clipboard-history -t"
           "wl-paste -p -t text --watch clipman store -P --histpath=\"~/.local/share/clipman-primary.json\""

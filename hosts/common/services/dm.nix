@@ -11,11 +11,15 @@ in {
   config = mkIf cfg.enable {
     services.displayManager = {
       enable = true;
-      defaultSession = "hyprland";
+      defaultSession = "Hyprland";
       ly = {
         enable = true;
       };
     };
+
+    services.gnome.gnome-keyring.enable = true;
+
+    security.pam.services.ly.enableGnomeKeyring = true;
 
     programs.hyprland.enable = true;
   };
