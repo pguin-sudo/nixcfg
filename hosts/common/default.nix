@@ -1,6 +1,7 @@
 # Common configuration for all hosts
 {
   lib,
+  pkgs,
   inputs,
   outputs,
   ...
@@ -62,4 +63,14 @@
       ((lib.filterAttrs (_: lib.isType "flake")) inputs);
     nixPath = ["/etc/nix/path"];
   };
+
+  # Keyring fix
+  environment.variables = {
+    XDG_RUNTIME_DIR = "/run/user/$UID";
+  };
+
+  environment.systemPackages = with pkgs; [
+    libsecret
+    seahorse
+  ];
 }

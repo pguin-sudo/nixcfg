@@ -29,7 +29,8 @@
   # Zapret
   common.services.zapret.enable = true;
 
-  #services.samba.enable = true;
+  # User
+  common.services.dm.enable = true;
 
   #Bootloader
   boot.loader = {
