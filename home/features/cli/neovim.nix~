@@ -55,7 +55,7 @@ in {
 
         # Swap
         swapfile = true;
-        backup = false;
+        backup = true;
         writebackup = false;
         undofile = true;
       };
@@ -201,10 +201,6 @@ in {
             floating_window_winblend = 0;
             floating_window_scaling_factor = 0.9;
           };
-        };
-
-        neo-tree = {
-          enable = true;
         };
 
         autocomplete.nvim-cmp.enable = true;

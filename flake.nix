@@ -14,7 +14,10 @@
     disko.url = "github:nix-community/disko";
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    nvf.url = "github:notashelf/nvf";
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     winapps = {
       url = "github:winapps-org/winapps";
@@ -37,7 +40,7 @@
     home-manager,
     disko,
     nixos-hardware,
-    nvf,
+    nixvim,
     winapps,
     stylix,
     asus-numpad-driver,
@@ -104,7 +107,6 @@
         pkgs = nixpkgs.legacyPackages."x86_64-linux";
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
-          nvf.homeManagerModules.default
           stylix.homeModules.stylix
           ./home/pguin/delta.nix
         ];
@@ -114,7 +116,6 @@
         pkgs = nixpkgs.legacyPackages."x86_64-linux";
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
-          nvf.homeManagerModules.default
           stylix.homeModules.stylix
           ./home/pguin/lambda.nix
         ];
@@ -124,7 +125,6 @@
         pkgs = nixpkgs.legacyPackages."x86_64-linux";
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
-          nvf.homeManagerModules.default
           stylix.homeModules.stylix
           ./home/pguin/nu.nix
         ];
