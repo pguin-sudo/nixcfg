@@ -21,7 +21,7 @@ in {
       rustup
 
       # JS
-      nodePackages.npm
+      nodejs_24
       bun
 
       # C
