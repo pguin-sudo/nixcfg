@@ -2,11 +2,14 @@
   config,
   lib,
   inputs,
+  pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.cli.neovim;
-in {
+in
+{
   options.features.cli.neovim.enable = mkEnableOption "enable extended neovim configuration";
 
   imports = [
@@ -60,7 +63,7 @@ in {
         undofile = true;
       };
 
-      keymaps = [ 
+      keymaps = [
         {
           mode = "n";
           key = "<leader>w";
@@ -133,7 +136,7 @@ in {
           action = "<cmd>lua require('gitsigns').preview_hunk()<CR>";
           options.silent = true;
         }
-        
+
         # Lazygit
         {
           mode = "n";
@@ -152,12 +155,30 @@ in {
             ts_ls.enable = true; # TS
             jsonls.enable = true;
             cssls.enable = true;
-
             python.enable = true;
-
             rust.enable = true;
-
             nixd.enable = true;
+          };
+        };
+        conform-nvim = {
+          enable = true;
+          settings = {
+            formatters_by_ft = {
+              lua = [ "stylua" ];
+              nix = [ "nixfmt" ];
+              vue = [ "prettier" ];
+              python = [ "black" ];
+              rust = [ "rustfmt" ];
+              html = [ "prettier" ];
+              css = [ "prettier" ];
+              javascript = [ "prettier" ];
+              typescript = [ "prettier" ];
+              json = [ "prettier" ];
+            };
+            format_on_save = {
+              timeout_ms = 500;
+              lsp_format = "prefer";
+            };
           };
         };
 
@@ -207,11 +228,31 @@ in {
           enable = true;
         };
 
-        autocomplete.nvim-cmp.enable = true;
+        cmp = {
+          autoLoad = true;
+          autoEnableSources = true;
+          settings.sources = [
+            { name = "nvim_lsp"; }
+            { name = "path"; }
+            { name = "buffer"; }
+          ];
+        };
+
+        langmapper = {
+          enable = true;
+          autoLoad = true;
+        };
 
         # Deps for icons
         web-devicons.enable = true;
       };
+      extraPackages = [
+        pkgs.stylua # For Lua
+        pkgs.nixfmt # For Nix (if using nixfmt; alternatively pkgs.nixpkgs-fmt if you switch to "nixpkgs_fmt" in conform)
+        pkgs.nodePackages.prettier # For Vue, HTML, CSS, JS, TS, JSON
+        pkgs.black # For Python
+        pkgs.rustfmt # For Rust
+      ];
     };
   };
 }
