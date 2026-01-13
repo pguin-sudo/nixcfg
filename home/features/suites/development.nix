@@ -4,9 +4,11 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.suites.development;
-in {
+in
+{
   options.features.suites.development.enable = mkEnableOption "dev suite";
 
   config = mkIf cfg.enable {
@@ -14,8 +16,9 @@ in {
       # Python
       python3
       poetry
-      basedpyright
-      ruff
+      # Moved to neovim config
+      #basedpyright
+      #ruff
 
       # Rust
       rustup

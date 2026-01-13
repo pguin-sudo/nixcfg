@@ -24,15 +24,13 @@ in
       viAlias = true;
 
       globals.mapleader = " ";
+
       opts = {
         mouse = "a";
         splitbelow = true;
         splitright = true;
-        #timeoutlen = 500;
         termguicolors = true;
         completeopt = "menuone,noselect";
-
-        # Tab settings
         tabstop = 2;
         shiftwidth = 2;
         softtabstop = 2;
@@ -40,8 +38,6 @@ in
         shiftround = true;
         autoindent = true;
         smartindent = true;
-
-        # Line numbers
         number = true;
         relativenumber = true;
         wrap = false;
@@ -49,14 +45,10 @@ in
         signcolumn = "yes";
         scrolloff = 8;
         sidescrolloff = 5;
-
-        # Search
         ignorecase = true;
         smartcase = true;
         incsearch = true;
         hlsearch = true;
-
-        # Swap
         swapfile = true;
         backup = false;
         writebackup = false;
@@ -64,6 +56,7 @@ in
       };
 
       keymaps = [
+        # Сохранение и выход
         {
           mode = "n";
           key = "<leader>w";
@@ -103,7 +96,7 @@ in
           options.silent = true;
         }
 
-        # LSP
+        # LSP базовые действия
         {
           mode = "n";
           key = "gd";
@@ -128,6 +121,26 @@ in
           action = "<cmd>lua vim.lsp.buf.rename()<CR>";
           options.silent = true;
         }
+        {
+          mode = "n";
+          key = "<leader>d";
+          action = "<cmd>lua vim.diagnostic.open_float()<CR>";
+          options.silent = true;
+        }
+
+        # Code actions — "предложить решить проблему"
+        {
+          mode = [
+            "n"
+            "v"
+          ];
+          key = "<leader>a";
+          action = "<cmd>lua vim.lsp.buf.code_action()<CR>";
+          options = {
+            silent = true;
+            desc = "LSP: Code actions / quickfix suggestions";
+          };
+        }
 
         # Gitsigns
         {
@@ -144,22 +157,85 @@ in
           action = "<cmd>LazyGit<CR>";
           options.silent = true;
         }
+
+        # Neotree
+        {
+          mode = "n";
+          key = "<leader>t";
+          action = "<cmd>Neotree<CR>";
+          options.silent = true;
+        }
+
+        # Venv selector
+        {
+          mode = "n";
+          key = "<leader>vs";
+          action = "<cmd>VenvSelect<CR>";
+          options.silent = true;
+        }
       ];
 
       plugins = {
         lsp = {
           enable = true;
           servers = {
-            # Frontend
-            vue_ls.enable = true; # Vue.js
-            ts_ls.enable = true; # TS
+            # Frontend / Vue
+            vue_ls = {
+              enable = true;
+              filetypes = [
+                "vue"
+                "typescript"
+                "javascript"
+                "javascriptreact"
+                "typescriptreact"
+                "json"
+              ];
+              init_options = {
+                typescript.tsdk = "${pkgs.nodePackages.typescript}/lib/node_modules/typescript/lib";
+                vue.hybridMode = false;
+              };
+            };
+            ts_ls.enable = false;
+
             jsonls.enable = true;
             cssls.enable = true;
-            python.enable = true;
-            rust.enable = true;
+
+            # Python — basedpyright + ruff
+            basedpyright = {
+              enable = true;
+              package = pkgs.basedpyright;
+              cmd = [
+                "basedpyright-langserver"
+                "--stdio"
+              ];
+              filetypes = [ "python" ];
+              settings = {
+                basedpyright = {
+                  analysis = {
+                    autoSearchPaths = true;
+                    diagnosticMode = "workspace";
+                    useLibraryCodeForTypes = true;
+                    typeCheckingMode = "strict";
+                    diagnosticSeverityOverrides = {
+                      reportUnusedImport = "none"; # Ruff ловит F401
+                      reportUnusedVariable = "none";
+                      reportDuplicateImport = "none";
+                      reportUnusedParameter = "none";
+                      # reportMissingTypeStubs = "warning";  # можно оставить, если хочешь
+                    };
+                  };
+                };
+                python.venvPath = "${builtins.getEnv "HOME"}/.cache/pypoetry/virtualenvs";
+              };
+            };
+
+            ruff.enable = true; # ruff как LSP для диагностик (но основные — basedpyright)
+
             nixd.enable = true;
+            # rust_analyzer.enable = true;  # если понадобится — раскомментируй
           };
         };
+
         conform-nvim = {
           enable = true;
           settings = {
@@ -167,7 +243,10 @@ in
               lua = [ "stylua" ];
               nix = [ "nixfmt" ];
               vue = [ "prettier" ];
-              python = [ "black" ];
+              python = [
+                "ruff_format"
+                "ruff_fix"
+              ];
               rust = [ "rustfmt" ];
               html = [ "prettier" ];
               css = [ "prettier" ];
@@ -175,10 +254,69 @@ in
               typescript = [ "prettier" ];
               json = [ "prettier" ];
             };
+            formatters = {
+              ruff_format = {
+                command = "${pkgs.ruff}/bin/ruff";
+                args = [
+                  "format"
+                  "--quiet"
+                  "--stdin-filename"
+                  "$FILENAME"
+                  "-"
+                ];
+              };
+              ruff_fix = {
+                command = "${pkgs.ruff}/bin/ruff";
+                args = [
+                  "check"
+                  "--fix"
+                  "--quiet"
+                  "--exit-zero"
+                  "--stdin-filename"
+                  "$FILENAME"
+                  "-"
+                ];
+              };
+            };
             format_on_save = {
               timeout_ms = 500;
-              lsp_format = "prefer";
+              lsp_format = "fallback"; # сначала ruff, потом LSP (basedpyright)
             };
+          };
+        };
+
+        cmp = {
+          enable = true;
+          autoEnableSources = true;
+          settings = {
+            completion.completeopt = "menu,menuone,noselect";
+            mapping = {
+              "<Tab>" = ''
+                cmp.mapping(function(fallback)
+                  if cmp.visible() then
+                    cmp.select_next_item()
+                  else
+                    fallback()
+                  end
+                end, { "i", "s" })
+              '';
+              "<S-Tab>" = ''
+                cmp.mapping(function(fallback)
+                  if cmp.visible() then
+                    cmp.select_prev_item()
+                  else
+                    fallback()
+                  end
+                end, { "i", "s" })
+              '';
+              "<CR>" = "cmp.mapping.confirm({ select = false })";
+              "<C-Space>" = "cmp.mapping.complete()";
+            };
+            sources = [
+              { name = "nvim_lsp"; }
+              { name = "path"; }
+              { name = "buffer"; }
+            ];
           };
         };
 
@@ -194,18 +332,10 @@ in
           };
         };
 
-        lualine = {
-          enable = true;
-          settings = {
-            options = {
-              icons_enabled = true;
-            };
-          };
-        };
-
+        lualine.enable = true;
         telescope = {
           enable = true;
-          extensions."fsf-native" = {
+          extensions."fzf-native" = {
             enable = true;
             settings = {
               fuzzy = true;
@@ -215,7 +345,6 @@ in
             };
           };
         };
-
         lazygit = {
           enable = true;
           settings = {
@@ -223,35 +352,63 @@ in
             floating_window_scaling_factor = 0.9;
           };
         };
-
-        neo-tree = {
-          enable = true;
-        };
-
-        cmp = {
-          autoLoad = true;
-          autoEnableSources = true;
-          settings.sources = [
-            { name = "nvim_lsp"; }
-            { name = "path"; }
-            { name = "buffer"; }
-          ];
-        };
-
+        neo-tree.enable = true;
         langmapper = {
           enable = true;
           autoLoad = true;
         };
-
-        # Deps for icons
+        colorizer = {
+          enable = true;
+          settings = {
+            RRGGBBAA = true;
+            css = true;
+            mode = "virtual";
+          };
+        };
         web-devicons.enable = true;
+
+        treesitter = {
+          enable = true;
+          settings = {
+            highlight.enable = true;
+            indent.enable = true;
+          };
+          grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
+            python
+            lua
+            nix
+            vue
+            javascript
+            typescript
+            json
+            html
+            css
+            rust
+          ];
+        };
       };
+
+      extraPlugins = [
+        pkgs.vimPlugins.venv-selector-nvim
+      ];
+
+      extraConfigLua = ''
+        require("venv-selector").setup({
+          search = {
+            poetry = true,
+          },
+          parents = 2,
+        })
+      '';
+
       extraPackages = [
-        pkgs.stylua # For Lua
-        pkgs.nixfmt # For Nix (if using nixfmt; alternatively pkgs.nixpkgs-fmt if you switch to "nixpkgs_fmt" in conform)
-        pkgs.nodePackages.prettier # For Vue, HTML, CSS, JS, TS, JSON
-        pkgs.black # For Python
-        pkgs.rustfmt # For Rust
+        pkgs.stylua
+        pkgs.nixfmt
+        pkgs.nodePackages.prettier
+        pkgs.nodePackages.typescript
+        pkgs.rustfmt
+        pkgs.ruff
+        pkgs.basedpyright
       ];
     };
   };
