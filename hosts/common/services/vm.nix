@@ -4,9 +4,11 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.common.services.vm;
-in {
+in
+{
   options.common.services.vm.enable = mkEnableOption "enable windows vm";
 
   config = mkIf cfg.enable {
@@ -27,7 +29,7 @@ in {
       libvirtd = {
         enable = true;
         qemu = {
-          vhostUserPackages = with pkgs; [virtiofsd];
+          vhostUserPackages = with pkgs; [ virtiofsd ];
           swtpm.enable = true;
         };
       };

@@ -3,9 +3,11 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.common.services.steam;
-in {
+in
+{
   options.common.services.steam.enable = mkEnableOption "enable steam";
 
   config = mkIf cfg.enable {
@@ -17,10 +19,14 @@ in {
     };
 
     networking.firewall = {
-      enable = true;
+      enable = false;
 
-      allowedUDPPorts = [24642 27036];
-      allowedTCPPorts = [24643];
+      allowedUDPPorts = [
+        24642
+        27036
+        5900
+      ];
+      allowedTCPPorts = [ 24643 ];
 
       allowedUDPPortRanges = [
         {
