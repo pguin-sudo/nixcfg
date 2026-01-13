@@ -4,9 +4,11 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.desktop.hyprland;
-in {
+in
+{
   options.features.desktop.hyprland.enable = mkEnableOption "hyprland config";
 
   config = mkIf cfg.enable {
@@ -22,6 +24,10 @@ in {
       };
 
       settings = {
+        monitor = [
+          "HEADLESS-2,1920x1200@60,-1920x0,1.5"
+        ];
+
         exec-once = [
           "waybar"
           "swww-daemon"
@@ -33,6 +39,10 @@ in {
           "sleep 3; qsyncthingtray"
           "kdeconnect-indicator"
           "dbus-update-activation-environment --systemd --all"
+
+          # Virtual display
+          "hyprctl output create headless"
+          "wayvnc -o HEADLESS-2 0.0.0.0"
         ];
 
         env = [
@@ -140,7 +150,7 @@ in {
           special_scale_factor = 0.8;
         };
 
-        master = {};
+        master = { };
 
         gestures = {
           gesture = "3, horizontal, workspace";
@@ -202,7 +212,8 @@ in {
           "$mainMod, 7, workspace, 7"
           "$mainMod, 8, workspace, 8"
           "$mainMod, 9, workspace, 9"
-          "$mainMod, 0, workspace, 10"
+          #"$mainMod, 0, workspace, 10"
+          "$mainMod, code:49, workspace, 10"
           "$mainMod Shift, 1, movetoworkspacesilent, 1"
           "$mainMod Shift, 2, movetoworkspacesilent, 2"
           "$mainMod Shift, 3, movetoworkspacesilent, 3"
@@ -212,7 +223,8 @@ in {
           "$mainMod Shift, 7, movetoworkspacesilent, 7"
           "$mainMod Shift, 8, movetoworkspacesilent, 8"
           "$mainMod Shift, 9, movetoworkspacesilent, 9"
-          "$mainMod Shift, 0, movetoworkspacesilent, 10"
+          #"$mainMod Shift, 0, movetoworkspacesilent, 10"
+          "$mainMod Shift, code:49, movetoworkspacesilent, 10"
           "Alt, Tab, cyclenext"
 
           # Special workspaces
@@ -261,6 +273,21 @@ in {
           "workspace special, class:^(org.telegram.desktop)$"
           "workspace special, class:^(vesktop)$"
         ];
+
+        workspace = [
+          "1, monitor:HDMI-A-1, default:true"
+          "2, monitor:HDMI-A-1"
+          "3, monitor:HDMI-A-1"
+          "4, monitor:HDMI-A-1"
+          "5, monitor:HDMI-A-1"
+          "6, monitor:HDMI-A-1"
+          "7, monitor:HDMI-A-1"
+          "8, monitor:HDMI-A-1"
+          "9, monitor:HDMI-A-1"
+          #"10, monitor:HDMI-A-1"
+
+          "10, monitor:HEADLESS-2, default:false"
+        ];
       };
     };
 
@@ -285,6 +312,8 @@ in {
 
     home.packages = with pkgs; [
       pyprland
+
+      wayvnc
     ];
 
     programs.hyprlock = {
