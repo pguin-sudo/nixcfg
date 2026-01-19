@@ -44,5 +44,9 @@ in
       enable = true;
       systemdService.enable = false;
     };
+
+    programs.zed-editor = {
+      enable = true;
+    };
   };
 }
