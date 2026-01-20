@@ -172,6 +172,7 @@ in
         "$browser" = "firefox";
         "$top" = "btop";
         "$editor" = "nvim";
+        "$ide" = "zeditor";
 
         bind = [
           # Power
@@ -198,6 +199,7 @@ in
           "$mainMod Shift, J, movewindow, d"
           "$mainMod Shift, Q, exit"
           "$mainMod, W, togglefloating"
+          "$mainMod Shift, P, pin"
 
           # System (Overlays)
           "$mainMod, P, exec, grimshot savecopy area - | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
@@ -241,6 +243,7 @@ in
           "$mainMod Shift, B, exec, $browser -P I2P"
           "$mainMod, E, exec, $explorer"
           "$mainMod, A, exec, rofi -show drun"
+          "$mainMod, Z, exec, $ide"
 
           "Ctrl Shift, Escape, exec, $terminal $top"
           "$mainMod, N, exec, $terminal -e zsh -ic \"notepad; exit\""
