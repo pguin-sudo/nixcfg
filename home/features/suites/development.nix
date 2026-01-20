@@ -34,6 +34,7 @@ in
       docker-compose
       openssl
       pgadmin4-desktopmode
+      gnumake
 
       # AI
       aider-chat-full
