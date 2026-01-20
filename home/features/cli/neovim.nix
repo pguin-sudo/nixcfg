@@ -179,60 +179,7 @@ in
         lsp = {
           enable = true;
           servers = {
-            # Frontend / Vue
-            vue_ls = {
-              enable = true;
-              filetypes = [
-                "vue"
-                "typescript"
-                "javascript"
-                "javascriptreact"
-                "typescriptreact"
-                "json"
-              ];
-              init_options = {
-                typescript.tsdk = "${pkgs.nodePackages.typescript}/lib/node_modules/typescript/lib";
-                vue.hybridMode = false;
-              };
-            };
-            ts_ls.enable = false;
-
-            jsonls.enable = true;
-            cssls.enable = true;
-
-            # Python — basedpyright + ruff
-            basedpyright = {
-              enable = true;
-              package = pkgs.basedpyright;
-              cmd = [
-                "basedpyright-langserver"
-                "--stdio"
-              ];
-              filetypes = [ "python" ];
-              settings = {
-                basedpyright = {
-                  analysis = {
-                    autoSearchPaths = true;
-                    diagnosticMode = "workspace";
-                    useLibraryCodeForTypes = true;
-                    typeCheckingMode = "strict";
-                    diagnosticSeverityOverrides = {
-                      reportUnusedImport = "none"; # Ruff ловит F401
-                      reportUnusedVariable = "none";
-                      reportDuplicateImport = "none";
-                      reportUnusedParameter = "none";
-                      # reportMissingTypeStubs = "warning";  # можно оставить, если хочешь
-                    };
-                  };
-                };
-                python.venvPath = "${builtins.getEnv "HOME"}/.cache/pypoetry/virtualenvs";
-              };
-            };
-
-            ruff.enable = true; # ruff как LSP для диагностик (но основные — basedpyright)
-
             nixd.enable = true;
-            # rust_analyzer.enable = true;  # если понадобится — раскомментируй
           };
         };
 
@@ -241,42 +188,8 @@ in
           settings = {
             formatters_by_ft = {
               lua = [ "stylua" ];
-              nix = [ "nixfmt" ];
               vue = [ "prettier" ];
-              python = [
-                "ruff_format"
-                "ruff_fix"
-              ];
-              rust = [ "rustfmt" ];
-              html = [ "prettier" ];
-              css = [ "prettier" ];
-              javascript = [ "prettier" ];
-              typescript = [ "prettier" ];
               json = [ "prettier" ];
-            };
-            formatters = {
-              ruff_format = {
-                command = "${pkgs.ruff}/bin/ruff";
-                args = [
-                  "format"
-                  "--quiet"
-                  "--stdin-filename"
-                  "$FILENAME"
-                  "-"
-                ];
-              };
-              ruff_fix = {
-                command = "${pkgs.ruff}/bin/ruff";
-                args = [
-                  "check"
-                  "--fix"
-                  "--quiet"
-                  "--exit-zero"
-                  "--stdin-filename"
-                  "$FILENAME"
-                  "-"
-                ];
-              };
             };
             format_on_save = {
               timeout_ms = 500;
@@ -374,16 +287,9 @@ in
             indent.enable = true;
           };
           grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
-            python
             lua
             nix
-            vue
-            javascript
-            typescript
             json
-            html
-            css
-            rust
           ];
         };
       };
@@ -404,11 +310,6 @@ in
       extraPackages = [
         pkgs.stylua
         pkgs.nixfmt
-        pkgs.nodePackages.prettier
-        pkgs.nodePackages.typescript
-        pkgs.rustfmt
-        pkgs.ruff
-        pkgs.basedpyright
       ];
     };
   };
