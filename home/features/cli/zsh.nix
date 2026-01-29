@@ -3,9 +3,11 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.cli.zsh;
-in {
+in
+{
   options.features.cli.zsh.enable = mkEnableOption "enable extended zsh configuration";
 
   config = mkIf cfg.enable {
@@ -21,11 +23,10 @@ in {
 
         ssh = "kitty +kitten ssh";
 
-        notepad = "~/Documents/notepad/sync.sh && nvim ~/Documents/notepad && (~/Documents/notepad/sync.sh > /dev/null 2>&1 &) && notify-send \"Notepad synchronized\"";
+        notepad = "~/Documents/notepad/sync.sh && zeditor ~/Documents/notepad && (~/Documents/notepad/sync.sh > /dev/null 2>&1 &) && notify-send \"Notepad synchronized\"";
       };
 
-      initContent = ''
-      '';
+      initContent = '''';
 
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;

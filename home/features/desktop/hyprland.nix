@@ -171,7 +171,8 @@ in
         "$explorer" = "dolphin";
         "$browser" = "firefox";
         "$top" = "btop";
-        "$editor" = "nvim";
+        #"$editor" = "nvim";
+        "$editor" = "zeditor";
         "$ide" = "zeditor";
 
         bind = [
