@@ -24,10 +24,6 @@ in
       };
 
       settings = {
-        monitor = [
-          "HEADLESS-2,1920x1200@60,-1920x0,1.5"
-        ];
-
         exec-once = [
           "waybar"
           "swww-daemon"
@@ -41,8 +37,8 @@ in
           "dbus-update-activation-environment --systemd --all"
 
           # Virtual display
-          "hyprctl output create headless"
-          "wayvnc -o HEADLESS-2 0.0.0.0"
+          #"hyprctl output create headless"
+          #"wayvnc -o HEADLESS-2 0.0.0.0"
         ];
 
         env = [
@@ -171,8 +167,7 @@ in
         "$explorer" = "dolphin";
         "$browser" = "firefox";
         "$top" = "btop";
-        #"$editor" = "nvim";
-        "$editor" = "zeditor";
+        "$editor" = "nvim";
         "$ide" = "zeditor";
 
         bind = [
@@ -216,7 +211,7 @@ in
           "$mainMod, 8, workspace, 8"
           "$mainMod, 9, workspace, 9"
           #"$mainMod, 0, workspace, 10"
-          "$mainMod, code:49, workspace, 10"
+          #"$mainMod, code:49, workspace, 10"
           "$mainMod Shift, 1, movetoworkspacesilent, 1"
           "$mainMod Shift, 2, movetoworkspacesilent, 2"
           "$mainMod Shift, 3, movetoworkspacesilent, 3"
@@ -227,7 +222,7 @@ in
           "$mainMod Shift, 8, movetoworkspacesilent, 8"
           "$mainMod Shift, 9, movetoworkspacesilent, 9"
           #"$mainMod Shift, 0, movetoworkspacesilent, 10"
-          "$mainMod Shift, code:49, movetoworkspacesilent, 10"
+          #"$mainMod Shift, code:49, movetoworkspacesilent, 10"
           "Alt, Tab, cyclenext"
 
           # Special workspaces
@@ -288,9 +283,7 @@ in
           "7, monitor:HDMI-A-1"
           "8, monitor:HDMI-A-1"
           "9, monitor:HDMI-A-1"
-          #"10, monitor:HDMI-A-1"
-
-          "10, monitor:HEADLESS-2, default:false"
+          "10, monitor:HDMI-A-1"
         ];
       };
     };

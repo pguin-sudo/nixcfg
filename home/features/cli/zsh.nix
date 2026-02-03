@@ -23,7 +23,7 @@ in
 
         ssh = "kitty +kitten ssh";
 
-        notepad = "~/Documents/notepad/sync.sh && zeditor ~/Documents/notepad && (~/Documents/notepad/sync.sh > /dev/null 2>&1 &) && notify-send \"Notepad synchronized\"";
+        notepad = "~/Documents/notepad/sync.sh && nvim ~/Documents/notepad && (~/Documents/notepad/sync.sh > /dev/null 2>&1 &) && notify-send \"Notepad synchronized\"";
       };
 
       initContent = '''';

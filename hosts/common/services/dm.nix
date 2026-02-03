@@ -3,9 +3,11 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.common.services.dm;
-in {
+in
+{
   options.common.services.dm.enable = mkEnableOption "enable dm";
 
   config = mkIf cfg.enable {
