@@ -4,9 +4,11 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.suites.gaming;
-in {
+in
+{
   options.features.suites.gaming.enable = mkEnableOption "gaming suite";
 
   config = mkIf cfg.enable {
@@ -15,6 +17,12 @@ in {
     home.packages = with pkgs; [
       vesktop
       gzdoom
+      prismlauncher
     ];
+
+    #programs.java = {
+    #  enable = true;
+    #  package = pkgs.jre;
+    #};
   };
 }
