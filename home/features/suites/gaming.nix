@@ -15,7 +15,8 @@ in
     # Steam installed in host config
 
     home.packages = with pkgs; [
-      vesktop
+      #vesktop
+      discord
       gzdoom
       prismlauncher
     ];
