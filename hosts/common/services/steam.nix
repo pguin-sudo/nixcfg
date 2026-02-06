@@ -19,14 +19,18 @@ in
     };
 
     networking.firewall = {
-      enable = false;
+      enable = true;
 
       allowedUDPPorts = [
         24642
         27036
         5900
+        2007
       ];
-      allowedTCPPorts = [ 24643 ];
+      allowedTCPPorts = [ 
+        24643
+        2007
+      ];
 
       allowedUDPPortRanges = [
         {
