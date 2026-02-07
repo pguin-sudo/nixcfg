@@ -11,20 +11,16 @@ let
 in
 {
   options.features.cli.neovim.enable = mkEnableOption "enable extended neovim configuration";
-
   imports = [
     inputs.nixvim.homeManagerModules.nixvim
   ];
-
   config = mkIf cfg.enable {
     programs.nixvim = {
       enable = true;
       defaultEditor = true;
       vimAlias = true;
       viAlias = true;
-
       globals.mapleader = " ";
-
       opts = {
         mouse = "a";
         splitbelow = true;
@@ -40,7 +36,6 @@ in
         smartindent = true;
         number = true;
         relativenumber = true;
-        wrap = false;
         cursorline = true;
         signcolumn = "yes";
         scrolloff = 8;
@@ -54,7 +49,18 @@ in
         writebackup = false;
         undofile = true;
       };
-
+      autoCmd = [
+        {
+          event = [ "FileType" ];
+          pattern = [ "markdown" ];
+          command = "setlocal wrap | setlocal linebreak | setlocal breakindent | setlocal spell spelllang=ru,en | setlocal conceallevel=2";
+        }
+        {
+          event = [ "FileType" ];
+          pattern = [ "nix" ];
+          command = "setlocal nowrap";
+        }
+      ];
       keymaps = [
         # Сохранение и выход
         {
@@ -69,7 +75,6 @@ in
           action = ":q<CR>";
           options.silent = false;
         }
-
         # Telescope
         {
           mode = "n";
@@ -95,7 +100,6 @@ in
           action = "<cmd>Telescope help_tags<CR>";
           options.silent = true;
         }
-
         # LSP базовые действия
         {
           mode = "n";
@@ -127,7 +131,6 @@ in
           action = "<cmd>lua vim.diagnostic.open_float()<CR>";
           options.silent = true;
         }
-
         # Code actions — "предложить решить проблему"
         {
           mode = [
@@ -141,7 +144,6 @@ in
             desc = "LSP: Code actions / quickfix suggestions";
           };
         }
-
         # Gitsigns
         {
           mode = "n";
@@ -149,7 +151,6 @@ in
           action = "<cmd>lua require('gitsigns').preview_hunk()<CR>";
           options.silent = true;
         }
-
         # Lazygit
         {
           mode = "n";
@@ -157,7 +158,6 @@ in
           action = "<cmd>LazyGit<CR>";
           options.silent = true;
         }
-
         # Neotree
         {
           mode = "n";
@@ -165,16 +165,7 @@ in
           action = "<cmd>Neotree<CR>";
           options.silent = true;
         }
-
-        # Venv selector
-        {
-          mode = "n";
-          key = "<leader>vs";
-          action = "<cmd>VenvSelect<CR>";
-          options.silent = true;
-        }
       ];
-
       plugins = {
         lsp = {
           enable = true;
@@ -182,22 +173,21 @@ in
             nixd.enable = true;
           };
         };
-
         conform-nvim = {
           enable = true;
           settings = {
             formatters_by_ft = {
               lua = [ "stylua" ];
-              vue = [ "prettier" ];
               json = [ "prettier" ];
+              nix = [ "nixfmt" ];
+              markdown = [ "prettier" ];
             };
             format_on_save = {
               timeout_ms = 500;
-              lsp_format = "fallback"; # сначала ruff, потом LSP (basedpyright)
+              lsp_format = "fallback";
             };
           };
         };
-
         cmp = {
           enable = true;
           autoEnableSources = true;
@@ -232,7 +222,6 @@ in
             ];
           };
         };
-
         gitsigns = {
           enable = true;
           settings = {
@@ -244,7 +233,6 @@ in
             };
           };
         };
-
         lualine.enable = true;
         telescope = {
           enable = true;
@@ -270,16 +258,7 @@ in
           enable = true;
           autoLoad = true;
         };
-        colorizer = {
-          enable = true;
-          settings = {
-            RRGGBBAA = true;
-            css = true;
-            mode = "virtual";
-          };
-        };
         web-devicons.enable = true;
-
         treesitter = {
           enable = true;
           settings = {
@@ -290,26 +269,25 @@ in
             lua
             nix
             json
+            markdown
+            markdown_inline
           ];
         };
+        markdown-preview = {
+          enable = true;
+        };
       };
-
       extraPlugins = [
-        pkgs.vimPlugins.venv-selector-nvim
+        pkgs.vimPlugins.vim-markdown
       ];
-
-      extraConfigLua = ''
-        require("venv-selector").setup({
-          search = {
-            poetry = true,
-          },
-          parents = 2,
-        })
-      '';
-
+      extraConfigLua = "";
       extraPackages = [
         pkgs.stylua
         pkgs.nixfmt
+        pkgs.hunspell
+        pkgs.hunspellDicts.ru-ru
+        pkgs.hunspellDicts.en-us
+        pkgs.nodePackages.prettier
       ];
     };
   };
