@@ -26,10 +26,12 @@ in
         27036
         5900
         2007
+        65432
       ];
-      allowedTCPPorts = [ 
+      allowedTCPPorts = [
         24643
         2007
+        65432
       ];
 
       allowedUDPPortRanges = [
