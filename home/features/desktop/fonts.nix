@@ -4,11 +4,12 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.desktop.fonts;
-in {
-  options.features.desktop.fonts.enable =
-    mkEnableOption "install additional fonts for desktop apps";
+in
+{
+  options.features.desktop.fonts.enable = mkEnableOption "install additional fonts for desktop apps";
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
@@ -29,15 +30,32 @@ in {
       noto-fonts
       dejavu_fonts
       liberation_ttf
+
+      corefonts # ms fonts
     ];
 
     fonts.fontconfig = {
       enable = true;
       defaultFonts = {
-        serif = ["Libertinus Serif" "DejaVu Serif" "Noto Serif"];
-        sansSerif = ["Inter" "DejaVu Sans" "Noto Sans"];
-        monospace = ["FiraCode Nerd Font Mono" "JetBrains Mono" "DejaVu Sans Mono"];
-        emoji = ["Noto Color Emoji" "Twitter Color Emoji"];
+        serif = [
+          "Libertinus Serif"
+          "DejaVu Serif"
+          "Noto Serif"
+        ];
+        sansSerif = [
+          "Inter"
+          "DejaVu Sans"
+          "Noto Sans"
+        ];
+        monospace = [
+          "FiraCode Nerd Font Mono"
+          "JetBrains Mono"
+          "DejaVu Sans Mono"
+        ];
+        emoji = [
+          "Noto Color Emoji"
+          "Twitter Color Emoji"
+        ];
       };
     };
   };
