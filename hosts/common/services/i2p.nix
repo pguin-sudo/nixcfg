@@ -1,11 +1,14 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.common.services.i2p;
-in {
+in
+{
   options.common.services.i2p.enable = mkEnableOption "enable obs-studio";
 
   config = mkIf cfg.enable {
@@ -24,5 +27,8 @@ in {
         };
       };
     };
+    environment.systemPackages = with pkgs; [
+      v2rayn
+    ];
   };
 }
