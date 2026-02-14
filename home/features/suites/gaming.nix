@@ -18,8 +18,7 @@ in
       #vesktop
       discord
       gzdoom
-      #prismlauncher
-      hmcl
+      prismlauncher
     ];
 
     #programs.java = {
