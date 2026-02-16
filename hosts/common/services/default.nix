@@ -9,6 +9,7 @@
     ./openssh.nix
     ./polkit.nix
     ./steam.nix
+    ./throne.nix
     ./vm.nix
     ./xdgportal.nix
     ./zapret.nix
