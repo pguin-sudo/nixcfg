@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -28,6 +29,8 @@
   common.services.docker.enable = true;
   # Zapret
   common.services.zapret.enable = true;
+  # VPN
+  common.services.throne.enable = true;
 
   # User
   common.services.dm.enable = true;
@@ -37,7 +40,7 @@
     systemd-boot.enable = false;
     grub = {
       enable = true;
-      devices = ["nodev"];
+      devices = [ "nodev" ];
       efiSupport = true;
       useOSProber = true;
 
@@ -90,7 +93,7 @@
   services.printing.enable = false;
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
-  services.libinput.touchpad.tapping = true; #tap
+  services.libinput.touchpad.tapping = true; # tap
 
   # Enable DBus service that allows applications to query and manipulate storage
   services.udisks2.enable = true;
@@ -101,7 +104,7 @@
     extraRules = ''
       SUBSYSTEM=="tty", TAG+="uaccess", MODE="0666"
     '';
-    packages = [pkgs.openrgb];
+    packages = [ pkgs.openrgb ];
   };
 
   # Allow unfree packages

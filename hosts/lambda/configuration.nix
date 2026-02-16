@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -31,6 +32,8 @@
 
   # User
   common.services.dm.enable = true;
+  # VPN
+  common.services.throne.enable = true;
 
   #services.samba.enable = true;
 
@@ -40,7 +43,10 @@
     loader.efi.canTouchEfiVariables = true;
     loader.systemd-boot.configurationLimit = 3;
     kernelPackages = pkgs.linuxPackages_6_12;
-    kernelParams = ["processor.max_cstate=5" "idle=nomwait"];
+    kernelParams = [
+      "processor.max_cstate=5"
+      "idle=nomwait"
+    ];
   };
 
   hardware.enableRedistributableFirmware = true;
@@ -90,7 +96,7 @@
   services.printing.enable = false;
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
-  services.libinput.touchpad.tapping = true; #tap
+  services.libinput.touchpad.tapping = true; # tap
 
   # Enable DBus service that allows applications to query and manipulate storage
   services.udisks2.enable = true;
