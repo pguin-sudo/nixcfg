@@ -40,6 +40,7 @@
       xdg.enable = true;
       kitty.enable = true;
       dolphin.enable = true;
+      spotify.enable = true;
     };
     suites = {
       development.enable = true;

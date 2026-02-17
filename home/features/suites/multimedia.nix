@@ -4,9 +4,11 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.suites.multimedia;
-in {
+in
+{
   options.features.suites.multimedia.enable = mkEnableOption "multimedia suite";
 
   config = mkIf cfg.enable {
