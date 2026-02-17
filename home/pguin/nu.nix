@@ -39,6 +39,7 @@
       hyprland.enable = true;
       wayland.enable = true;
       xdg.enable = true;
+      spotify.enable = true;
       kitty.enable = true;
       dolphin.enable = true;
     };
