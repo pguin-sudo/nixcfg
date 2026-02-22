@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
@@ -25,7 +24,7 @@ in
 
       settings = {
         exec-once = [
-          "waybar"
+          "qs"
           "swww-daemon"
           "swww restore"
           "wl-clipboard-history -t"
@@ -132,9 +131,9 @@ in
             "border, 1, 20, default"
             "fade, 1, 6, md3_decel"
             "layersIn, 1, 6, menu_decel, slide"
-            "layersOut, 1, 3.2, menu_accel"
+            "layersOut, 1, 1, menu_accel"
             "fadeLayersIn, 1, 4, menu_decel"
-            "fadeLayersOut, 1, 9, menu_accel"
+            "fadeLayersOut, 1, 1, menu_accel"
             "workspaces, 1, 14, menu_decel, slide"
             "specialWorkspace, 1, 6, md3_decel, slidevert"
           ];
@@ -229,8 +228,9 @@ in
           "$mainMod, S, togglespecialworkspace"
           "$mainMod Shift, S, movetoworkspace, special"
 
-          # Scripts
-          "$mainMod Shift, W, exec, sh ~/.config/hypr/scripts/next-wallpaper.sh"
+          # Scripts and eww
+          "$mainMod Shift, W, exec, bash ~/.config/hypr/scripts/next-wallpaper.sh"
+          "SUPER, D, exec, eww open dashboard"
 
           # Apps
           "$mainMod, T, exec, $terminal"
@@ -306,21 +306,5 @@ in
           max_size  = "90% 100%"
           size      = "80% 80%"
     '';
-
-    home.packages = with pkgs; [
-      pyprland
-
-      wayvnc
-    ];
-
-    programs.hyprlock = {
-      enable = true;
-    };
-
-    # Small fix for home-manager
-    dconf.enable = false;
-
-    # Custom wallpaper script
-    home.file.".config/hypr/scripts/next-wallpaper.sh".source = ./scripts/next-wallpaper.sh;
   };
 }

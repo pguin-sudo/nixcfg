@@ -12,7 +12,7 @@ in
 {
   options.features.cli.neovim.enable = mkEnableOption "enable extended neovim configuration";
   imports = [
-    inputs.nixvim.homeManagerModules.nixvim
+    inputs.nixvim.homeModules.nixvim
   ];
   config = mkIf cfg.enable {
     programs.nixvim = {

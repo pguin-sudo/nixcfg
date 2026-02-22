@@ -4,9 +4,11 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.themes.gtk;
-in {
+in
+{
   options.features.themes.gtk.enable = mkEnableOption "gtk theme";
 
   config = mkIf cfg.enable {
