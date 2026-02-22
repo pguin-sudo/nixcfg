@@ -36,7 +36,9 @@
       firefox.enable = true;
       fonts.enable = true;
       hyprland.enable = true;
+      waybar.enable = false;
       wayland.enable = true;
+      quickshell.enable = true;
       xdg.enable = true;
       kitty.enable = true;
       dolphin.enable = true;

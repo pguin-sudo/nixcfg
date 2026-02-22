@@ -37,6 +37,8 @@
       fonts.enable = true;
       hyprland.enable = true;
       wayland.enable = true;
+      waybar.enable = false;
+      quickshell.enable = true;
       xdg.enable = true;
       spotify.enable = true;
       kitty.enable = true;

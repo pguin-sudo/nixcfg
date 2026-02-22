@@ -5,18 +5,21 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.themes.stylix;
-in {
+in
+{
   options.features.themes.stylix.enable = mkEnableOption "stylix theme";
 
-  imports = [inputs.stylix.homeModules.stylix];
+  imports = [ inputs.stylix.homeModules.stylix ];
 
   config = mkIf cfg.enable {
     stylix = {
       enable = true;
 
-      base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
+      #base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
       polarity = "dark";
 
       cursor = {

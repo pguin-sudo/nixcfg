@@ -4,332 +4,14 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.desktop.wayland;
-in {
+in
+{
   options.features.desktop.wayland.enable = mkEnableOption "wayland extra tools and config";
 
   config = mkIf cfg.enable {
-    programs.waybar = {
-      enable = true;
-      settings = {
-        mainBar = {
-          layer = "top";
-          position = "top";
-          height = 34;
-          margin = "0px 0px 0px 0px";
-          spacing = 3;
-
-          modules-left = ["hyprland/workspaces"];
-          modules-center = ["mpris"];
-          modules-right = ["cpu" "memory" "network" "custom/vpn" "pulseaudio" "backlight" "battery" "tray" "clock"];
-
-          "custom/vpn" = {
-            exec = ''
-              if nmcli -t -f name,type,state connection show --active | grep -E 'vpn|wireguard|openvpn' > /dev/null; then
-                vpn_name=$(nmcli -t -f name,type,state connection show --active | grep -E 'vpn|wireguard|openvpn' | head -1 | cut -d: -f1)
-                echo "{\"text\": \"󰖂\", \"class\": \"connected\"}"
-              else
-                echo "{\"text\": \"󰌙\", \"class\": \"disconnected\"}"
-              fi
-            '';
-            return-type = "json";
-            exec-if = "which nmcli";
-            format = "{}";
-            tooltip = false;
-            on-click = ''
-              if nmcli -t -f name,type,state connection show --active | grep -E "vpn|wireguard|openvpn" > /dev/null; then
-                nmcli connection down $(nmcli -t -f name,type,state connection show --active | grep -E "vpn|wireguard|openvpn" | head -1 | cut -d: -f1)
-              else
-                vpn_list=$(nmcli -t -f name,type connection show | grep -E "vpn|wireguard|openvpn" | cut -d: -f1 | head -1)
-                if [ -n "$vpn_list" ]; then
-                  nmcli connection up "$vpn_list"
-                fi
-              fi
-            '';
-            max-length = 20;
-            interval = 5;
-          };
-
-          "hyprland/workspaces" = {
-            format = "{id}{icon}";
-            all-outputs = true;
-            on-click = "activate";
-            format-icons = {
-              active = "";
-              default = "";
-              urgent = "   󰈸";
-            };
-          };
-
-          "tray" = {
-            spacing = 6;
-            icon-size = 16;
-          };
-
-          "clock" = {
-            format = "{:%H:%M}";
-            format-alt = "{:%d/%m}";
-            tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
-            format-alt-click = "click-right";
-          };
-
-          "cpu" = {
-            interval = 5;
-            format = "󰻠 {usage}%";
-            format-alt = "󰻠 {avg_frequency} GHz";
-            max-length = 15;
-            tooltip = false;
-          };
-
-          "memory" = {
-            interval = 5;
-            format = "󰍛 {percentage}%";
-            format-alt = "󰍛 {used:0.1f}G";
-            max-length = 15;
-            tooltip = false;
-          };
-
-          "backlight" = {
-            device = "intel_backlight";
-            format = "{icon} {percent}%";
-            format-icons = ["󰃞" "󰃟" "󰃠"];
-            on-scroll-up = "brightnessctl set 1%+";
-            on-scroll-down = "brightnessctl set 1%-";
-            tooltip-format = "Brightness: {percent}%";
-          };
-
-          "network" = {
-            format-wifi = "󰖩 {signalStrength}%";
-            format-ethernet = "󰈀";
-            format-disconnected = "󰖪";
-            tooltip-format = "{ifname}: {ipaddr}/{cidr}";
-            format-linked = "󰈀 {ifname} (No IP)";
-            max-length = 20;
-          };
-
-          "pulseaudio" = {
-            format = "{icon} {volume}%";
-            format-muted = "󰖁";
-            format-icons = {
-              default = ["󰕿" "󰖀" "󰕾"];
-            };
-            on-click = "pamixer -t";
-            on-scroll-up = "pamixer -i 1";
-            on-scroll-down = "pamixer -d 1";
-            on-click-right = "pavucontrol";
-            tooltip-format = "{desc} - {volume}%";
-            scroll-step = 2;
-          };
-
-          "battery" = {
-            bat = "BAT0";
-            adapter = "AC";
-            interval = 30;
-            states = {
-              warning = 20;
-              critical = 10;
-            };
-            format = "{icon} {capacity}%";
-            format-charging = "󰂄 {capacity}%";
-            format-plugged = "󰚥 {capacity}%";
-            format-full = "󰁹 {capacity}%";
-            format-alt = "{time}";
-            format-icons = ["󰂎" "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
-          };
-
-          "mpris" = {
-            format = "{player_icon} {title}";
-            format-paused = "⏸ {title}";
-            format-stopped = "󰝛";
-            max-length = 50;
-            player-icons = {
-              default = "▶";
-              spotify = "󰓇";
-              firefox = "󰈹";
-              chromium = "󰊯";
-            };
-            status-icons = {
-              paused = "⏸";
-            };
-            tooltip-format = "{title} - {artist}";
-          };
-        };
-      };
-
-      style = let
-        fonts = config.stylix.fonts;
-      in ''
-        * {
-          border: none;
-          border-radius: 8px;
-          font-size: 12px;
-          min-height: 0;
-          font-family: "${fonts.monospace.name}", monospace;
-        }
-
-        window#waybar {
-          background: transparent;
-          color: #ebdbb2;
-        }
-
-        window#waybar > box {
-            background: transparent;
-            border: none;
-            box-shadow: none;
-            padding: 0;
-            margin: 0px 4px 0px 4px;
-        }
-
-        #workspaces button {
-            padding: 0 10px;
-            background: rgba(60, 56, 54, 0.6);
-            color: #a89984;
-            border: 2px solid #5E5851;
-            border-radius: 8px;
-            margin: 4px 2px;
-            transition: all 0.3s ease-in-out;
-            font-weight: bold;
-            min-width: 40px;
-            box-shadow: none;
-        }
-
-        #workspaces button.active {
-            background: rgba(127, 160, 147, 0.4);
-            color: #7FA093;
-            border-color: #80A294;
-            box-shadow: 0 2px 8px rgba(127, 160, 147, 0.4);
-        }
-
-        #workspaces button.urgent {
-          background: rgba(204, 36, 29, 0.3);
-          color: #cc241d;
-          border-color: #cc241d;
-        }
-
-        #workspaces button:hover {
-            background: rgba(80, 73, 69, 0.8);
-            border-color: #80A294;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        #tray,
-        #cpu,
-        #memory,
-        #network,
-        #custom-vpn,
-        #pulseaudio,
-        #backlight,
-        #battery,
-        #clock,
-        #mpris {
-          padding: 0 12px;
-          margin: 4px 2px;
-          background: rgba(60, 56, 54, 0.6);
-          border: 2px solid #5E5851;
-          border-radius: 8px;
-          color: #ebdbb2;
-          font-weight: bold;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        #custom-vpn.disconnected {
-          background: rgba(204, 36, 29, 0.3);
-          border-color: #cc241d;
-          color: #fb4934;
-          animation: blink 2s infinite;
-        }
-
-        #mpris {
-          background: rgba(60, 56, 54, 0.6);
-          border-color: #5E5851;
-          color: #7FA093;
-          min-width: 200px;
-          box-shadow: 0 2px 8px rgba(127, 160, 147, 0.2);
-        }
-
-        #battery.warning {
-          background: rgba(214, 93, 14, 0.3);
-          border-color: #d65d0e;
-          color: #fe8019;
-        }
-
-        #battery.critical {
-          background: rgba(204, 36, 29, 0.3);
-          border-color: #cc241d;
-          color: #fb4934;
-          animation: blink 2s infinite;
-        }
-
-        #battery.charging {
-          background: rgba(152, 151, 26, 0.3);
-          border-color: #98971a;
-          color: #b8bb26;
-        }
-
-        #network.disconnected {
-          background: rgba(204, 36, 29, 0.3);
-          border-color: #cc241d;
-          color: #fb4934;
-        }
-
-        #pulseaudio.muted {
-          background: rgba(102, 92, 84, 0.3);
-          border-color: #665c54;
-          color: #a89984;
-        }
-
-        /* Animation matching Hyprland smoothness */
-        @keyframes blink {
-          0% {
-            opacity: 1;
-            border-color: #cc241d;
-          }
-          100% {
-            opacity: 1;
-            border-color: #cc241d;
-          }
-          50% {
-            opacity: 0.6;
-            border-color: #fb4934;
-          }
-        }
-
-        /* Tooltip styling */
-        tooltip {
-          background: rgba(40, 40, 40, 0.95);
-          border: 2px solid #80A294;
-          border-radius: 8px;
-          color: #ebdbb2;
-          padding: 12px;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        }
-
-        tooltip label {
-          color: #ebdbb2;
-          font-size: 11px;
-        }
-
-        /* Special hover effects */
-        #tray > *:hover,
-        #cpu:hover,
-        #memory:hover,
-        #network:hover,
-        #custom-vpn:hover,
-        #pulseaudio:hover,
-        #backlight:hover,
-        #battery:hover,
-        #clock:hover,
-        #mpris:hover {
-          background: rgba(80, 73, 69, 0.8);
-          border-color: #80A294;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-      '';
-    };
-
-    xdg.configFile."waybar/style.css".enable = true;
-
     programs.rofi = {
       enable = true;
       terminal = "${pkgs.kitty}/bin/kitty";
@@ -374,6 +56,10 @@ in {
 
       # For checking keybinds
       wev
+
+      # Hyprland
+      pyprland
+      wayvnc
     ];
 
     home.file."Wallpapers" = {
@@ -406,50 +92,106 @@ in {
         enable = true;
 
         defaultApplications = {
-          "inode/directory" = ["org.kde.dolphin.desktop"];
-          "x-scheme-handler/file" = ["org.kde.dolphin.desktop"];
+          "inode/directory" = [ "org.kde.dolphin.desktop" ];
+          "x-scheme-handler/file" = [ "org.kde.dolphin.desktop" ];
 
-          "x-scheme-handler/http" = ["firefox.desktop"];
-          "x-scheme-handler/https" = ["firefox.desktop"];
-          "x-scheme-handler/about" = ["firefox.desktop"];
-          "x-scheme-handler/unknown" = ["firefox.desktop"];
+          "x-scheme-handler/http" = [ "firefox.desktop" ];
+          "x-scheme-handler/https" = [ "firefox.desktop" ];
+          "x-scheme-handler/about" = [ "firefox.desktop" ];
+          "x-scheme-handler/unknown" = [ "firefox.desktop" ];
 
-          "image/jpeg" = ["swayimg.desktop"];
-          "image/jpg" = ["swayimg.desktop"];
-          "image/png" = ["swayimg.desktop"];
-          "image/gif" = ["swayimg.desktop"];
-          "image/webp" = ["swayimg.desktop"];
-          "image/tiff" = ["swayimg.desktop"];
-          "image/bmp" = ["swayimg.desktop"];
-          "image/svg+xml" = ["swayimg.desktop"];
-          "image/x-icon" = ["swayimg.desktop"];
+          "image/jpeg" = [ "swayimg.desktop" ];
+          "image/jpg" = [ "swayimg.desktop" ];
+          "image/png" = [ "swayimg.desktop" ];
+          "image/gif" = [ "swayimg.desktop" ];
+          "image/webp" = [ "swayimg.desktop" ];
+          "image/tiff" = [ "swayimg.desktop" ];
+          "image/bmp" = [ "swayimg.desktop" ];
+          "image/svg+xml" = [ "swayimg.desktop" ];
+          "image/x-icon" = [ "swayimg.desktop" ];
 
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = ["onlyoffice-desktopeditors.desktop"]; # .docx
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = ["onlyoffice-desktopeditors.desktop"]; # .xlsx
-          "application/vnd.openxmlformats-officedocument.presentationml.presentation" = ["onlyoffice-desktopeditors.desktop"]; # .pptx
-          "application/msword" = ["onlyoffice-desktopeditors.desktop"];
-          "application/vnd.ms-excel" = ["onlyoffice-desktopeditors.desktop"];
-          "application/vnd.ms-powerpoint" = ["onlyoffice-desktopeditors.desktop"];
-          "application/vnd.oasis.opendocument.text" = ["onlyoffice-desktopeditors.desktop"];
-          "application/vnd.oasis.opendocument.spreadsheet" = ["onlyoffice-desktopeditors.desktop"];
-          "application/vnd.oasis.opendocument.presentation" = ["onlyoffice-desktopeditors.desktop"];
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = [
+            "onlyoffice-desktopeditors.desktop"
+          ]; # .docx
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" = [
+            "onlyoffice-desktopeditors.desktop"
+          ]; # .xlsx
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation" = [
+            "onlyoffice-desktopeditors.desktop"
+          ]; # .pptx
+          "application/msword" = [ "onlyoffice-desktopeditors.desktop" ];
+          "application/vnd.ms-excel" = [ "onlyoffice-desktopeditors.desktop" ];
+          "application/vnd.ms-powerpoint" = [ "onlyoffice-desktopeditors.desktop" ];
+          "application/vnd.oasis.opendocument.text" = [ "onlyoffice-desktopeditors.desktop" ];
+          "application/vnd.oasis.opendocument.spreadsheet" = [ "onlyoffice-desktopeditors.desktop" ];
+          "application/vnd.oasis.opendocument.presentation" = [ "onlyoffice-desktopeditors.desktop" ];
 
-          "text/plain" = ["nvim.desktop"];
-          "text/x-c" = ["nvim.desktop"];
-          "text/x-c++" = ["nvim.desktop"];
-          "text/x-python" = ["nvim.desktop"];
-          "text/x-shellscript" = ["nvim.desktop"];
-          "text/markdown" = ["nvim.desktop"];
-          "text/x-diff" = ["nvim.desktop"];
-          "application/x-yaml" = ["nvim.desktop"];
+          "text/plain" = [ "nvim.desktop" ];
+          "text/x-c" = [ "nvim.desktop" ];
+          "text/x-c++" = [ "nvim.desktop" ];
+          "text/x-python" = [ "nvim.desktop" ];
+          "text/x-shellscript" = [ "nvim.desktop" ];
+          "text/markdown" = [ "nvim.desktop" ];
+          "text/x-diff" = [ "nvim.desktop" ];
+          "application/x-yaml" = [ "nvim.desktop" ];
 
-          "video" = ["vlc.desktop"];
+          "video" = [ "vlc.desktop" ];
 
-          "application/octet-stream" = ["kitty.desktop"];
-          "application/x-executable" = ["kitty.desktop"];
-          "application/x-shellscript" = ["kitty.desktop"];
+          "application/octet-stream" = [ "kitty.desktop" ];
+          "application/x-executable" = [ "kitty.desktop" ];
+          "application/x-shellscript" = [ "kitty.desktop" ];
         };
       };
+
+    };
+
+    programs.hyprlock = {
+      enable = true;
+    };
+
+    # Small fix for home-manager
+    dconf.enable = false;
+
+    # Custom wallpaper script
+    home.file.".config/hypr/scripts/next-wallpaper.sh" = {
+      text = ''
+        # Configuration
+        WALLPAPER_DIR="$HOME/Wallpapers/catppuccin"
+        STATE_FILE="$HOME/.config/hypr/wallpaper_index"
+        DISPLAY="eDP-1"  # Change to your monitor, use hyprctl monitors to check
+
+        # Create Wallpapers directory if it doesn't exist
+        mkdir -p "$WALLPAPER_DIR"
+
+        # Get list of wallpapers and check if directory is empty
+        wallpapers=("$WALLPAPER_DIR"/*)
+        if [ ''${#wallpapers[@]} -eq 0 ] || [ ! -f "''${wallpapers [ 0 ]}" ]; then
+            echo "Error: No wallpapers found in $WALLPAPER_DIR"
+            exit 1
+        fi
+
+        total_wallpapers=''${#wallpapers[@]}
+
+        # Read current index or initialize to 0
+        if [ -f "$STATE_FILE" ]; then
+            current_index=$(cat "$STATE_FILE")
+        else
+            current_index=0
+        fi
+
+        # Calculate next index (cycles back to 0 after last wallpaper)
+        next_index=$(( (current_index + 1) % total_wallpapers ))
+
+        # Save the next index for future use
+        echo "$next_index" > "$STATE_FILE"
+
+        # Set the wallpaper using swww
+        swww img "''${wallpapers[$next_index]}" --transition-type=fade --transition-duration=1
+
+        # Optional: Send notification
+        notify-send "Wallpaper Changed" "$(basename "''${wallpapers[$next_index]}")" -t 2000 -i "''${wallpapers[$next_index]}"
+      '';
+      executable = true;
     };
   };
 }

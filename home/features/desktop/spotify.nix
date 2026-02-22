@@ -27,7 +27,6 @@ in
       enabledCustomApps = with inputs.spicetify-nix.legacyPackages.${pkgs.system}.apps; [
         newReleases
       ];
-
     };
 
     # home.packages = [ pkgs.spotify ];

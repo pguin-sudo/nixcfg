@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -26,7 +27,7 @@
   #Boot entries limit
   boot.loader.systemd-boot.configurationLimit = 3;
   # Ntfs support
-  boot.supportedFilesystems = ["ntfs"];
+  boot.supportedFilesystems = [ "ntfs" ];
 
   #Network
   #Define your hostname
@@ -64,7 +65,7 @@
   services.printing.enable = false;
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
-  services.libinput.touchpad.tapping = true; #tap
+  services.libinput.touchpad.tapping = true; # tap
 
   # Enable DBus service that allows applications to query and manipulate storage
   services.udisks2.enable = true;

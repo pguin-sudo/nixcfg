@@ -13,6 +13,10 @@ in
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
+      # Nix
+      nixd
+      nil
+
       # Python
       python3
       poetry
