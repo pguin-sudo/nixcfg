@@ -1,0 +1,314 @@
+#!/bin/bash
+
+set -e
+
+COMPOSITOR=""
+COMPOSITOR_CONFIG=""
+DMS_PATH="dms-greeter"
+CACHE_DIR="/var/cache/dms-greeter"
+
+show_help() {
+    cat << EOF
+dms-greeter - DankMaterialShell greeter launcher
+
+Usage: dms-greeter --command COMPOSITOR [OPTIONS]
+
+Required:
+    --command COMPOSITOR    Compositor to use (niri, hyprland, sway, scroll, miracle, mango, or labwc)
+
+Options:
+    -C, --config PATH       Custom compositor config file
+    -p, --path PATH         DMS path (config name or absolute path)
+                           (default: dms-greeter)
+    --cache-dir PATH        Cache directory for greeter data
+                           (default: /var/cache/dms-greeter)
+    -h, --help             Show this help message
+
+Examples:
+    dms-greeter --command niri
+    dms-greeter --command hyprland -C /etc/greetd/custom-hypr.conf
+    dms-greeter --command sway -p /home/user/.config/quickshell/custom-dms
+    dms-greeter --command scroll -p /home/user/.config/quickshell/custom-dms
+    dms-greeter --command niri --cache-dir /tmp/dmsgreeter
+    dms-greeter --command mango
+    dms-greeter --command labwc
+EOF
+}
+
+require_command() {
+    local cmd="$1"
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        echo "Error: required command '$cmd' was not found in PATH" >&2
+        exit 1
+    fi
+}
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --command)
+            COMPOSITOR="$2"
+            shift 2
+            ;;
+        -C|--config)
+            COMPOSITOR_CONFIG="$2"
+            shift 2
+            ;;
+        -p|--path)
+            DMS_PATH="$2"
+            shift 2
+            ;;
+        --cache-dir)
+            CACHE_DIR="$2"
+            shift 2
+            ;;
+        -h|--help)
+            show_help
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1" >&2
+            show_help
+            exit 1
+            ;;
+    esac
+done
+
+if [[ -z "$COMPOSITOR" ]]; then
+    echo "Error: --command COMPOSITOR is required" >&2
+    show_help
+    exit 1
+fi
+
+locate_dms_config() {
+    local config_name="$1"
+    local search_paths=()
+
+    local config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
+    search_paths+=("$config_home/quickshell/$config_name")
+
+    search_paths+=("/usr/share/quickshell/$config_name")
+
+    local config_dirs="${XDG_CONFIG_DIRS:-/etc/xdg}"
+    IFS=':' read -ra dirs <<< "$config_dirs"
+    for dir in "${dirs[@]}"; do
+        if [[ -n "$dir" ]]; then
+            search_paths+=("$dir/quickshell/$config_name")
+        fi
+    done
+
+    for path in "${search_paths[@]}"; do
+        if [[ -f "$path/shell.qml" ]]; then
+            echo "$path"
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+export XDG_SESSION_TYPE=wayland
+export QT_QPA_PLATFORM=wayland
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+export EGL_PLATFORM=gbm
+export DMS_RUN_GREETER=1
+export DMS_GREET_CFG_DIR="$CACHE_DIR"
+
+mkdir -p "$CACHE_DIR"
+
+if command -v qs >/dev/null 2>&1; then
+    QS_BIN="qs"
+elif command -v quickshell >/dev/null 2>&1; then
+    QS_BIN="quickshell"
+else
+    echo "Error: neither 'qs' nor 'quickshell' was found in PATH" >&2
+    exit 1
+fi
+
+QS_CMD="$QS_BIN"
+if [[ "$DMS_PATH" == /* ]]; then
+    QS_CMD="$QS_BIN -p $DMS_PATH"
+else
+    RESOLVED_PATH=$(locate_dms_config "$DMS_PATH")
+    if [[ $? -eq 0 && -n "$RESOLVED_PATH" ]]; then
+        echo "Located DMS config at: $RESOLVED_PATH" >&2
+        QS_CMD="$QS_BIN -p $RESOLVED_PATH"
+    else
+        echo "Error: Could not find DMS config '$DMS_PATH' (shell.qml) in any valid config path" >&2
+        exit 1
+    fi
+fi
+
+case "$COMPOSITOR" in
+    niri)
+        require_command "niri"
+        if [[ -z "$COMPOSITOR_CONFIG" ]]; then
+            TEMP_CONFIG=$(mktemp)
+			# base/default config
+            cat > "$TEMP_CONFIG" << NIRI_EOF
+hotkey-overlay {
+    skip-at-startup
+}
+
+environment {
+    DMS_RUN_GREETER "1"
+}
+
+debug {
+  keep-max-bpc-unchanged
+}
+
+gestures {
+   hot-corners {
+     off
+   }
+}
+
+layout {
+  background-color "#000000"
+}
+NIRI_EOF
+            COMPOSITOR_CONFIG="$TEMP_CONFIG"
+        else
+            TEMP_CONFIG=$(mktemp)
+            cat "$COMPOSITOR_CONFIG" > "$TEMP_CONFIG"
+        fi
+		# Append includes if override_files exist
+		OVERRIDE_FILES=(
+			/usr/share/greetd/niri_overrides.kdl # for building into a system image
+			/etc/greetd/niri_overrides.kdl # for local overrides
+			)
+		for override_file in "${OVERRIDE_FILES[@]}"; do
+			if [[ -e "$override_file" ]]; then
+		# TODO: maybe move to optional=true when Niri Next drops, so we can avoid these checks ;-)
+				cat >> "$TEMP_CONFIG" << NIRI_EOF
+
+include "$override_file"
+NIRI_EOF
+			fi
+		done
+		# Append spawn command
+            cat >> "$TEMP_CONFIG" << NIRI_EOF
+
+spawn-at-startup "sh" "-c" "$QS_CMD; niri msg action quit --skip-confirmation"
+NIRI_EOF
+            COMPOSITOR_CONFIG="$TEMP_CONFIG"
+        exec niri -c "$COMPOSITOR_CONFIG"
+        ;;
+
+    hyprland)
+        if ! command -v start-hyprland >/dev/null 2>&1 && ! command -v Hyprland >/dev/null 2>&1; then
+            echo "Error: neither 'start-hyprland' nor 'Hyprland' was found in PATH" >&2
+            exit 1
+        fi
+        if [[ -z "$COMPOSITOR_CONFIG" ]]; then
+            TEMP_CONFIG=$(mktemp)
+            cat > "$TEMP_CONFIG" << HYPRLAND_EOF
+env = DMS_RUN_GREETER,1
+
+misc {
+    disable_hyprland_logo = true
+}
+
+exec-once = sh -c "$QS_CMD; hyprctl dispatch exit"
+HYPRLAND_EOF
+            COMPOSITOR_CONFIG="$TEMP_CONFIG"
+        else
+            TEMP_CONFIG=$(mktemp)
+            cat "$COMPOSITOR_CONFIG" > "$TEMP_CONFIG"
+            cat >> "$TEMP_CONFIG" << HYPRLAND_EOF
+
+exec-once = sh -c "$QS_CMD; hyprctl dispatch exit"
+HYPRLAND_EOF
+            COMPOSITOR_CONFIG="$TEMP_CONFIG"
+        fi
+        if command -v start-hyprland >/dev/null 2>&1; then
+            exec start-hyprland -- --config "$COMPOSITOR_CONFIG"
+        else
+            exec Hyprland -c "$COMPOSITOR_CONFIG"
+        fi
+        ;;
+
+    sway)
+        require_command "sway"
+        if [[ -z "$COMPOSITOR_CONFIG" ]]; then
+            TEMP_CONFIG=$(mktemp)
+            cat > "$TEMP_CONFIG" << SWAY_EOF
+exec "$QS_CMD; swaymsg exit"
+SWAY_EOF
+            COMPOSITOR_CONFIG="$TEMP_CONFIG"
+        else
+            TEMP_CONFIG=$(mktemp)
+            cat "$COMPOSITOR_CONFIG" > "$TEMP_CONFIG"
+            cat >> "$TEMP_CONFIG" << SWAY_EOF
+
+exec "$QS_CMD; swaymsg exit"
+SWAY_EOF
+            COMPOSITOR_CONFIG="$TEMP_CONFIG"
+        fi
+        exec sway --unsupported-gpu -c "$COMPOSITOR_CONFIG"
+        ;;
+
+    scroll)
+        require_command "scroll"
+        if [[ -z "$COMPOSITOR_CONFIG" ]]; then
+            TEMP_CONFIG=$(mktemp)
+            cat > "$TEMP_CONFIG" << SCROLL_EOF
+exec "$QS_CMD; scrollmsg exit"
+SCROLL_EOF
+            COMPOSITOR_CONFIG="$TEMP_CONFIG"
+        else
+            TEMP_CONFIG=$(mktemp)
+            cat "$COMPOSITOR_CONFIG" > "$TEMP_CONFIG"
+            cat >> "$TEMP_CONFIG" << SCROLL_EOF
+
+exec "$QS_CMD; scrollmsg exit"
+SCROLL_EOF
+            COMPOSITOR_CONFIG="$TEMP_CONFIG"
+        fi
+        exec scroll -c "$COMPOSITOR_CONFIG"
+        ;;
+
+    miracle|miracle-wm)
+        require_command "miracle-wm"
+        if [[ -z "$COMPOSITOR_CONFIG" ]]; then
+            TEMP_CONFIG=$(mktemp)
+            cat > "$TEMP_CONFIG" << MIRACLE_EOF
+exec "$QS_CMD; miraclemsg exit"
+MIRACLE_EOF
+            COMPOSITOR_CONFIG="$TEMP_CONFIG"
+        else
+            TEMP_CONFIG=$(mktemp)
+            cat "$COMPOSITOR_CONFIG" > "$TEMP_CONFIG"
+            cat >> "$TEMP_CONFIG" << MIRACLE_EOF
+
+exec "$QS_CMD; miraclemsg exit"
+MIRACLE_EOF
+            COMPOSITOR_CONFIG="$TEMP_CONFIG"
+        fi
+        exec miracle-wm -c "$COMPOSITOR_CONFIG"
+        ;;
+
+    labwc)
+        require_command "labwc"
+        if [[ -n "$COMPOSITOR_CONFIG" ]]; then
+            exec labwc --config "$COMPOSITOR_CONFIG" --session "$QS_CMD"
+        else
+            exec labwc --session "$QS_CMD"
+        fi
+        ;;
+
+    mango|mangowc)
+        require_command "mango"
+        if [[ -n "$COMPOSITOR_CONFIG" ]]; then
+            exec mango -c "$COMPOSITOR_CONFIG" -s "$QS_CMD && mmsg -d quit"
+        else
+            exec mango -s "$QS_CMD && mmsg -d quit"
+        fi
+        ;;
+
+    *)
+        echo "Error: Unsupported compositor: $COMPOSITOR" >&2
+        echo "Supported compositors: niri, hyprland, sway, scroll, miracle, mango, labwc" >&2
+        exit 1
+        ;;
+esac
