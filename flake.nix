@@ -98,13 +98,6 @@
             ./hosts/lambda
           ];
         };
-
-        nu = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs outputs; };
-          modules = [
-            ./hosts/nu
-          ];
-        };
       };
 
       homeConfigurations = {
@@ -123,15 +116,6 @@
           modules = [
             stylix.homeModules.stylix
             ./home/pguin/lambda.nix
-          ];
-        };
-
-        "pguin@nu" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages."x86_64-linux";
-          extraSpecialArgs = { inherit inputs outputs; };
-          modules = [
-            stylix.homeModules.stylix
-            ./home/pguin/nu.nix
           ];
         };
       };
