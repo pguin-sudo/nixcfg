@@ -30,7 +30,6 @@ in
           "wl-clipboard-history -t"
           "wl-paste -p -t text --watch clipman store -P --histpath=\"~/.local/share/clipman-primary.json\""
           "poweralertd"
-          "syncthing"
           "sleep 3; qsyncthingtray"
           "kdeconnect-indicator"
           "dbus-update-activation-environment --systemd --all"
