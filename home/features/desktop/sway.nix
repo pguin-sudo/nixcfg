@@ -4,10 +4,12 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.desktop.sway;
   mod = "Mod4";
-in {
+in
+{
   options.features.desktop.sway.enable = mkEnableOption "sway config";
 
   config = mkIf cfg.enable {
@@ -15,7 +17,9 @@ in {
       enable = true;
 
       systemd.enable = true;
-      wrapperFeatures = {gtk = true;};
+      wrapperFeatures = {
+        gtk = true;
+      };
 
       config = {
         modifier = mod;
@@ -29,15 +33,16 @@ in {
         # Startup commands
         startup = [
           #{command = "waybar";}
-          {command = "hyprpaper";}
-          {command = "hypridle";}
-          {command = "wl-clipboard-history -t";}
-          {command = "wl-paste -p -t text --watch clipman store -P --histpath=\"~/.local/share/clipman-primary.json\"";}
-          {command = "poweralertd";}
-          {command = "syncthing";}
-          {command = "sleep 3; qsyncthingtray";}
-          {command = "kdeconnect-indicator";}
-          {command = "dbus-update-activation-environment --systemd --all";}
+          { command = "hyprpaper"; }
+          { command = "hypridle"; }
+          { command = "wl-clipboard-history -t"; }
+          {
+            command = "wl-paste -p -t text --watch clipman store -P --histpath=\"~/.local/share/clipman-primary.json\"";
+          }
+          { command = "poweralertd"; }
+          { command = "sleep 3; qsyncthingtray"; }
+          { command = "kdeconnect-indicator"; }
+          { command = "dbus-update-activation-environment --systemd --all"; }
         ];
 
         # Input configuration
@@ -70,22 +75,44 @@ in {
 
         # Key bindings
         keybindings = lib.attrsets.mergeAttrsList [
-          (lib.attrsets.mergeAttrsList (map (num: let
-            ws = toString num;
-          in {
-            "${mod}+${ws}" = "workspace ${ws}";
-            "${mod}+Shift+${ws}" = "move container to workspace ${ws}";
-          }) [1 2 3 4 5 6 7 8 9 0]))
+          (lib.attrsets.mergeAttrsList (
+            map
+              (
+                num:
+                let
+                  ws = toString num;
+                in
+                {
+                  "${mod}+${ws}" = "workspace ${ws}";
+                  "${mod}+Shift+${ws}" = "move container to workspace ${ws}";
+                }
+              )
+              [
+                1
+                2
+                3
+                4
+                5
+                6
+                7
+                8
+                9
+                0
+              ]
+          ))
 
-          (lib.attrsets.concatMapAttrs (key: direction: {
+          (lib.attrsets.concatMapAttrs
+            (key: direction: {
               "${mod}+${key}" = "focus ${direction}";
               "${mod}+Shift+${key}" = "move ${direction}";
-            }) {
+            })
+            {
               h = "left";
               j = "down";
               k = "up";
               l = "right";
-            })
+            }
+          )
 
           {
             # Basic applications
@@ -108,10 +135,12 @@ in {
 
             # Screenshots
             "${mod}+Print" = "exec grimshot copy active";
-            "${mod}+Shift+s" = "exec grimshot savecopy area - | ${pkgs.swappy}/bin/swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png";
+            "${mod}+Shift+s" =
+              "exec grimshot savecopy area - | ${pkgs.swappy}/bin/swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png";
 
             # Screen recording (requires wf-recorder)
-            "${mod}+Shift+R" = "exec wf-recorder -a -f ~/Video/recording.mkv & notify-send 'Recording Started' -i -u -A '^C ,stop' -t 0";
+            "${mod}+Shift+R" =
+              "exec wf-recorder -a -f ~/Video/recording.mkv & notify-send 'Recording Started' -i -u -A '^C ,stop' -t 0";
 
             # Utilities
             "Alt+Ctrl+Delete" = "exec ${pkgs.btop}/bin/btop";

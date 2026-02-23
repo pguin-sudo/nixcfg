@@ -4,9 +4,11 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.suites.productivity;
-in {
+in
+{
   options.features.suites.productivity.enable = mkEnableOption "productivity suite";
 
   config = mkIf cfg.enable {
@@ -18,7 +20,6 @@ in {
       #webcord
       #bottles
       #tailscale
-      #syncthing
 
       onlyoffice-desktopeditors
       obs-studio
