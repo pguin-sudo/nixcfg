@@ -38,7 +38,7 @@
       hyprland.enable = true;
       waybar.enable = false;
       wayland.enable = true;
-      quickshell.enable = true;
+      dms.enable = true;
       xdg.enable = true;
       kitty.enable = true;
       dolphin.enable = true;

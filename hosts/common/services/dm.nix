@@ -13,7 +13,7 @@ in
   config = mkIf cfg.enable {
     services.displayManager = {
       enable = true;
-      defaultSession = "Hyprland";
+      defaultSession = "hyprland";
       ly = {
         enable = true;
       };

@@ -24,14 +24,7 @@ in
 
       settings = {
         exec-once = [
-          "qs"
-          "swww-daemon"
-          "swww restore"
-          "wl-clipboard-history -t"
-          "wl-paste -p -t text --watch clipman store -P --histpath=\"~/.local/share/clipman-primary.json\""
-          "poweralertd"
-          "sleep 3; qsyncthingtray"
-          "kdeconnect-indicator"
+          "dms run"
           "dbus-update-activation-environment --systemd --all"
 
           # Virtual display
@@ -129,7 +122,7 @@ in
             "windowsOut, 1, 6, md3_accel, popin 60%"
             "border, 1, 20, default"
             "fade, 1, 6, md3_decel"
-            "layersIn, 1, 6, menu_decel, slide"
+            "layersIn, 1, 6, menu_decel"
             "layersOut, 1, 1, menu_accel"
             "fadeLayersIn, 1, 4, menu_decel"
             "fadeLayersOut, 1, 1, menu_accel"
@@ -196,7 +189,7 @@ in
           "$mainMod Shift, P, pin"
 
           # System (Overlays)
-          "$mainMod, P, exec, grimshot savecopy area - | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
+          #"$mainMod, P, exec, grimshot savecopy area - | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
 
           # Workspaces
           "$mainMod, 1, workspace, 1"
@@ -227,9 +220,13 @@ in
           "$mainMod, S, togglespecialworkspace"
           "$mainMod Shift, S, movetoworkspace, special"
 
-          # Scripts and eww
-          "$mainMod Shift, W, exec, bash ~/.config/hypr/scripts/next-wallpaper.sh"
-          "SUPER, D, exec, eww open dashboard"
+          # Scripts
+          #"$mainMod Shift, W, exec, bash ~/.config/hypr/scripts/next-wallpaper.sh"
+
+          # DMS
+          "$mainMod, V, exec, dms ipc clipboard toggle"
+          "$mainMod Shift, W, exec, dms ipc wallpaper next"
+          "$mainMod, A, exec, dms ipc launcher toggle"
 
           # Apps
           "$mainMod, T, exec, $terminal"
@@ -237,12 +234,13 @@ in
           "$mainMod, B, exec, $browser"
           "$mainMod Shift, B, exec, $browser -P I2P"
           "$mainMod, E, exec, $explorer"
-          "$mainMod, A, exec, rofi -show drun"
+          #"$mainMod, A, exec, rofi -show drun"
           "$mainMod, Z, exec, $ide"
 
           "Ctrl Shift, Escape, exec, $terminal $top"
           "$mainMod, N, exec, $terminal -e zsh -ic \"notepad; exit\""
-          # Notebook keys
+
+          # Laptop keys
           "SUPER SHIFT, code:201, exec, $terminal $editor ~/nixcfg"
           "SUPER, code:60, exec, sudo -E howdy test"
           ", code:156, exec, $terminal -e zsh -ic \"rebuild\""

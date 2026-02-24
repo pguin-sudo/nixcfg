@@ -19,12 +19,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    winapps = {
-      url = "github:winapps-org/winapps";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     stylix.url = "github:nix-community/stylix";
+
+    dms.url = "github:AvengeMedia/DankMaterialShell";
 
     asus-numpad-driver = {
       url = "github:asus-linux-drivers/asus-numberpad-driver";
@@ -33,8 +30,10 @@
 
     nixpkgs-howdy.url = "github:fufexan/nixpkgs/howdy";
 
-    spicetify-nix.url = "github:Gerg-L/spicetify-nix";
-    spicetify-nix.inputs.nixpkgs.follows = "nixpkgs";
+    spicetify-nix = {
+      url = "github:Gerg-L/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -45,9 +44,9 @@
       disko,
       nixos-hardware,
       nixvim,
-      winapps,
       stylix,
       spicetify-nix,
+      dms,
       asus-numpad-driver,
       ...
     }@inputs:
