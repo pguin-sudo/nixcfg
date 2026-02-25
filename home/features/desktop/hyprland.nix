@@ -189,7 +189,7 @@ in
           "$mainMod Shift, P, pin"
 
           # System (Overlays)
-          #"$mainMod, P, exec, grimshot savecopy area - | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
+          "$mainMod, P, exec, grimshot savecopy area - | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
 
           # Workspaces
           "$mainMod, 1, workspace, 1"
@@ -211,7 +211,7 @@ in
           "$mainMod Shift, 6, movetoworkspacesilent, 6"
           "$mainMod Shift, 7, movetoworkspacesilent, 7"
           "$mainMod Shift, 8, movetoworkspacesilent, 8"
-          "$mainMod Shift, 9, movetoworkspacesilent, 9"
+
           #"$mainMod Shift, 0, movetoworkspacesilent, 10"
           #"$mainMod Shift, code:49, movetoworkspacesilent, 10"
           "Alt, Tab, cyclenext"
@@ -226,7 +226,7 @@ in
           # DMS
           "$mainMod, V, exec, dms ipc clipboard toggle"
           "$mainMod Shift, W, exec, dms ipc wallpaper next"
-          "$mainMod, A, exec, dms ipc launcher toggle"
+          "$mainMod, A, exec, dms ipc spotlight toggle"
 
           # Apps
           "$mainMod, T, exec, $terminal"
@@ -261,7 +261,7 @@ in
           ", XF86AudioRaiseVolume, exec, pamixer -i 2"
           ", XF86MonBrightnessUp, exec, brightnessctl set 1%+"
           ", XF86MonBrightnessDown, exec, brightnessctl set 1%-"
-          ", XF86AudioMicMute, exec, notify-send \"Mic mute\""
+          ", XF86AudioMicMute, exec, dms ipc call audio micmute"
         ];
 
         windowrulev2 = [
