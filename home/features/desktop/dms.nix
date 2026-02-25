@@ -36,7 +36,7 @@ in
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       dgop
-      khal
+      #khal
       cava
       cliphist
       wl-clipboard
