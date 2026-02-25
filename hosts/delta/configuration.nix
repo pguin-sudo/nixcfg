@@ -17,7 +17,7 @@
   common.services.openssh.enable = true;
   programs.nix-ld.enable = true; # Non nixos binaries such as mason LSPs
   # VM
-  common.services.vm.enable = true;
+  common.services.vm.enable = false;
   # AppStores
   common.services.appimage.enable = true;
   common.services.steam.enable = true;
