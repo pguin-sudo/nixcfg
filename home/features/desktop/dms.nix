@@ -26,7 +26,7 @@ let
     let
       rgb = hexToRgb color;
     in
-    "rgba(${toString rgb.r}, ${toString rgb.g}, ${toString rgb.b}, ${toString alpha})";
+    "rgba(${toString rgb.r}, ${toString rgb.g}, ${toString rgb.b}, ${toString alpha}";
 in
 {
   options.features.desktop.dms.enable = mkEnableOption "dms";
@@ -53,7 +53,7 @@ in
 
       enableSystemMonitoring = true;
       enableVPN = true;
-      enableDynamicTheming = true;
+      enableDynamicTheming = false;
       enableAudioWavelength = true;
       enableCalendarEvents = true;
       enableClipboardPaste = true;
@@ -62,6 +62,8 @@ in
         theme = "dark";
         dynamicTheming = true;
         showFocusedWindow = false;
+        currentThemeName = "custom";
+        customThemeFile = "/home/pguin/.config/dms/stylix-theme.json";
       };
 
       session = {
@@ -70,10 +72,10 @@ in
         perMonitorWallpaper = false;
         wallpaperTransition = "fade";
         nightModeEnabled = false;
-        latitude = 0;
-        longitude = 0;
+        latitude = 55.1540;
+        longitude = 61.4292;
         nightModeUseIPLocation = false;
-        weatherLocation = "New York, NY";
+        #weatherLocation = "Chelyabinsk";
         weatherCoordinates = "55.1540,61.4292";
       };
 
@@ -86,12 +88,56 @@ in
         disableHistory = false;
         disablePersist = true;
       };
-
-      # Only avaliable via hosts (not home manager)
-      #greeter = {
-      #  enable = true;
-      #  compositor.name = "hyprland"; # Or "hyprland" or "sway"
-      #};
     };
+
+    home.file.".config/dms/stylix-theme.json".text = ''
+      {
+        "dark": {
+          "name": "Stylix Theme Dark",
+          "primary": "#${scheme.base0D}",
+          "primaryText": "#${scheme.base00}",
+          "primaryContainer": "#${scheme.base0C}",
+          "secondary": "#${scheme.base0E}",
+          "surface": "#${scheme.base00}",
+          "surfaceText": "#${scheme.base05}",
+          "surfaceVariant": "#${scheme.base01}",
+          "surfaceVariantText": "#${scheme.base04}",
+          "surfaceTint": "#${scheme.base0C}",
+          "background": "#${scheme.base00}",
+          "backgroundText": "#${scheme.base07}",
+          "outline": "#${scheme.base03}",
+          "surfaceContainer": "#${scheme.base01}",
+          "surfaceContainerHigh": "#${scheme.base02}",
+          "surfaceContainerHighest": "#${scheme.base03}",
+          "error": "#${scheme.base08}",
+          "warning": "#${scheme.base09}",
+          "info": "#${scheme.base0D}",
+          "matugen_type": "scheme-expressive"
+        },
+        "light": {
+          "name": "Stylix Theme Light",
+          "primary": "#${scheme.base0D}",
+          "primaryText": "#${scheme.base07}",
+          "primaryContainer": "#${scheme.base0C}",
+          "secondary": "#${scheme.base0E}",
+          "surface": "#${scheme.base07}",
+          "surfaceText": "#${scheme.base01}",
+          "surfaceVariant": "#${scheme.base06}",
+          "surfaceVariantText": "#${scheme.base02}",
+          "surfaceTint": "#${scheme.base0C}",
+          "background": "#${scheme.base07}",
+          "backgroundText": "#${scheme.base00}",
+          "outline": "#${scheme.base03}",
+          "surfaceContainer": "#${scheme.base06}",
+          "surfaceContainerHigh": "#${scheme.base05}",
+          "surfaceContainerHighest": "#${scheme.base04}",
+          "error": "#${scheme.base08}",
+          "warning": "#${scheme.base09}",
+          "info": "#${scheme.base0D}",
+          "matugen_type": "scheme-expressive"
+        }
+      }
+    '';
+
   };
 }
