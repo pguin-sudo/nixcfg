@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{ pkgs, ... }:
+{
   imports = [
     ./btop.nix
     ./fzf.nix
@@ -35,5 +36,6 @@
     chafa
     tree
     file
+    jq
   ];
 }
