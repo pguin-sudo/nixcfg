@@ -241,7 +241,7 @@ in
           "$mainMod, N, exec, $terminal -e zsh -ic \"notepad; exit\""
 
           # Laptop keys
-          "SUPER SHIFT, code:201, exec, $terminal $editor ~/nixcfg"
+          "SUPER SHIFT, code:201, exec, bash ~/.config/hypr/scripts/rotate-screen.sh"
           "SUPER, code:60, exec, sudo -E howdy test"
           ", code:156, exec, $terminal -e zsh -ic \"rebuild\""
         ];
@@ -270,17 +270,9 @@ in
           "workspace special, class:^(vesktop)$"
         ];
 
-        workspace = [
-          "1, monitor:HDMI-A-1, default:true"
-          "2, monitor:HDMI-A-1"
-          "3, monitor:HDMI-A-1"
-          "4, monitor:HDMI-A-1"
-          "5, monitor:HDMI-A-1"
-          "6, monitor:HDMI-A-1"
-          "7, monitor:HDMI-A-1"
-          "8, monitor:HDMI-A-1"
-          "9, monitor:HDMI-A-1"
-          "10, monitor:HDMI-A-1"
+        monitor = [
+          "eDP-1, 1920x1080, 0x0, 1"
+          "HDMI-A-1, 1920x1080, 0x0, 1"
         ];
       };
     };
@@ -303,5 +295,58 @@ in
           max_size  = "90% 100%"
           size      = "80% 80%"
     '';
+
+    home.file.".config/hypr/scripts/rotate-screen.sh" = {
+      executable = true;
+      text = ''
+        #!/usr/bin/env bash
+        # Hyprland script: Cycle monitor rotation 0→1→2→3→0 (90° steps clockwise)
+        # Each key press rotates the FOCUSED monitor + perfectly syncs mouse/touch/tablet input
+        # Uses per-monitor cache so state survives reboots and works with multi-monitor setups
+
+        CACHE_DIR="''${XDG_CACHE_HOME:-$HOME/.cache}/hyprland_rotations"
+        mkdir -p "$CACHE_DIR"
+
+        # Get currently focused monitor
+        MONITOR=$(hyprctl monitors -j | jq -r '.[] | select(.focused) | .name')
+
+        if [ -z "$MONITOR" ]; then
+          echo "Error: No focused monitor found!"
+          notify-send "Hyprland Rotate" "No focused monitor found!" --icon=display
+          exit 1
+        fi
+
+        # Safe filename for cache (handles eDP-1, HDMI-A-1, etc.)
+        CACHE_FILE="''${CACHE_DIR}/''${MONITOR//[^a-zA-Z0-9]/_}.rot"
+
+        # Read current rotation (default 0 if no cache)
+        if [ -f "$CACHE_FILE" ]; then
+          CURRENT=$(cat "$CACHE_FILE")
+        else
+          CURRENT=0
+        fi
+
+        # Cycle: 0 → 1 → 2 → 3 → 0
+        NEW=$(( (CURRENT + 1) % 4 ))
+
+        echo "Rotating $MONITOR: $CURRENT → $NEW (90° × $NEW)"
+
+        # === Apply rotation ===
+        hyprctl keyword monitor ''${MONITOR},preferred,auto,1,transform,''${NEW}
+
+        # === Sync mouse/touch/tablet input (feels natural again) ===
+        #hyprctl keyword input:touchdevice:transform "''${NEW}"
+        #hyprctl keyword input:tablet:transform "''${NEW}"
+
+        # Save new state
+        echo "$NEW" > "$CACHE_FILE"
+
+        # Nice feedback
+        DEG=$((NEW * 90))
+        notify-send "Hyprland Rotate" "Monitor: $MONITOR\nRotation: ''${DEG}° (transform ''${NEW})" --icon=display
+
+        echo "✅ Done! Press the key again to cycle to next rotation."
+      '';
+    };
   };
 }
