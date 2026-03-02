@@ -44,6 +44,8 @@ in
       # AI
       aider-chat-full
       cursor-cli
+
+      python313Packages.pytest
     ];
 
     services.remmina = {
