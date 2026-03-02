@@ -39,6 +39,7 @@ in
       openssl
       pgadmin4-desktopmode
       gnumake
+      insomnia
 
       # AI
       aider-chat-full
