@@ -42,8 +42,7 @@ in
       insomnia
 
       # AI
-      aider-chat-full
-      cursor-cli
+      claude-code
 
       python313Packages.pytest
     ];
