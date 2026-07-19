@@ -69,6 +69,47 @@
       packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
       overlays = import ./overlays { inherit inputs; };
       nixosConfigurations = {
+        installer = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+            ({ lib, ... }: {
+              # Встроить флейк в ISO (read-only, install.sh сам скопирует в /tmp)
+              environment.etc."nixcfg".source = ./.;
+
+              # Авто-логин root на tty1 → сразу запускает установщик
+              services.getty.autologinUser = lib.mkForce "root";
+
+              systemd.services.nixos-pguin-installer = {
+                description = "pguin NixOS installer";
+                after = [ "network-online.target" "getty.target" ];
+                wants = [ "network-online.target" ];
+                wantedBy = [ "multi-user.target" ];
+                serviceConfig = {
+                  Type = "idle";
+                  StandardInput = "tty";
+                  TTYPath = "/dev/tty1";
+                  StandardOutput = "tty";
+                  StandardError = "tty";
+                  ExecStart = "/etc/nixcfg/install.sh";
+                  Restart = "on-failure";
+                };
+              };
+
+              # Wifi через NetworkManager
+              networking.networkmanager.enable = true;
+
+              # SSH для отладки
+              services.openssh = {
+                enable = true;
+                settings.PermitRootLogin = "yes";
+              };
+
+              nix.settings.experimental-features = [ "nix-command" "flakes" ];
+            })
+          ];
+        };
+
         delta = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
           modules = [
@@ -96,6 +137,9 @@
             "${howdy}/nixos/modules/security/pam.nix"
             "${howdy}/nixos/modules/services/security/howdy"
             "${howdy}/nixos/modules/services/misc/linux-enable-ir-emitter.nix"
+            # Disko
+            disko.nixosModules.disko
+            ./hosts/lambda/partitioning.nix
             # Host config
             ./hosts/lambda
           ];
