@@ -7,7 +7,7 @@
 {
   users.users = {
     pguin = {
-      initialHashedPassword = "$y$j9T$MrNNeV8FZfAIBze1aBwoN/$jXaIlHQjUvicqre8ez3rPGBNi4TWIpp2DdiDfPGhJ/6";
+      initialHashedPassword = "$y$j9T$s9PbtEj4JfCxIy0sDAteX1$EEboz0oQmMWPS1VwdGcmCKqqlJ1LHgPNy/UiTX.VhQ2";
       isNormalUser = true;
       shell = pkgs.zsh;
       description = "pguin";
