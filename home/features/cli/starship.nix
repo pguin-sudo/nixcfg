@@ -1,0 +1,99 @@
+{
+  config,
+  lib,
+  ...
+}:
+with lib;
+let
+  cfg = config.features.cli.starship;
+in
+{
+  options.features.cli.starship.enable = mkEnableOption "starship prompt config";
+
+  config = mkIf cfg.enable {
+    programs.starship.settings = {
+      add_newline = false;
+      format = "  󰣇   $directory  $git_branch$git_commit$git_state $git_status  $character\n\n";
+      right_format = "$singularity$kubernetes$vcsh$hg_branch$pijul_channel$c$cmake$cobol$daml$dart$deno$dotnet$elixir$elm$erlang$fennel$golang$guix_shell$haskell$haxe$helm$java$julia$kotlin$gradle$lua$nim$nodejs$ocaml$opa$perl$pulumi$purescript$python$raku$rlang$red$ruby$rust$scala$solidity$swift$terraform$vlang$vagrant$zig$buf$conda$meson$spack$memory_usage$aws$gcloud$openstack$azure$cpp$kotlin$ocaml$pixi$rlang$php$crystal$custom$status$os$time";
+      continuation_prompt = "▶▶ ";
+
+      directory = {
+        disabled = false;
+        format = "[$path](bold fg:#8be9fd)";
+        truncate_to_repo = false;
+      };
+
+      git_branch.format = " [  $branch](fg:#9198a1)";
+
+      git_status = {
+        ahead = "⇡\${count}";
+        behind = "⇣\${count}";
+        diverged = "⇕⇡\${ahead_count}⇣\${behind_count}";
+        format = "[[( $all_status$ahead_behind )](fg:#769ff0)]($style)";
+        style = "bg:#394260";
+      };
+
+      time = {
+        disabled = false;
+        format = "[[  $time ](fg:#a0a9cb )]($style)";
+        time_format = "%R";
+      };
+
+      deno = { format = " [deno](italic) [ ](green bold)"; version_format = "\${raw}"; };
+      lua = { format = " [lua](italic) [\${symbol}]($style)"; style = "bold bright-yellow"; symbol = "⨀ "; version_format = "\${raw}"; };
+      nodejs = { detect_extensions = []; detect_files = ["package-lock.json" "yarn.lock"]; detect_folders = ["node_modules"]; format = "[ ](bold bright-green)"; version_format = "\${raw}"; };
+      python = { format = "[\${symbol}(\${virtualenv}) \${version}]($style)"; style = "bold bright-yellow"; symbol = "[ ](bold bright-blue)"; version_format = "\${raw}"; };
+      ruby = { format = " [rb](italic) [\${symbol}]($style)"; style = "bold red"; symbol = " "; version_format = "\${raw}"; };
+      rust = { style = "bold bright-red"; format = " rs(italic) $symbol($style)"; symbol = " "; };
+      swift = { format = " [sw](italic) [\${symbol}]($style)"; style = "bold bright-red"; symbol = " "; version_format = "\${raw}"; };
+      aws = { disabled = true; format = " [aws](italic) [$symbol $profile $region]($style)"; style = "bold blue"; symbol = " "; };
+      buf = { style = "bold bright-red"; format = " [buf](italic) [$symbol $buf_version]($style)"; symbol = "■ "; };
+      c = { style = "bold bright-cyan"; format = " [$symbol(-$name)]($style)"; symbol = "ℂ "; };
+      cpp = { style = "bold bright-cyan"; format = " [cpp](italic) [$symbol]($style)"; symbol = " "; };
+      kotlin = { format = " [kotlin](italic) [$symbol]($style)"; style = "bold bright-red"; symbol = " "; };
+      ocaml = { format = " [ocaml](italic) [$symbol]($style)"; style = "bold bright-yellow"; symbol = " "; };
+      perl = { format = " [perl](italic) [$symbol]($style)"; style = "bold bright-cyan"; symbol = " "; };
+      php = { format = " [php](italic) [$symbol]($style)"; style = "bold bright-red"; symbol = " "; };
+      pixi = { format = " [pixi](italic) [$symbol]($style)"; style = "bold bright-yellow"; symbol = "pixi "; };
+      rlang = { format = " [rlang](italic) [$symbol]($style)"; style = "bold bright-cyan"; symbol = " "; };
+      meson = { format = " [meson](italic) [$symbol]($style)"; style = "bold bright-red"; symbol = "meson "; };
+      conda = { style = "bold bright-red"; format = " conda [$symbol$environment]($style)"; symbol = "◯ "; };
+      dart = { style = "bold bright-cyan"; format = " dart [$symbol]($style)"; symbol = " "; };
+      elixir = { style = "bold bright-yellow"; format = " exs [$symbol OTP $otp_version ]($style)"; symbol = " "; };
+      elm = { style = "bold bright-red"; format = " elm [$symbol]($style)"; symbol = "◩ "; };
+      golang = { style = "bold bright-blue"; format = " go [$symbol]($style)"; symbol = "∩ "; };
+      haskell = { style = "bold bright-yellow"; format = " hs [$symbol]($style)"; symbol = "❯λ "; };
+      java = { style = "bold bright-red"; format = " java [\${symbol}]($style)"; symbol = " "; };
+      julia = { style = "bold bright-cyan"; format = " jl [$symbol]($style)"; symbol = "◎ "; };
+      memory_usage = { style = "bold bright-cyan"; format = " mem [\${ram}( \${swap})]($style)"; symbol = "▪▫▪ "; };
+      nim = { style = "bold bright-yellow"; format = " nim [$symbol]($style)"; symbol = "▴▲▴ "; };
+      nix_shell = { format = "[$symbol nix⎪$state⎪]($style) [$name](italic dimmed white)"; impure_msg = "[⌽](bold dimmed red)"; pure_msg = "[⌾](bold dimmed green)"; style = "bold italic dimmed blue"; symbol = " "; unknown_msg = "[◌](bold dimmed ellow)"; };
+      spack = { style = "bold bright-yellow"; format = " spack [$symbol$environment]($style)"; symbol = "◇ "; };
+      zig = { style = "bold bright-yellow"; format = " zig [$symbol]($style)"; symbol = " "; };
+      scala = { format = " scala [$symbol]($style)"; symbol = " "; };
+      singularity = { style = "bold bright-yellow"; format = " [singularity](italic) [$symbol]($style)"; symbol = "singularity "; };
+      kubernetes = { style = "bold bright-cyan"; format = " [kubernetes](italic) [$symbol]($style)"; symbol = " "; };
+      vcsh = { style = "bold bright-red"; format = " [vcsh](italic) [$symbol]($style)"; symbol = "vcsh "; };
+      cobol = { style = "bold bright-yellow"; format = " [cobol](italic) [$symbol]($style)"; symbol = "cobol "; };
+      daml = { style = "bold bright-cyan"; format = " [daml](italic) [$symbol]($style)"; symbol = "daml "; };
+      dotnet = { style = "bold bright-red"; format = " [dotnet](italic) [$symbol]($style)"; symbol = ".NET "; };
+      erlang = { style = "bold bright-yellow"; format = " [erlang](italic) [$symbol]($style)"; symbol = " "; };
+      fennel = { style = "bold bright-cyan"; format = " [fennel](italic) [$symbol]($style)"; symbol = " "; };
+      haxe = { style = "bold bright-red"; format = " [haxe](italic) [$symbol]($style)"; symbol = " "; };
+      helm = { style = "bold bright-yellow"; format = " [helm](italic) [$symbol]($style)"; symbol = "helm "; };
+      opa = { style = "bold bright-cyan"; format = " [opa](italic) [$symbol]($style)"; symbol = "opa "; };
+      pulumi = { format = " [pulumi](italic) [$symbol]($style)"; style = "bold bright-red"; symbol = "pulumi "; };
+      purescript = { style = "bold bright-yellow"; format = " [purescript](italic) [$symbol]($style)"; symbol = " "; };
+      raku = { style = "bold bright-cyan"; format = " [raku](italic) [$symbol]($style)"; symbol = "raku "; };
+      red = { style = "bold bright-red"; format = " [red](italic) [$symbol]($style)"; symbol = "red "; };
+      solidity = { style = "bold bright-yellow"; format = " [solidity](italic) [$symbol]($style)"; symbol = " "; };
+      terraform = { style = "bold bright-cyan"; format = " [terraform](italic) [$symbol]($style)"; symbol = "terraform "; };
+      vlang = { format = " [vlang](italic) [$symbol]($style)"; style = "bold bright-red"; symbol = "vlang "; };
+      vagrant = { format = " [vagrant](italic) [$symbol]($style)"; style = "bold bright-yellow"; symbol = "vagrant "; };
+      gcloud = { format = " [gcloud](italic) [$symbol]($style)"; style = "bold bright-cyan"; symbol = "gcloud "; };
+      openstack = { format = " [openstack](italic) [$symbol]($style)"; style = "bold bright-red"; symbol = "openstack "; };
+      azure = { format = " [azure](italic) [$symbol]($style)"; style = "bold bright-yellow"; symbol = " "; };
+      crystal = { format = " [crystal](italic) [$symbol]($style)"; style = "bold bright-cyan"; symbol = " "; };
+    };
+  };
+}

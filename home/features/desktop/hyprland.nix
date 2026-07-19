@@ -16,13 +16,12 @@ in
       systemd.enable = true;
 
       xwayland.enable = true;
+
       settings = {
         xwayland = {
           force_zero_scaling = true;
         };
-      };
 
-      settings = {
         exec-once = [
           "dms run"
           "dbus-update-activation-environment --systemd --all"
@@ -34,7 +33,10 @@ in
           "GTK_THEME,Nightfox-Dark"
           "QT_AUTO_SCREEN_SCALE_FACTOR,1"
           "ELECTRON_EXTRA_FLAGS,--force-device-scale-factor=1.5"
-          "XDG_MENU_PREFIX,plasma-"
+          "QT_QPA_PLATFORMTHEME,qt6ct"
+          "QT_QPA_PLATFORMTHEME_QT6,qt6ct"
+          "EDITOR,$editor"
+          "VISUAL,$ide"
         ];
 
         input = {
@@ -128,7 +130,6 @@ in
         };
 
         dwindle = {
-          pseudotile = true;
           preserve_split = true;
           special_scale_factor = 0.8;
         };
@@ -146,13 +147,12 @@ in
           animate_mouse_windowdragging = true;
           enable_swallow = true;
           focus_on_activate = true;
-          vfr = true;
         };
 
         "$mainMod" = "SUPER";
         "$terminal" = "kitty";
-        "$explorer" = "dolphin";
-        "$browser" = "firefox";
+        "$explorer" = "yazi";
+        "$browser" = "zen-browser";
         "$top" = "btop";
         "$editor" = "nvim";
         "$ide" = "zeditor";
@@ -171,7 +171,6 @@ in
           "$mainMod, F1, exec, $HOME/.config/hypr/scripts/keybind.sh"
           "$mainMod, Q, killactive"
           "$mainMod, F, fullscreen"
-          "$mainMod, V, togglesplit"
           "$mainMod, j, movefocus, d"
           "$mainMod, K, movefocus, u"
           "$mainMod, H, movefocus, l"
@@ -185,7 +184,7 @@ in
           "$mainMod Shift, P, pin"
 
           # System (Overlays)
-          "$mainMod, P, exec, grimshot savecopy area - | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
+          "$mainMod, P, exec, dms screenshot region --cursor off --no-file -q 100 --stdout | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
 
           # Workspaces
           "$mainMod, 1, workspace, 1"
@@ -223,21 +222,21 @@ in
           "$mainMod, V, exec, dms ipc clipboard toggle"
           "$mainMod Shift, W, exec, dms ipc wallpaper next"
           "$mainMod, A, exec, dms ipc spotlight toggle"
+          "$mainMod, U, exec, bash ~/.config/hypr/scripts/rgb_sync.sh"
 
           # Apps
           "$mainMod, T, exec, $terminal"
-          "$mainMod Shift, T, exec, Telegram"
+          "$mainMod Shift, T, exec, telegram-desktop"
           "$mainMod, B, exec, $browser"
           "$mainMod Shift, B, exec, $browser -P I2P"
-          "$mainMod, E, exec, $explorer"
-          #"$mainMod, A, exec, rofi -show drun"
+          "$mainMod, E, exec, kitty -e $explorer"
           "$mainMod, Z, exec, $ide"
 
           "Ctrl Shift, Escape, exec, $terminal $top"
           "$mainMod, N, exec, $terminal -e zsh -ic \"notepad; exit\""
 
           # Laptop keys
-          "SUPER SHIFT, code:201, exec, bash ~/.config/hypr/scripts/rotate-screen.sh"
+          "SUPER SHIFT, code:201, exec, bash ~/.config/hypr/scripts/random-sound.sh"
           "SUPER, code:60, exec, sudo -E howdy test"
           ", code:156, exec, $terminal -e zsh -ic \"rebuild\""
         ];
@@ -252,39 +251,46 @@ in
           "$mainMod, right, resizeactive, 40 0"
           "$mainMod, up, resizeactive, 0 -40"
           "$mainMod, down, resizeactive, 0 40"
+          ", XF86AudioPlay, exec, dms ipc mpris play"
+          ", XF86AudioPause, exec, dms ipc mpris pause"
+          ", XF86AudioNext, exec, dms ipc mpris next"
+          ", XF86AudioPrev, exec, dms ipc mpris previous"
           ", XF86AudioMute, exec, pamixer -t"
           ", XF86AudioLowerVolume, exec, pamixer -d 2"
           ", XF86AudioRaiseVolume, exec, pamixer -i 2"
           ", XF86MonBrightnessUp, exec, brightnessctl set 1%+"
           ", XF86MonBrightnessDown, exec, brightnessctl set 1%-"
-          ", XF86AudioMicMute, exec, dms ipc call audio micmute"
+          ", XF86AudioMicMute, exec, dms brightness set leds:platform::micmute $(dms ipc call audio micmute | grep -q \"unmuted\" && echo 0 || echo 100)"
+        ];
+
+        bindl = [
+          ", xf86poweroff, exec, dms ipc lock lock"
         ];
 
         windowrulev2 = [
           "workspace 1, class:^(firefox)$"
           "workspace special, class:^(org.telegram.desktop)$"
+          "workspace special, class:^(discord)$"
           "workspace special, class:^(vesktop)$"
+          "float, class:^(kitty)$, title:^(termfilechooser)$"
+          "center, class:^(kitty)$, title:^(termfilechooser)$"
+          "size 800 600, class:^(kitty)$, title:^(termfilechooser)$"
+          "float, title:.*Picture-in-Picture.*"
+          "pin, title:.*Picture-in-Picture.*"
+          "stayfocused off, title:.*Picture-in-Picture.*"
+          "size 480 270, title:.*Picture-in-Picture.*"
+          "move 75% 10%, title:.*Picture-in-Picture.*"
         ];
 
-        monitor = [
-          "eDP-1, 1920x1200@60, 0x0, 1"
-          "HDMI-A-1, 1920x1080@75, 0x0, 1"
-          "HEADLESS-66, 1200x1920@60, -1200x0, 1"
-        ];
-
-        #workspace = [
-        #  "1, monitor:HDMI-A-1, default:true"
-        #  "2, monitor:HDMI-A-1"
-        #  "3, monitor:HDMI-A-1"
-        #  "4, monitor:HDMI-A-1"
-        #  "5, monitor:HDMI-A-1"
-        #  "6, monitor:HDMI-A-1"
-        #  "7, monitor:HDMI-A-1"
-        #  "8, monitor:HDMI-A-1"
-        #  "9, monitor:HDMI-A-1"
-        #  "10, monitor:HDMI-A-1"
-        #];
       };
+
+      extraConfig = ''
+        source = ~/.config/hypr/dms/colors.conf
+        source = ~/.config/hypr/dms/cursor.conf
+        source = ~/.config/hypr/dms/layout.conf
+        source = ~/.config/hypr/dms/windowrules.conf
+        source = ~/.config/hypr/dms/outputs.conf
+      '';
     };
 
     # Scratchpad

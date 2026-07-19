@@ -5,8 +5,10 @@
     ./fzf.nix
     ./fastfetch.nix
     ./neovim.nix
+    ./starship.nix
     ./system-tools.nix
     ./tmux.nix
+    ./yazi.nix
     ./zsh.nix
   ];
 

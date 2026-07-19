@@ -1,3 +1,4 @@
+{ inputs, ... }:
 {
   imports = [
     ../common
@@ -29,7 +30,9 @@
       fzf.enable = true;
       fastfetch.enable = true;
       neovim.enable = true;
+      starship.enable = true;
       tmux.enable = true;
+      yazi.enable = true;
       zsh.enable = true;
     };
     desktop = {
@@ -43,6 +46,7 @@
       spotify.enable = true;
       kitty.enable = true;
       dolphin.enable = true;
+      zed.enable = true;
     };
     suites = {
       development.enable = true;

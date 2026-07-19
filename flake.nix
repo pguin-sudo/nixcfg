@@ -34,6 +34,8 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    zen-browser.url = "github:0xc000022070/zen-browser-flake";
   };
 
   outputs =
@@ -48,6 +50,7 @@
       spicetify-nix,
       dms,
       asus-numpad-driver,
+      zen-browser,
       ...
     }@inputs:
     let
@@ -111,7 +114,7 @@
 
         "pguin@lambda" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages."x86_64-linux";
-          extraSpecialArgs = { inherit inputs outputs; };
+          extraSpecialArgs = { inherit inputs outputs zen-browser; };
           modules = [
             stylix.homeModules.stylix
             ./home/pguin/lambda.nix
