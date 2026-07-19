@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 with lib;
@@ -12,10 +11,6 @@ in
   options.features.desktop.zed.enable = mkEnableOption "Zed editor";
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      zed-editor
-    ];
-
     home.file.".config/zed/settings.json".text = ''
       {
         "agent_servers": {
