@@ -58,37 +58,13 @@ in
       enableCalendarEvents = true;
       enableClipboardPaste = true;
 
-      settings = {
-        theme = "dark";
-        dynamicTheming = true;
-        showFocusedWindow = false;
-        currentThemeName = "custom";
-        customThemeFile = "/home/pguin/.config/dms/stylix-theme.json";
-      };
-
-      session = {
-        isLightMode = false;
-        wallpaperPath = "/home/pguin/Wallpapers/catppuccin/Flowers.jpg";
-        perMonitorWallpaper = false;
-        wallpaperTransition = "fade";
-        nightModeEnabled = false;
-        latitude = 55.1540;
-        longitude = 61.4292;
-        nightModeUseIPLocation = false;
-        #weatherLocation = "Chelyabinsk";
-        weatherCoordinates = "55.1540,61.4292";
-      };
-
-      clipboardSettings = {
-        maxHistory = 25;
-        maxEntrySize = 5242880;
-        autoClearDays = 1;
-        clearAtStartup = true;
-        disabled = false;
-        disableHistory = false;
-        disablePersist = true;
-      };
     };
+
+    # settings.json managed as mutable file via mkOutOfStoreSymlink so DMS UI changes
+    # write through the symlink into the nixcfg repo (same as GNU Stow approach on Arch)
+    home.file.".config/DankMaterialShell/settings.json".source =
+      config.lib.file.mkOutOfStoreSymlink
+        "${config.home.homeDirectory}/nixcfg/home/resources/dms-settings.json";
 
     home.file.".config/dms/stylix-theme.json".text = ''
       {

@@ -12,5 +12,6 @@
     ./sway.nix
     ./waybar.nix
     ./wayland.nix
+    ./zed.nix
   ];
 }

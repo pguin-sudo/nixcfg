@@ -15,9 +15,10 @@ in {
 
       settings = {
         bold_italic_font = "auto";
-        window_padding_width = 14;
-        window_padding_height = 14;
+        window_padding_width = 25;
         hide_window_decorations = "yes";
+        background_opacity = "0.3";
+        cursor_trail = 1;
 
         confirm_os_window_close = 0;
         show_window_resize_notification = "no";

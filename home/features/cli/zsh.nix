@@ -24,9 +24,12 @@ in
         ssh = "kitty +kitten ssh";
 
         notepad = "nvim ~/Nextcloud/notepad";
+        tiktok = "/home/pguin/Desktop/tiktok/tiktok.sh";
       };
 
-      initContent = '''';
+      initContent = ''
+        export PATH="$HOME/.local/bin:$PATH"
+      '';
 
       autosuggestion.enable = true;
       syntaxHighlighting.enable = true;

@@ -5,6 +5,7 @@
   config,
   lib,
   pkgs,
+  zen-browser,
   ...
 }: {
   home.username = "pguin";
@@ -13,12 +14,13 @@
 
   home.packages = with pkgs; [
     nvtopPackages.amd
+    zen-browser.packages.x86_64-linux.default
   ];
 
   home.file = {};
 
   home.sessionVariables = {
-    BROWSER = "firefox";
+    BROWSER = "zen-browser";
     EDITOR = "nvim";
     TERMINAL = "kitty";
     # NIXOS_OZONE_WL = "1";
