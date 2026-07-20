@@ -58,9 +58,9 @@
       studio.enable = false;
     };
     themes = {
-      gtk.enable = true;
-      qt.enable = true;
-      stylix.enable = true;
+      gtk.enable = false;
+      qt.enable = false;
+      stylix.enable = false;
     };
   };
 }

@@ -10,6 +10,10 @@
 
   programs.git = {
     enable = true;
+    lfs.enable = true;
+    extraConfig = {
+      pull.rebase = true;
+    };
     settings = {
       user.name = "PGuin";
       user.email = "138515193+pguin-sudo@users.noreply.github.com";
@@ -29,7 +33,9 @@
       fzf.enable = true;
       fastfetch.enable = true;
       neovim.enable = true;
+      starship.enable = true;
       tmux.enable = true;
+      yazi.enable = true;
       zsh.enable = true;
     };
     desktop = {
@@ -43,6 +49,7 @@
       kitty.enable = true;
       dolphin.enable = true;
       spotify.enable = true;
+      zed.enable = true;
     };
     suites = {
       development.enable = true;
@@ -54,9 +61,9 @@
       studio.enable = true;
     };
     themes = {
-      gtk.enable = true;
-      qt.enable = true;
-      stylix.enable = true;
+      gtk.enable = false;
+      qt.enable = false;
+      stylix.enable = false;
       rgb.enable = true;
       plight.enable = true;
     };

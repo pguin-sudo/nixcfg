@@ -24,7 +24,6 @@ in
 
         exec-once = [
           "dms run"
-          "dbus-update-activation-environment --systemd --all"
         ];
 
         env = [
@@ -226,7 +225,7 @@ in
 
           # Apps
           "$mainMod, T, exec, $terminal"
-          "$mainMod Shift, T, exec, telegram-desktop"
+          "$mainMod Shift, T, exec, Telegram"
           "$mainMod, B, exec, $browser"
           "$mainMod Shift, B, exec, $browser -P I2P"
           "$mainMod, E, exec, kitty -e $explorer"
@@ -234,6 +233,7 @@ in
 
           "Ctrl Shift, Escape, exec, $terminal $top"
           "$mainMod, N, exec, $terminal -e zsh -ic \"notepad; exit\""
+          "$mainMod, R, exec, bash ~/.config/hypr/scripts/rotate-screen.sh"
 
           # Laptop keys
           "SUPER SHIFT, code:201, exec, bash ~/.config/hypr/scripts/random-sound.sh"
@@ -268,16 +268,15 @@ in
         ];
 
         windowrulev2 = [
-          "workspace 1, class:^(firefox)$"
           "workspace special, class:^(org.telegram.desktop)$"
           "workspace special, class:^(discord)$"
           "workspace special, class:^(vesktop)$"
           "float, class:^(kitty)$, title:^(termfilechooser)$"
           "center, class:^(kitty)$, title:^(termfilechooser)$"
           "size 800 600, class:^(kitty)$, title:^(termfilechooser)$"
+          "bordersize 10, class:^(kitty)$, title:^(termfilechooser)$"
           "float, title:.*Picture-in-Picture.*"
           "pin, title:.*Picture-in-Picture.*"
-          "stayfocused off, title:.*Picture-in-Picture.*"
           "size 480 270, title:.*Picture-in-Picture.*"
           "move 75% 10%, title:.*Picture-in-Picture.*"
         ];
@@ -355,7 +354,7 @@ in
         #hyprctl keyword input:tablet:transform "''${NEW}"
 
         # Save new state
-        echo "$NEW" > "$CACHE_FILE66"
+        echo "$NEW" > "$CACHE_FILE"
 
         # Nice feedback
         DEG=$((NEW * 90))
