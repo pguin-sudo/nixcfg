@@ -1,7 +1,7 @@
 {
-  "currentThemeName": "custom",
-  "currentThemeCategory": "custom",
-  "customThemeFile": "/home/pguin/.config/dms/stylix-theme.json",
+  "currentThemeName": "dynamic",
+  "currentThemeCategory": "dynamic",
+  "customThemeFile": "",
   "registryThemeVariants": {},
   "matugenScheme": "scheme-fidelity",
   "runUserMatugenTemplates": true,
@@ -197,7 +197,7 @@
   "iconTheme": "System Default",
   "cursorSettings": {
     "theme": "System Default",
-    "size": 24,
+    "size": 12,
     "niri": {
       "hideWhenTyping": false,
       "hideAfterInactiveMs": 0
@@ -256,11 +256,11 @@
   "bluetoothDevicePins": {},
   "audioInputDevicePins": {},
   "audioOutputDevicePins": {},
-  "gtkThemingEnabled": false,
-  "qtThemingEnabled": false,
+  "gtkThemingEnabled": true,
+  "qtThemingEnabled": true,
   "syncModeWithPortal": true,
   "terminalsAlwaysDark": false,
-  "runDmsMatugenTemplates": false,
+  "runDmsMatugenTemplates": true,
   "matugenTemplateGtk": true,
   "matugenTemplateNiri": true,
   "matugenTemplateHyprland": true,
@@ -375,7 +375,11 @@
   "updaterCustomCommand": "",
   "updaterTerminalAdditionalParams": "",
   "displayNameMode": "system",
-  "screenPreferences": {},
+  "screenPreferences": {
+    "wallpaper": [
+      "all"
+    ]
+  },
   "showOnLastDisplay": {},
   "niriOutputSettings": {},
   "hyprlandOutputSettings": {},
@@ -535,7 +539,11 @@
   "desktopWidgetGridSettings": {},
   "desktopWidgetInstances": [],
   "desktopWidgetGroups": [],
-  "builtInPluginSettings": {},
+  "builtInPluginSettings": {
+    "dms_settings_search": {
+      "trigger": "?"
+    }
+  },
   "clipboardEnterToPaste": false,
   "launcherPluginVisibility": {},
   "launcherPluginOrder": [],

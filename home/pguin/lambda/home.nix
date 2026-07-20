@@ -20,7 +20,7 @@
   home.file = {};
 
   home.sessionVariables = {
-    BROWSER = "zen-browser";
+    BROWSER = "zen-beta";
     EDITOR = "nvim";
     TERMINAL = "kitty";
     # NIXOS_OZONE_WL = "1";

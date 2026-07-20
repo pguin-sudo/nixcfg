@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib; let
@@ -10,30 +11,32 @@ in {
     mkEnableOption "enable Kitty as the preferred terminal + desktop integration";
 
   config = mkIf cfg.enable {
-    programs.kitty = {
-      enable = true;
+    home.packages = [ pkgs.kitty ];
 
-      settings = {
-        bold_italic_font = "auto";
-        window_padding_width = 25;
-        hide_window_decorations = "yes";
-        background_opacity = lib.mkForce "0.3";
-        cursor_trail = 1;
+    home.file.".config/kitty/kitty.conf".text = ''
+      include dank-tabs.conf
+      include dank-theme.conf
 
-        confirm_os_window_close = 0;
-        show_window_resize_notification = "no";
-        cursor_shape = "block";
-        enable_audio_bell = "no";
+      # Basic
+      scrollback_lines 5000
 
-        single_instance = "yes";
-        allow_remote_control = "yes";
+      # UX
+      confirm_os_window_close 0
+      enable_audio_bell no
 
-        tab_bar_edge = "bottom";
-        tab_bar_style = "powerline";
-        tab_powerline_style = "slanted";
-        tab_title_template = "{title}{' :{}:'.format(num_windows) if num_windows > 1 else ''}";
-      };
-    };
+      # Style
+      cursor_trail 500
+      font_size 10.0
+      window_padding_width 25
+      background_opacity 0.3
+      hide_window_decorations yes
+
+      # Fonts
+      font_family CaskaydiaCove Nerd Font Mono
+      bold_font auto
+      italic_font auto
+      bold_italic_font auto
+    '';
 
     xdg.terminal-exec = {
       enable = true;

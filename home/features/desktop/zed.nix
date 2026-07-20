@@ -25,7 +25,7 @@ in
         "agent": {
           "default_model": {
             "provider": "anthropic",
-            "model": "claude-sonnet-4-6",
+            "model": "claude-sonnet-5",
             "enable_thinking": true,
             "effort": "high"
           },
@@ -44,6 +44,7 @@ in
         "git_panel": { "dock": "left" },
         "session": { "trust_all_worktrees": true },
         "vim_mode": true,
+        "theme": "DankShell Dark Transparent",
         "icon_theme": "Zed (Default)",
         "ui_font_size": 16,
         "buffer_font_size": 15,
