@@ -16,6 +16,9 @@
     useUserPackages = true;
     extraSpecialArgs = {inherit inputs outputs;};
     backupFileExtension = "backup";
+    sharedModules = [
+      inputs.stylix.homeModules.stylix
+    ];
   };
 
   environment.pathsToLink = ["/share/applications" "/share/xdg-desktop-portal"];

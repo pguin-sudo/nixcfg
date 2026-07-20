@@ -8,7 +8,7 @@ pkgs.stdenv.mkDerivation rec {
     owner = "curlysasha";
     repo = "MeshRadar";
     rev = "master";
-    hash = "sha256-MiKV0VvrfmXPfG41yNGhWL7AXrWUrovmBNHXubz4cz4=";
+    hash = "sha256-PxQpwb4MS+IwVIAy/9wsTbOl1J6MWJC3i87qogt1hSU=";
   };
 
   installPhase = ''

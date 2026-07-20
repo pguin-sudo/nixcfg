@@ -18,7 +18,6 @@ in {
       # Custom
       chromium
       meshchat
-      meshradar
     ];
   };
 }

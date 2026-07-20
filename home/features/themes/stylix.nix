@@ -12,8 +12,6 @@ in
 {
   options.features.themes.stylix.enable = mkEnableOption "stylix theme";
 
-  imports = [ inputs.stylix.homeModules.stylix ];
-
   config = mkIf cfg.enable {
     stylix = {
       enable = true;
@@ -61,6 +59,7 @@ in
         firefox.enable = false; # Define theme for firefox manually
 
         waybar.enable = false;
+        zed.enable = false; # Zed config is managed manually
       };
     };
   };
