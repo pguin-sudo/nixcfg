@@ -52,5 +52,4 @@
   programs.zsh.enable = true;
 
   home-manager.users.pguin = import ../../../home/pguin/${config.networking.hostName}.nix;
-  home-manager.extraSpecialArgs = { inherit inputs; };
 }

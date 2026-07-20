@@ -5,7 +5,7 @@
   config,
   lib,
   pkgs,
-  zen-browser,
+  inputs,
   ...
 }: {
   home.username = "pguin";
@@ -14,7 +14,7 @@
 
   home.packages = with pkgs; [
     nvtopPackages.amd
-    zen-browser.packages.x86_64-linux.default
+    inputs.zen-browser.packages.x86_64-linux.default
   ];
 
   home.file = {};
