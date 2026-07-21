@@ -17,25 +17,28 @@ in
       right_format = "$singularity$kubernetes$vcsh$hg_branch$pijul_channel$c$cmake$cobol$daml$dart$deno$dotnet$elixir$elm$erlang$fennel$golang$guix_shell$haskell$haxe$helm$java$julia$kotlin$gradle$lua$nim$nodejs$ocaml$opa$perl$pulumi$purescript$python$raku$rlang$red$ruby$rust$scala$solidity$swift$terraform$vlang$vagrant$zig$buf$conda$meson$spack$memory_usage$aws$gcloud$openstack$azure$cpp$kotlin$ocaml$pixi$rlang$php$crystal$custom$status$os$time";
       continuation_prompt = "▶▶ ";
 
+      # Colors use ANSI names (not hardcoded hex) so the prompt inherits the
+      # terminal's palette — i.e. kitty's matugen colors from Noctalia — and
+      # stays consistent as the wallpaper theme changes.
       directory = {
         disabled = false;
-        format = "[$path](bold fg:#8be9fd)";
+        format = "[$path](bold cyan)";
         truncate_to_repo = false;
       };
 
-      git_branch.format = " [  $branch](fg:#9198a1)";
+      git_branch.format = " [  $branch](bright-black)";
 
       git_status = {
         ahead = "⇡\${count}";
         behind = "⇣\${count}";
         diverged = "⇕⇡\${ahead_count}⇣\${behind_count}";
-        format = "[[( $all_status$ahead_behind )](fg:#769ff0)]($style)";
-        style = "bg:#394260";
+        format = "[[( $all_status$ahead_behind )](blue)]($style)";
+        style = "bg:bright-black";
       };
 
       time = {
         disabled = false;
-        format = "[[  $time ](fg:#a0a9cb )]($style)";
+        format = "[[  $time ](bright-black)]($style)";
         time_format = "%R";
       };
 

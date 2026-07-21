@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib;
@@ -14,6 +15,7 @@ in
     wayland.windowManager.hyprland = {
       enable = true;
       systemd.enable = true;
+      configType = "hyprlang";
 
       xwayland.enable = true;
 
@@ -22,16 +24,23 @@ in
           force_zero_scaling = true;
         };
 
+        # Force every output to scale 1 (no fractional 1.5). Empty name = all
+        # monitors, preferred resolution, auto position, scale 1.
+        monitor = [
+          ",preferred,auto,1"
+        ];
+
         exec-once = [
-          "dms run"
+          "noctalia"
         ];
 
         env = [
+          "XCURSOR_THEME,Bibata-Modern-Ice"
           "XCURSOR_SIZE,24"
           "NIXOS_OZONE_WL,1"
           "GTK_THEME,Nightfox-Dark"
           "QT_AUTO_SCREEN_SCALE_FACTOR,1"
-          "ELECTRON_EXTRA_FLAGS,--force-device-scale-factor=1.5"
+          "ELECTRON_EXTRA_FLAGS,--force-device-scale-factor=1"
           "QT_QPA_PLATFORMTHEME,qt6ct"
           "QT_QPA_PLATFORMTHEME_QT6,qt6ct"
           "EDITOR,$editor"
@@ -151,7 +160,9 @@ in
         "$mainMod" = "SUPER";
         "$terminal" = "kitty";
         "$explorer" = "yazi";
-        "$browser" = "zen-browser";
+        # Per-host browser binary (zen-beta on lambda, firefox on delta) — the
+        # old literal "zen-browser" was not a real binary name.
+        "$browser" = config.home.sessionVariables.BROWSER or "firefox";
         "$top" = "btop";
         "$editor" = "nvim";
         "$ide" = "zeditor";
@@ -183,7 +194,7 @@ in
           "$mainMod Shift, P, pin"
 
           # System (Overlays)
-          "$mainMod, P, exec, dms screenshot region --cursor off --no-file -q 100 --stdout | swappy -f - -o ~/Photos/screenshots/screenshot-$(date +'%d-%m-%Y_%H%M').png"
+          "$mainMod, P, exec, noctalia msg screenshot-region"
 
           # Workspaces
           "$mainMod, 1, workspace, 1"
@@ -215,13 +226,12 @@ in
           "$mainMod Shift, S, movetoworkspace, special"
 
           # Scripts
-          #"$mainMod Shift, W, exec, bash ~/.config/hypr/scripts/next-wallpaper.sh"
-
-          # DMS
-          "$mainMod, V, exec, dms ipc clipboard toggle"
-          "$mainMod Shift, W, exec, dms ipc wallpaper next"
-          "$mainMod, A, exec, dms ipc spotlight toggle"
           "$mainMod, U, exec, bash ~/.config/hypr/scripts/rgb_sync.sh"
+
+          # Noctalia panels (wallpaper is Noctalia-managed, see noctalia.nix)
+          "$mainMod Shift, W, exec, noctalia msg wallpaper-next"
+          "$mainMod, V, exec, noctalia msg panel-toggle clipboard"
+          "$mainMod, A, exec, noctalia msg panel-toggle launcher"
 
           # Apps
           "$mainMod, T, exec, $terminal"
@@ -237,7 +247,7 @@ in
 
           # Laptop keys
           "SUPER SHIFT, code:201, exec, bash ~/.config/hypr/scripts/random-sound.sh"
-          "SUPER, code:60, exec, sudo -E howdy test"
+          # "SUPER, code:60, exec, sudo -E howdy test" # Howdy disabled
           ", code:156, exec, $terminal -e zsh -ic \"rebuild\""
         ];
 
@@ -251,46 +261,63 @@ in
           "$mainMod, right, resizeactive, 40 0"
           "$mainMod, up, resizeactive, 0 -40"
           "$mainMod, down, resizeactive, 0 40"
-          ", XF86AudioPlay, exec, dms ipc mpris play"
-          ", XF86AudioPause, exec, dms ipc mpris pause"
-          ", XF86AudioNext, exec, dms ipc mpris next"
-          ", XF86AudioPrev, exec, dms ipc mpris previous"
-          ", XF86AudioMute, exec, pamixer -t"
-          ", XF86AudioLowerVolume, exec, pamixer -d 2"
-          ", XF86AudioRaiseVolume, exec, pamixer -i 2"
-          ", XF86MonBrightnessUp, exec, brightnessctl set 1%+"
-          ", XF86MonBrightnessDown, exec, brightnessctl set 1%-"
-          ", XF86AudioMicMute, exec, dms brightness set leds:platform::micmute $(dms ipc call audio micmute | grep -q \"unmuted\" && echo 0 || echo 100)"
+          ", XF86AudioPlay, exec, noctalia msg media toggle"
+          ", XF86AudioPause, exec, noctalia msg media toggle"
+          ", XF86AudioNext, exec, noctalia msg media next"
+          ", XF86AudioPrev, exec, noctalia msg media previous"
+          ", XF86AudioMute, exec, noctalia msg volume-mute"
+          ", XF86AudioLowerVolume, exec, noctalia msg volume-down 2"
+          ", XF86AudioRaiseVolume, exec, noctalia msg volume-up 2"
+          ", XF86MonBrightnessUp, exec, noctalia msg brightness-up"
+          ", XF86MonBrightnessDown, exec, noctalia msg brightness-down"
+          ", XF86AudioMicMute, exec, noctalia msg mic-mute"
         ];
 
         bindl = [
-          ", xf86poweroff, exec, dms ipc lock lock"
+          ", xf86poweroff, exec, noctalia msg session lock"
         ];
 
-        windowrulev2 = [
-          "workspace special, class:^(org.telegram.desktop)$"
-          "workspace special, class:^(discord)$"
-          "workspace special, class:^(vesktop)$"
-          "float, class:^(kitty)$, title:^(termfilechooser)$"
-          "center, class:^(kitty)$, title:^(termfilechooser)$"
-          "size 800 600, class:^(kitty)$, title:^(termfilechooser)$"
-          "bordersize 10, class:^(kitty)$, title:^(termfilechooser)$"
-          "float, title:.*Picture-in-Picture.*"
-          "pin, title:.*Picture-in-Picture.*"
-          "size 480 270, title:.*Picture-in-Picture.*"
-          "move 75% 10%, title:.*Picture-in-Picture.*"
+        # windowrulev2 is a hard error on Hyprland >= 0.55 ("windowrulev2 is
+        # deprecated"). New syntax: "match:<field> <value>" selectors mixed
+        # with "<effect> <value>" (boolean effects need an explicit on/1/true),
+        # all matches+effects sharing one condition can live in a single line.
+        # bordersize was also renamed to border_size.
+        windowrule = [
+          "match:class ^(org.telegram.desktop)$, workspace special"
+          "match:class ^(discord)$, workspace special"
+          "match:class ^(vesktop)$, workspace special"
+          "match:class ^(kitty)$, match:title ^(termfilechooser)$, float on, center on, size 800 600, border_size 10"
+          "match:title .*Picture-in-Picture.*, float on, pin on, size 480 270, move 75% 10%"
+        ];
+
+        # Frosted-glass Noctalia bar: blur whatever is behind its (low-opacity)
+        # layer. Same 0.55 match:/effect syntax as windowrule; layer matches on
+        # namespace (live name: noctalia-bar-default).
+        layerrule = [
+          "match:namespace ^(noctalia-bar-.+)$, blur on, ignore_alpha 0.2"
         ];
 
       };
 
+      # Source the runtime layout files nwg-displays writes (per-monitor
+      # resolution/scale + workspace-to-monitor assignments). Sourced AFTER the
+      # settings above, so the GUI's choices override the ",preferred,auto,1"
+      # fallback. Empty stubs are created on activation (see home.activation
+      # below) so these sources never error before nwg-displays has run once.
       extraConfig = ''
-        source = ~/.config/hypr/dms/colors.conf
-        source = ~/.config/hypr/dms/cursor.conf
-        source = ~/.config/hypr/dms/layout.conf
-        source = ~/.config/hypr/dms/windowrules.conf
-        source = ~/.config/hypr/dms/outputs.conf
+        source = ~/.config/hypr/monitors.conf
+        source = ~/.config/hypr/workspaces.conf
       '';
     };
+
+    # Make sure the nwg-displays output files exist so Hyprland's `source` above
+    # succeeds on a fresh machine; never clobber real content nwg-displays wrote.
+    home.activation.nwgDisplaysStubs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run mkdir -p "$HOME/.config/hypr"
+      for f in monitors.conf workspaces.conf; do
+        [ -e "$HOME/.config/hypr/$f" ] || run touch "$HOME/.config/hypr/$f"
+      done
+    '';
 
     # Scratchpad
     home.file.".config/hypr/pyprland.toml".text = ''
@@ -426,5 +453,9 @@ in
         wayvnc 0.0.0.0 5900 "$VIRTUAL_MONITOR"
       '';
     };
+
+    home.packages = with pkgs; [
+      bibata-cursors
+    ];
   };
 }

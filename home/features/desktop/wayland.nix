@@ -42,7 +42,7 @@ in
       mako
       libnotify
 
-      swww
+      awww
 
       # Mime & xdg
       xdg-utils
@@ -73,7 +73,7 @@ in
         settings.default-timeout = 5000;
       };
 
-      swww = {
+      awww = {
         enable = true;
       };
     };

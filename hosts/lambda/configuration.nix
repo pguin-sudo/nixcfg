@@ -27,8 +27,7 @@
   common.services.zapret.enable = true;
   # Dev
   common.services.docker.enable = true;
-  # Howdy
-  common.services.howdy.enable = true;
+  # Howdy disabled due to incompatibility with new PAM module
 
   # User
   common.services.dm.enable = true;
@@ -113,7 +112,7 @@
     os-prober
   ];
 
-  # Battery data for DMS
+  # Battery data for the shell/greeter
   services.upower.enable = true;
 
   # Before changing this value read the documentation for this option

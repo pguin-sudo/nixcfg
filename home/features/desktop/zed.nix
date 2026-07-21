@@ -44,7 +44,7 @@ in
         "git_panel": { "dock": "left" },
         "session": { "trust_all_worktrees": true },
         "vim_mode": true,
-        "theme": "DankShell Dark Transparent",
+        "theme": "Noctalia Dark",
         "icon_theme": "Zed (Default)",
         "ui_font_size": 16,
         "buffer_font_size": 15,

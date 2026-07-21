@@ -16,12 +16,19 @@
 
     nixvim = {
       url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     stylix.url = "github:nix-community/stylix";
 
-    dms.url = "github:AvengeMedia/DankMaterialShell";
+    noctalia = {
+      url = "github:noctalia-dev/noctalia/cachix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     asus-numpad-driver = {
       url = "github:asus-linux-drivers/asus-numberpad-driver";
@@ -48,7 +55,6 @@
       nixvim,
       stylix,
       spicetify-nix,
-      dms,
       asus-numpad-driver,
       zen-browser,
       ...
@@ -82,7 +88,10 @@
 
               systemd.services.nixos-pguin-installer = {
                 description = "pguin NixOS installer";
-                after = [ "network-online.target" "getty.target" ];
+                after = [
+                  "network-online.target"
+                  "getty.target"
+                ];
                 wants = [ "network-online.target" ];
                 wantedBy = [ "multi-user.target" ];
                 serviceConfig = {
@@ -105,7 +114,10 @@
                 settings.PermitRootLogin = "yes";
               };
 
-              nix.settings.experimental-features = [ "nix-command" "flakes" ];
+              nix.settings.experimental-features = [
+                "nix-command"
+                "flakes"
+              ];
             })
           ];
         };
@@ -132,11 +144,11 @@
             nixos-hardware.nixosModules.common-pc-laptop-ssd
             nixos-hardware.nixosModules.asus-battery
             asus-numpad-driver.nixosModules.default
-            # Howdy
-            { disabledModules = [ "security/pam.nix" ]; }
-            "${howdy}/nixos/modules/security/pam.nix"
-            "${howdy}/nixos/modules/services/security/howdy"
-            "${howdy}/nixos/modules/services/misc/linux-enable-ir-emitter.nix"
+            # Howdy (disabled due to incompatibility with new PAM module)
+            # { disabledModules = [ "security/pam.nix" ]; }
+            # "${howdy}/nixos/modules/security/pam.nix"
+            # "${howdy}/nixos/modules/services/security/howdy"
+            # "${howdy}/nixos/modules/services/misc/linux-enable-ir-emitter.nix"
             # Disko
             disko.nixosModules.disko
             ./hosts/lambda/partitioning.nix

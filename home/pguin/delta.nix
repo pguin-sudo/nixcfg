@@ -44,7 +44,7 @@
       hyprland.enable = true;
       waybar.enable = false;
       wayland.enable = true;
-      dms.enable = true;
+      noctalia.enable = true;
       xdg.enable = true;
       kitty.enable = true;
       dolphin.enable = true;
