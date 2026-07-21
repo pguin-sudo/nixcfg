@@ -14,8 +14,9 @@ in {
     home.packages = [ pkgs.kitty ];
 
     home.file.".config/kitty/kitty.conf".text = ''
-      include dank-tabs.conf
-      include dank-theme.conf
+      # Noctalia matugen palette (theme.templates.user.kitty in noctalia.nix).
+      # Absent until Noctalia first applies a theme — kitty warns and continues.
+      include ${config.home.homeDirectory}/.config/noctalia/generated/kitty-colors.conf
 
       # Basic
       scrollback_lines 5000

@@ -121,7 +121,7 @@
     os-prober
   ];
 
-  # Battery data for DMS
+  # Battery data for the shell/greeter
   services.upower.enable = true;
 
   # Before changing this value read the documentation for this option

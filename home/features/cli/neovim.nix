@@ -279,15 +279,28 @@ in
       };
       extraPlugins = [
         pkgs.vimPlugins.vim-markdown
+        # Applies the Noctalia matugen palette via require('base16-colorscheme')
+        # from ~/.config/nvim/lua/matugen.lua (see extraConfigLua + noctalia.nix).
+        pkgs.vimPlugins.base16-nvim
       ];
-      extraConfigLua = "";
+      extraConfigLua = ''
+        -- Noctalia matugen palette. Written to ~/.config/nvim/lua/matugen.lua by
+        -- the theme.templates.user.neovim template (see noctalia.nix); it is
+        -- absent until Noctalia first applies a theme, so load it defensively.
+        -- The literal string pcall(require, 'matugen') below also matches the
+        -- guard in the upstream template's post_hook, keeping it a no-op here.
+        local ok, matugen = pcall(require, 'matugen')
+        if ok and type(matugen) == "table" and matugen.setup then
+          pcall(matugen.setup)
+        end
+      '';
       extraPackages = [
         pkgs.stylua
         pkgs.nixfmt
         pkgs.hunspell
         pkgs.hunspellDicts.ru-ru
         pkgs.hunspellDicts.en-us
-        pkgs.nodePackages.prettier
+        pkgs.prettier
       ];
     };
   };

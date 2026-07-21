@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  inputs,
   ...
 }:
 with lib;
@@ -10,18 +11,19 @@ in
 {
   options.common.services.dm.enable = mkEnableOption "enable dm";
 
+  imports = [ inputs.noctalia-greeter.nixosModules.default ];
+
+  # https://docs.noctalia.dev/v5/greeter/
   config = mkIf cfg.enable {
-    services.displayManager = {
+    programs.noctalia-greeter = {
       enable = true;
-      defaultSession = "hyprland";
-      ly = {
-        enable = true;
-      };
     };
 
-    services.gnome.gnome-keyring.enable = true;
+    services.displayManager.defaultSession = "hyprland";
 
-    security.pam.services.ly.enableGnomeKeyring = true;
+    # greetd (the login manager noctalia-greeter drives) picks this up
+    # automatically for its PAM service.
+    services.gnome.gnome-keyring.enable = true;
 
     programs.hyprland.enable = true;
   };

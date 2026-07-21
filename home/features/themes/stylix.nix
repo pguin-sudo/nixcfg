@@ -12,55 +12,61 @@ in
 {
   options.features.themes.stylix.enable = mkEnableOption "stylix theme";
 
-  config = mkIf cfg.enable {
-    stylix = {
-      enable = true;
+  config = mkMerge [
+    {
+      # Always available so consumers that only need a color source (e.g.
+      # features.themes.rgb) work even with the rest of stylix's theming
+      # (features.themes.stylix.enable) turned off.
+      stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
+    }
+    (mkIf cfg.enable {
+      stylix = {
+        enable = true;
 
-      #base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-medium.yaml";
-      base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-mocha.yaml";
-      polarity = "dark";
+        polarity = "dark";
 
-      cursor = {
-        name = "Bibata-Modern-Ice";
-        package = pkgs.bibata-cursors;
-        size = 24;
-      };
-
-      fonts = {
-        sizes = {
-          applications = 12;
-          desktop = 10;
+        cursor = {
+          name = "Bibata-Modern-Ice";
+          package = pkgs.bibata-cursors;
+          size = 24;
         };
 
-        serif = {
-          package = pkgs.libertinus;
-          name = "Libertinus Serif";
+        fonts = {
+          sizes = {
+            applications = 12;
+            desktop = 10;
+          };
+
+          serif = {
+            package = pkgs.libertinus;
+            name = "Libertinus Serif";
+          };
+
+          sansSerif = {
+            package = pkgs.inter;
+            name = "Inter Variable";
+          };
+
+          monospace = {
+            package = pkgs.nerd-fonts.fira-code;
+            name = "FiraCode";
+          };
         };
 
-        sansSerif = {
-          package = pkgs.inter;
-          name = "Inter Variable";
+        opacity = {
+          applications = 0.3;
+          terminal = 0.3;
+          desktop = 0.3;
+          popups = 0.3;
         };
 
-        monospace = {
-          package = pkgs.nerd-fonts.fira-code;
-          name = "FiraCode";
+        targets = {
+          firefox.enable = false; # Define theme for firefox manually
+
+          waybar.enable = false;
+          zed.enable = false; # Zed config is managed manually
         };
       };
-
-      opacity = {
-        applications = 0.3;
-        terminal = 0.3;
-        desktop = 0.3;
-        popups = 0.3;
-      };
-
-      targets = {
-        firefox.enable = false; # Define theme for firefox manually
-
-        waybar.enable = false;
-        zed.enable = false; # Zed config is managed manually
-      };
-    };
-  };
+    })
+  ];
 }
