@@ -31,7 +31,8 @@ in
       dejavu_fonts
       liberation_ttf
 
-      corefonts # ms fonts
+      corefonts # ms fonts (Times New Roman, Arial, Courier New, ...)
+      vista-fonts # ms office fonts (Calibri, Cambria, Consolas, ...)
     ];
 
     fonts.fontconfig = {
