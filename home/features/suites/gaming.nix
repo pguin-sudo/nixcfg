@@ -18,7 +18,7 @@ in
       #vesktop
       discord
       gzdoom
-      prismlauncher
+      prismlauncher-cracked
     ];
 
     #programs.java = {
