@@ -4,9 +4,11 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.cli.tmux;
-in {
+in
+{
   options.features.cli.tmux.enable = mkEnableOption "enable tmux";
 
   config = mkIf cfg.enable {
@@ -33,6 +35,7 @@ in {
         set  -g focus-events on
 
         set  -g mouse             on
+
         set  -s escape-time       0
         set  -g history-limit     2000
 
@@ -67,13 +70,18 @@ in {
         bind -n M-Enter new-window
         bind -n M-c kill-pane
         bind -n M-q kill-window
+
         bind -n M-d detach
         bind -n M-Q confirm-before -p "Kill entire session? (y/n)" kill-session
 
         bind -T copy-mode-vi v send -X begin-selection
         bind -T copy-mode-vi y send -X copy-pipe-and-cancel "wl-copy || xclip -in -selection clipboard"
+
         bind -n M-/ copy-mode \; command-prompt -p "(search down)" "send -X search-forward '%%%'"
         bind -n M-? copy-mode \; command-prompt -p "(search up)"   "send -X search-backward '%%%'"
+
+        bind -n WheelUpPane select-pane -t = \; copy-mode -e \; send-keys -M
+        bind -n WheelDownPane select-pane -t = \; send-keys -M
       '';
 
       plugins = with pkgs; [
