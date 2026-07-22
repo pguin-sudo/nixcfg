@@ -100,6 +100,14 @@ in
                 output_path = "~/.config/nvim/lua/matugen.lua";
                 post_hook = "pkill -SIGUSR1 nvim || true";
               };
+              # No upstream template for tmux. tmux.conf (managed) does
+              # `source-file -q` on this generated, non-managed file.
+              tmux = {
+                enabled = true;
+                input_path = "${../../resources/noctalia-templates/tmux-colors.conf}";
+                output_path = "~/.config/tmux/noctalia-colors.conf";
+                post_hook = ''tmux source-file "$HOME/.config/tmux/noctalia-colors.conf" >/dev/null 2>&1 || true'';
+              };
             };
           };
         };
