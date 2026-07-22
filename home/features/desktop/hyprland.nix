@@ -307,6 +307,9 @@ in
       extraConfig = ''
         source = ~/.config/hypr/monitors.conf
         source = ~/.config/hypr/workspaces.conf
+
+        # FIX CURSOR FLICKERING
+        cursor:no_hardware_cursors = 1
       '';
     };
 
