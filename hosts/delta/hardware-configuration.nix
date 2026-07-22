@@ -16,20 +16,7 @@
   boot.kernelModules = ["kvm-amd"];
   boot.extraModulePackages = [];
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/92f0ab5b-6e67-405a-baeb-b73d6b596ea8";
-    fsType = "ext4";
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/B239-65C7";
-    fsType = "vfat";
-    options = ["fmask=0022" "dmask=0022"];
-  };
-
-  swapDevices = [
-    {device = "/dev/disk/by-uuid/c05ba315-fbe1-4ac2-a828-78930bd7dc41";}
-  ];
+  # fileSystems and swapDevices for the main disk are managed by disko (hosts/delta/partitioning.nix)
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
