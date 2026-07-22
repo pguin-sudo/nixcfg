@@ -5,34 +5,21 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 {
   home.username = "pguin";
   home.homeDirectory = lib.mkDefault "/home/${config.home.username}";
-  home.stateVersion = "24.05"; # Please read the comment before changing.
+  home.stateVersion = "24.05";
 
   home.packages = with pkgs; [
     nvtopPackages.nvidia
+    inputs.zen-browser.packages.x86_64-linux.default
   ];
 
   home.file = { };
 
-  # Home Manager can also manage your environment variables through
-  # 'home.sessionVariables'. If you don't want to manage your shell through Home
-  # Manager then you have to manually source 'hm-session-vars.sh' located at
-  # either
-  #
-  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  /etc/profiles/per-user/m3tam3re/etc/profile.d/hm-session-vars.sh
-  #
   home.sessionVariables = {
     BROWSER = "zen-beta";
     EDITOR = "nvim";
@@ -66,6 +53,5 @@
     XDG_DATA_HOME = "${config.home.homeDirectory}/.local/share";
   };
 
-  # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
