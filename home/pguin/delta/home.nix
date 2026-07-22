@@ -6,7 +6,8 @@
   lib,
   pkgs,
   ...
-}: {
+}:
+{
   home.username = "pguin";
   home.homeDirectory = lib.mkDefault "/home/${config.home.username}";
   home.stateVersion = "24.05"; # Please read the comment before changing.
@@ -15,7 +16,7 @@
     nvtopPackages.nvidia
   ];
 
-  home.file = {};
+  home.file = { };
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. If you don't want to manage your shell through Home
@@ -33,7 +34,7 @@
   #  /etc/profiles/per-user/m3tam3re/etc/profile.d/hm-session-vars.sh
   #
   home.sessionVariables = {
-    BROWSER = "firefox";
+    BROWSER = "zen-beta";
     EDITOR = "nvim";
     TERMINAL = "kitty";
     # NIXOS_OZONE_WL = "1";

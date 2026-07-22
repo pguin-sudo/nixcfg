@@ -18,7 +18,8 @@ in
       nil
 
       # Python
-      python3
+      (lib.hiPrio python313)
+      python314
       poetry
       # Moved to neovim config
       #basedpyright
