@@ -4,20 +4,40 @@
   pkgs,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.suites.mesh;
-in {
+in
+{
   options.features.suites.mesh.enable = mkEnableOption "enable software for mesh networks";
-
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       python313Packages.nomadnet
       python313Packages.lxmf
+      python313Packages.bleak
       rns
-
       # Custom
       chromium
-      meshchat
+      meshchatx
     ];
+
+    systemd.user.services.rnsd = {
+      Unit = {
+        Description = "Reticulum Network Stack daemon";
+        After = [
+          "network.target"
+          "bluetooth.target"
+        ];
+        Wants = [ "network.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.rns}/bin/rnsd --service";
+        Restart = "on-failure";
+        RestartSec = 5;
+      };
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+    };
   };
 }

@@ -12,7 +12,7 @@ in
 
   config = mkIf cfg.enable {
     programs.starship.settings = {
-      add_newline = false;
+      add_newline = true;
       format = "$directory$git_branch$git_commit$git_state $git_status \n$character\n\n";
       right_format = "$singularity$kubernetes$vcsh$hg_branch$pijul_channel$c$cmake$cobol$daml$dart$deno$dotnet$elixir$elm$erlang$fennel$golang$guix_shell$haskell$haxe$helm$java$julia$kotlin$gradle$lua$nim$nodejs$ocaml$opa$perl$pulumi$purescript$python$raku$rlang$red$ruby$rust$scala$solidity$swift$terraform$vlang$vagrant$zig$buf$conda$meson$spack$memory_usage$aws$gcloud$openstack$azure$cpp$kotlin$ocaml$pixi$rlang$php$crystal$custom$status$os$time";
       continuation_prompt = "▶▶ ";
