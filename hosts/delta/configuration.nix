@@ -32,6 +32,14 @@
   # VPN
   common.services.throne.enable = true;
 
+  # Wifi hotspot: share internet through the wlan adapter while delta is on
+  # SSID/password are NOT here: create /etc/hotspot-secrets.env on delta with
+  #   HOTSPOT_SSID=... and HOTSPOT_PSK=...  (see hotspot.nix module for details)
+  common.services.hotspot = {
+    enable = true;
+    interface = "wlp2s0f0u5";
+  };
+
   # User
   common.services.dm.enable = true;
 
