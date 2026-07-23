@@ -7,6 +7,7 @@
 with lib;
 let
   cfg = config.features.desktop.wayland;
+  browserDesktopFile = "${config.home.sessionVariables.BROWSER or "firefox"}.desktop";
 in
 {
   options.features.desktop.wayland.enable = mkEnableOption "wayland extra tools and config";
@@ -85,20 +86,53 @@ in
           pkgs.xdg-desktop-portal-gtk
           pkgs.xdg-desktop-portal-hyprland
           pkgs.xdg-desktop-portal-wlr
+          pkgs.xdg-desktop-portal-termfilechooser
         ];
+
+        # Without this, the FileChooser interface has no backend matching
+        # UseIn=Hyprland (xdg-desktop-portal-gtk only advertises UseIn=gnome),
+        # which is why browsers/apps were falling back to launching a full
+        # Dolphin window instead of a proper file picker.
+        config = {
+          common.default = [ "hyprland" "gtk" ];
+          hyprland = {
+            default = [ "hyprland" "gtk" ];
+            "org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
+          };
+        };
+      };
+
+      configFile."xdg-desktop-portal-termfilechooser/config".text = ''
+        [filechooser]
+        cmd=${pkgs.xdg-desktop-portal-termfilechooser}/share/xdg-desktop-portal-termfilechooser/yazi-wrapper.sh
+        default_dir=$HOME
+        env=TERMCMD=kitty
+        open_mode=suggested
+        save_mode=suggested
+      '';
+
+      desktopEntries.yazi = {
+        name = "Yazi";
+        genericName = "File Manager";
+        comment = "Terminal file manager";
+        exec = "kitty --title yazi -e yazi %U";
+        terminal = false;
+        icon = "yazi";
+        categories = [ "System" "FileManager" ];
+        mimeType = [ "inode/directory" ];
       };
 
       mimeApps = {
         enable = true;
 
         defaultApplications = {
-          "inode/directory" = [ "org.kde.dolphin.desktop" ];
-          "x-scheme-handler/file" = [ "org.kde.dolphin.desktop" ];
+          "inode/directory" = [ "yazi.desktop" "org.kde.dolphin.desktop" ];
+          "x-scheme-handler/file" = [ "yazi.desktop" "org.kde.dolphin.desktop" ];
 
-          "x-scheme-handler/http" = [ "firefox.desktop" ];
-          "x-scheme-handler/https" = [ "firefox.desktop" ];
-          "x-scheme-handler/about" = [ "firefox.desktop" ];
-          "x-scheme-handler/unknown" = [ "firefox.desktop" ];
+          "x-scheme-handler/http" = [ browserDesktopFile ];
+          "x-scheme-handler/https" = [ browserDesktopFile ];
+          "x-scheme-handler/about" = [ browserDesktopFile ];
+          "x-scheme-handler/unknown" = [ browserDesktopFile ];
 
           "image/jpeg" = [ "swayimg.desktop" ];
           "image/jpg" = [ "swayimg.desktop" ];
