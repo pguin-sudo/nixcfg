@@ -3,6 +3,7 @@
     ./appimage.nix
     ./dm.nix
     ./docker.nix
+    ./hotspot.nix
     # ./howdy.nix # Disabled due to incompatibility with new PAM module
     ./i2p.nix
     ./obs-studio.nix
