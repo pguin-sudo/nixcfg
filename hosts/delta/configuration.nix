@@ -44,6 +44,7 @@
   common.services.dm.enable = true;
 
   #Bootloader
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.loader = {
     systemd-boot.enable = false;
     grub = {
