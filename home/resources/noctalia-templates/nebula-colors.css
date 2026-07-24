@@ -1,0 +1,22 @@
+/* Noctalia matugen palette applied to the Zen-Nebula theme.
+ *
+ * Rendered by Noctalia (theme.templates.user.nebula, see
+ * home/features/desktop/noctalia.nix) from the current wallpaper-derived
+ * palette, then deployed by the same template's post_hook into the live Zen
+ * profile as chrome/nebula/noctalia-colors.css, imported right after
+ * nebula/config.css so these !important values win the cascade over
+ * Nebula's own defaults.
+ */
+
+:root {
+  --nebula-color-glass: color-mix(in srgb, {{colors.surface_container.default.hex}} 55%, transparent) !important;
+
+  --nebula-ui-tint: color-mix(in srgb, {{colors.primary.default.hex}} 12%, transparent) !important;
+  --nebula-website-tint: color-mix(in srgb, {{colors.primary.default.hex}} 0%, transparent) !important;
+
+  --nebula-color-min: color-mix(in srgb, {{colors.surface_container.default.hex}} 15%, transparent) !important;
+  --nebula-color: color-mix(in srgb, {{colors.primary.default.hex}} 22%, transparent) !important;
+  --nebula-color-hover: color-mix(in srgb, {{colors.primary.default.hex}} 32%, transparent) !important;
+  --nebula-color-selected: color-mix(in srgb, {{colors.primary.default.hex}} 45%, transparent) !important;
+  --nebula-color-shadow: color-mix(in srgb, {{colors.shadow.default.hex}} 45%, transparent) !important;
+}

@@ -288,6 +288,7 @@ in
           "match:class ^(vesktop)$, workspace special"
           "match:class ^(kitty)$, match:title ^(termfilechooser)$, float on, center on, size 800 600, border_size 10"
           "match:title .*Picture-in-Picture.*, float on, pin on, size 480 270, move 75% 10%"
+          "match:class ^(zen-beta)$, opacity 0.98 0.98"
         ];
 
         # Frosted-glass Noctalia bar: blur whatever is behind its (low-opacity)
