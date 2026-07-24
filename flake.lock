@@ -180,6 +180,22 @@
         "type": "github"
       }
     },
+    "fx-autoconfig": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1784800794,
+        "narHash": "sha256-bpOt/fD8zZiKbb2sRQHl7eobuGklY9c2QI/jmYi9WE4=",
+        "owner": "MrOtherGuy",
+        "repo": "fx-autoconfig",
+        "rev": "dfdab5684faffc112b76ccb1d8cab7f75da0102c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "MrOtherGuy",
+        "repo": "fx-autoconfig",
+        "type": "github"
+      }
+    },
     "gnome-shell": {
       "flake": false,
       "locked": {
@@ -471,6 +487,7 @@
       "inputs": {
         "asus-numpad-driver": "asus-numpad-driver",
         "disko": "disko",
+        "fx-autoconfig": "fx-autoconfig",
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_3",
@@ -481,7 +498,8 @@
         "noctalia-greeter": "noctalia-greeter",
         "spicetify-nix": "spicetify-nix",
         "stylix": "stylix",
-        "zen-browser": "zen-browser"
+        "zen-browser": "zen-browser",
+        "zen-nebula": "zen-nebula"
       }
     },
     "spicetify-nix": {
@@ -662,6 +680,22 @@
       "original": {
         "owner": "0xc000022070",
         "repo": "zen-browser-flake",
+        "type": "github"
+      }
+    },
+    "zen-nebula": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1778163259,
+        "narHash": "sha256-1jZ+7ndp31qTGreStonmSz97zulA48fTR+0g/Zqw0UI=",
+        "owner": "JustAdumbPrsn",
+        "repo": "Zen-Nebula",
+        "rev": "31ba4a3bde77391e173a6a3460d9fb0ab9bca8a0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "JustAdumbPrsn",
+        "repo": "Zen-Nebula",
         "type": "github"
       }
     }

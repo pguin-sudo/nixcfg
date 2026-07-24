@@ -8,6 +8,14 @@
   inputs,
   ...
 }:
+let
+  # fx-autoconfig's loader, baked into the (immutable) Nix store install dir
+  # via extraPrefsFiles so Zen-Nebula's js/nebula.uc.js can run. See
+  # home/features/desktop/noctalia.nix for the profile-side half of the setup.
+  zenBeta = inputs.zen-browser.packages.x86_64-linux.default.override {
+    extraPrefsFiles = [ "${inputs.fx-autoconfig}/program/config.js" ];
+  };
+in
 {
   home.username = "pguin";
   home.homeDirectory = lib.mkDefault "/home/${config.home.username}";
@@ -15,7 +23,7 @@
 
   home.packages = with pkgs; [
     nvtopPackages.nvidia
-    inputs.zen-browser.packages.x86_64-linux.default
+    zenBeta
   ];
 
   home.file = { };

@@ -43,6 +43,22 @@
     };
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
+
+    # Loader for arbitrary .uc.js userChrome scripts, needed to run Nebula's
+    # js/nebula.uc.js (see home/features/desktop/noctalia.nix). Baked into the
+    # zen-beta package via `.override { extraPrefsFiles = ...; }` since the
+    # Nix store install dir is read-only and the upstream installer normally
+    # writes there directly.
+    fx-autoconfig = {
+      url = "github:MrOtherGuy/fx-autoconfig";
+      flake = false;
+    };
+
+    # Glassmorphism/transparency theme for Zen Browser.
+    zen-nebula = {
+      url = "github:JustAdumbPrsn/Zen-Nebula";
+      flake = false;
+    };
   };
 
   outputs =
