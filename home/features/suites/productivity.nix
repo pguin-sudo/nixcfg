@@ -17,6 +17,7 @@ in
       telegram-desktop
       obsidian
       qbittorrent
+      iloader # sideload .ipa files onto iPhone
       #webcord
       #bottles
       #tailscale

@@ -11,6 +11,7 @@
     ./polkit.nix
     ./steam.nix
     ./throne.nix
+    ./usbmuxd.nix
     ./vm.nix
     ./vpn.nix
     ./xdgportal.nix

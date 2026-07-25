@@ -27,6 +27,8 @@
   common.services.zapret.enable = true;
   # Dev
   common.services.docker.enable = true;
+  # iOS device USB access (iloader sideloading)
+  common.services.usbmuxd.enable = true;
   # Howdy disabled due to incompatibility with new PAM module
 
   # User
