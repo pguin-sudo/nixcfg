@@ -33,6 +33,7 @@
   common.services.dm.enable = true;
   # VPN
   common.services.throne.enable = true;
+  common.services.vpn.enable = true;
 
   #services.samba.enable = true;
 

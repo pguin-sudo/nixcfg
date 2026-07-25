@@ -8,6 +8,7 @@
     ./starship.nix
     ./system-tools.nix
     ./tmux.nix
+    ./vpnctl.nix
     ./yazi.nix
     ./zsh.nix
   ];

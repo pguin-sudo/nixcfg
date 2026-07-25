@@ -1,0 +1,20 @@
+{
+  "widget": {
+    "connecting": "Connecting…",
+    "disconnected": "VPN disconnected",
+    "tooltip-profile": "Profile",
+    "tooltip-type": "Type"
+  },
+  "panel": {
+    "title": "VPN",
+    "status-active": "active",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "empty": "No profiles yet. Paste a link below to add one.",
+    "add-placeholder": "Remnawave subscription URL or vpn:// link",
+    "add-button": "Add"
+  },
+  "notify": {
+    "failed-title": "VPN Switcher"
+  }
+}

@@ -1,0 +1,38 @@
+[project]
+name = "vpnctl"
+version = "0.1.0"
+description = "Unified control for AmneziaWG and sing-box (Remnawave) VPN profiles"
+requires-python = ">=3.11"
+dependencies = [
+  "click>=8.1",
+  "rich>=13.0",
+  "requests>=2.31",
+  "tomli-w>=1.0",
+]
+
+[project.scripts]
+vpnctl = "vpnctl.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/vpnctl"]
+
+[tool.basedpyright]
+include = ["src"]
+pythonVersion = "3.11"
+# This CLI's job is largely turning untyped external data (JSON subscription
+# responses, TOML profile entries) into the package's own dataclasses -- the
+# boundary itself is genuinely Any, and modeling every upstream shape with
+# TypedDicts wouldn't catch more bugs, just add ceremony. Rules below are
+# basedpyright-only strictness on top of pyright that fire on exactly that,
+# plus on this codebase's (intentional) multi-line string literals.
+reportAny = false
+reportExplicitAny = false
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+reportUnknownArgumentType = false
+reportImplicitStringConcatenation = false
+reportUnusedCallResult = false
