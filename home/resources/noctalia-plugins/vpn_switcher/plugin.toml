@@ -1,0 +1,35 @@
+# VPN Switcher -- bar indicator + panel for vpnctl (AmneziaWG + sing-box
+# profiles). All the actual VPN logic lives in vpnctl; this plugin only
+# polls `vpnctl status/list --json` and drives `vpnctl connect/disconnect`.
+# See noctalia-docs plugins guide.
+
+id = "pguin/vpn_switcher"
+name = "VPN Switcher"
+version = "0.1.0"
+plugin_api = 3
+author = "pguin"
+license = "MIT"
+dependencies = ["vpnctl"]
+tags = ["network", "vpn"]
+icon = "shield"
+description = "Bar indicator and switcher for AmneziaWG + sing-box (Remnawave) VPN profiles via vpnctl."
+
+# Headless: owns polling vpnctl and driving connect/disconnect for the whole
+# session, so a connection can be made even with no widget placed.
+[[service]]
+id = "service"
+entry = "service.luau"
+
+# Bar tile. Thin presentation: mirrors "status", opens the panel on click.
+[[widget]]
+id = "widget"
+entry = "widget.luau"
+
+# Profile list + connect/disconnect controls.
+[[panel]]
+id = "panel"
+entry = "panel.luau"
+width = 380
+height = 440
+placement = "floating"
+position = "center"

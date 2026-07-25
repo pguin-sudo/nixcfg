@@ -35,6 +35,7 @@
       neovim.enable = true;
       starship.enable = true;
       tmux.enable = true;
+      vpnctl.enable = true;
       yazi.enable = true;
       zsh.enable = true;
     };

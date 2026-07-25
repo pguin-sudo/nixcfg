@@ -3,4 +3,5 @@
   meshchatx = pkgs.callPackage ./meshchatx { };
   meshradar = pkgs.callPackage ./meshradar { };
   prismlauncher-cracked = pkgs.callPackage ./prismlauncher-cracked { };
+  vpnctl = pkgs.callPackage ./vpnctl { };
 }

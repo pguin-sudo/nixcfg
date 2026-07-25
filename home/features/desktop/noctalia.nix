@@ -24,6 +24,15 @@ in
       qt6Packages.qt6ct
     ];
 
+    # Local plugin source: Noctalia auto-discovers plugins placed by hand
+    # under ~/.local/share/noctalia/plugins/<author>/<plugin>/ (matching the
+    # "<author>/<plugin>" id in plugin.toml) -- no separate registry file to
+    # manage. Bar widgets reference it as "<author>/<plugin>:<widget id>".
+    # See home/resources/noctalia-plugins/vpn_switcher for the plugin itself
+    # and home/features/cli/vpnctl.nix for the CLI it drives.
+    xdg.dataFile."noctalia/plugins/pguin/vpn_switcher".source =
+      ../../resources/noctalia-plugins/vpn_switcher;
+
     programs.noctalia = {
       enable = true;
 
@@ -211,6 +220,7 @@ in
           end = [
             "tray"
             "network"
+            "pguin/vpn_switcher:widget"
             "bluetooth"
             "volume"
             "brightness"

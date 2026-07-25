@@ -31,6 +31,7 @@
   common.services.zapret.enable = true;
   # VPN
   common.services.throne.enable = true;
+  common.services.vpn.enable = true;
 
   # Wifi hotspot: share internet through the wlan adapter while delta is on
   # SSID/password are NOT here: create /etc/hotspot-secrets.env on delta with

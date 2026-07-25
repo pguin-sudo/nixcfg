@@ -12,6 +12,7 @@
     ./steam.nix
     ./throne.nix
     ./vm.nix
+    ./vpn.nix
     ./xdgportal.nix
     ./zapret.nix
   ];

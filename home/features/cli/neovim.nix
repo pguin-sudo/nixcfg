@@ -100,50 +100,55 @@ in
           action = "<cmd>Telescope help_tags<CR>";
           options.silent = true;
         }
-        # LSP базовые действия
+        # Project-wide search (LazyVim style)
         {
           mode = "n";
-          key = "gd";
-          action = "<cmd>lua vim.lsp.buf.definition()<CR>";
-          options.silent = true;
-        }
-        {
-          mode = "n";
-          key = "gr";
-          action = "<cmd>lua vim.lsp.buf.references()<CR>";
-          options.silent = true;
-        }
-        {
-          mode = "n";
-          key = "K";
-          action = "<cmd>lua vim.lsp.buf.hover()<CR>";
-          options.silent = true;
-        }
-        {
-          mode = "n";
-          key = "rn";
-          action = "<cmd>lua vim.lsp.buf.rename()<CR>";
-          options.silent = true;
-        }
-        {
-          mode = "n";
-          key = "<leader>d";
-          action = "<cmd>lua vim.diagnostic.open_float()<CR>";
-          options.silent = true;
-        }
-        # Code actions — "предложить решить проблему"
-        {
-          mode = [
-            "n"
-            "v"
-          ];
-          key = "<leader>a";
-          action = "<cmd>lua vim.lsp.buf.code_action()<CR>";
+          key = "<leader><space>";
+          action = "<cmd>Telescope find_files<CR>";
           options = {
             silent = true;
-            desc = "LSP: Code actions / quickfix suggestions";
+            desc = "Find files";
           };
         }
+        {
+          mode = "n";
+          key = "<leader>/";
+          action = "<cmd>Telescope live_grep<CR>";
+          options = {
+            silent = true;
+            desc = "Grep in project";
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>sw";
+          action = "<cmd>Telescope grep_string<CR>";
+          options = {
+            silent = true;
+            desc = "Search word under cursor";
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>fr";
+          action = "<cmd>Telescope oldfiles<CR>";
+          options = {
+            silent = true;
+            desc = "Recent files";
+          };
+        }
+        {
+          mode = "n";
+          key = "<leader>sd";
+          action = "<cmd>Telescope diagnostics<CR>";
+          options = {
+            silent = true;
+            desc = "Search diagnostics";
+          };
+        }
+        # NOTE: LSP keymaps (gd, gr, K, grn, gra, [d/]d, ...) are defined below
+        # via `plugins.lsp.keymaps`, so they are only bound in buffers where an
+        # LSP client is actually attached (see `keymapsOnEvents.LspAttach`).
         # Gitsigns
         {
           mode = "n";
@@ -169,8 +174,53 @@ in
       plugins = {
         lsp = {
           enable = true;
+          inlayHints = true;
+          keymaps = {
+            silent = true;
+            diagnostic = {
+              "[d" = "goto_prev";
+              "]d" = "goto_next";
+              "<leader>d" = "open_float";
+            };
+            lspBuf = {
+              "gd" = "definition";
+              "gD" = "declaration";
+              "gr" = "references";
+              "gri" = "implementation";
+              "gy" = "type_definition";
+              "gO" = "document_symbol";
+              "grn" = "rename";
+              "<leader>rn" = "rename";
+              "gra" = "code_action";
+              "<leader>ca" = {
+                action = "code_action";
+                mode = [
+                  "n"
+                  "v"
+                ];
+              };
+              "K" = "hover";
+              "<C-k>" = {
+                action = "signature_help";
+                mode = "i";
+              };
+            };
+          };
           servers = {
             nixd.enable = true;
+            # Python: basedpyright for types/navigation, ruff for lint/format
+            # (ruff's hover is disabled so basedpyright's richer hover wins).
+            basedpyright.enable = true;
+            ruff = {
+              enable = true;
+              onAttach.function = ''
+                client.server_capabilities.hoverProvider = false
+              '';
+            };
+            # TypeScript/JavaScript type-checking (tsc) + navigation.
+            ts_ls.enable = true;
+            # Fast JS/TS/JSON linting & formatting.
+            biome.enable = true;
           };
         };
         conform-nvim = {
@@ -178,9 +228,18 @@ in
           settings = {
             formatters_by_ft = {
               lua = [ "stylua" ];
-              json = [ "prettier" ];
+              json = [ "biome" ];
+              jsonc = [ "biome" ];
               nix = [ "nixfmt" ];
               markdown = [ "prettier" ];
+              python = [
+                "ruff_fix"
+                "ruff_format"
+              ];
+              javascript = [ "biome" ];
+              javascriptreact = [ "biome" ];
+              typescript = [ "biome" ];
+              typescriptreact = [ "biome" ];
             };
             format_on_save = {
               timeout_ms = 500;
@@ -271,6 +330,10 @@ in
             json
             markdown
             markdown_inline
+            python
+            javascript
+            typescript
+            tsx
           ];
         };
         markdown-preview = {
@@ -301,6 +364,9 @@ in
         pkgs.hunspellDicts.ru-ru
         pkgs.hunspellDicts.en-us
         pkgs.prettier
+        # Required by Telescope for project-wide file/text search.
+        pkgs.ripgrep
+        pkgs.fd
       ];
     };
   };
