@@ -46,6 +46,8 @@ in
       claude-code
 
       python313Packages.pytest
+
+      godot_4
     ];
 
     services.remmina = {
