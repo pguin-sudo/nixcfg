@@ -19,6 +19,7 @@ in
       discord
       gzdoom
       prismlauncher-cracked
+      osu-lazer
     ];
 
     #programs.java = {
