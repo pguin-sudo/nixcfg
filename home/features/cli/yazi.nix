@@ -17,6 +17,7 @@ in
       ffmpeg
       poppler
       imagemagick
+      unrar
     ];
 
     home.file.".config/yazi/yazi.toml".text = ''
