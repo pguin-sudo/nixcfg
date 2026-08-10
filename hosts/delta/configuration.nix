@@ -24,10 +24,11 @@
   # Enable kernel modules for obs-studio
   common.services.obs-studio.enable = true;
   # I2P
-  common.services.i2p.enable = true;
   # Docker
   common.services.docker.enable = true;
   # Zapret
+  common.services.i2p.enable = true;
+  common.services.dns.enable = true;
   common.services.zapret.enable = true;
   # iOS device USB access (iloader sideloading)
   common.services.usbmuxd.enable = true;

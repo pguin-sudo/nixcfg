@@ -24,6 +24,7 @@
   common.services.obs-studio.enable = true;
   # Networking
   common.services.i2p.enable = true;
+  common.services.dns.enable = true;
   common.services.zapret.enable = true;
   # Dev
   common.services.docker.enable = true;

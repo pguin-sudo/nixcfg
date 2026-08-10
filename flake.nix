@@ -42,6 +42,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    zapret2-nix = {
+      url = "github:ZenonEl/zapret2-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
 
     # Loader for arbitrary .uc.js userChrome scripts, needed to run Nebula's
@@ -73,6 +78,7 @@
       spicetify-nix,
       asus-numpad-driver,
       zen-browser,
+      zapret2-nix,
       ...
     }@inputs:
     let
@@ -96,10 +102,8 @@
           modules = [
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             ({ lib, ... }: {
-              # Встроить флейк в ISO (read-only, install.sh сам скопирует в /tmp)
               environment.etc."nixcfg".source = ./.;
 
-              # Авто-логин root на tty1 → сразу запускает установщик
               services.getty.autologinUser = lib.mkForce "root";
 
               systemd.services.nixos-pguin-installer = {
@@ -145,6 +149,7 @@
             nixos-hardware.nixosModules.common-pc
             ./hosts/delta
             disko.nixosModules.disko
+            zapret2-nix.nixosModules.default
           ];
         };
 
@@ -170,6 +175,7 @@
             ./hosts/lambda/partitioning.nix
             # Host config
             ./hosts/lambda
+            zapret2-nix.nixosModules.default
           ];
         };
       };

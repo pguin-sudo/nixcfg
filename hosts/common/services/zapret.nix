@@ -3,32 +3,45 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.common.services.zapret;
-in {
+in
+{
   options.common.services.zapret.enable = mkEnableOption "enable zapret";
-
   config = mkIf cfg.enable {
-    services.zapret = {
-      enable = false;
-      params = [
-        "--dpi-desync=fake,multidisorder"
-        "--dpi-desync-fake-tls=0x00000000"
-        "--dpi-desync-fake-tls=!"
-        "--dpi-desync-split-pos=1,midsld"
-        "--dpi-desync-repeats=2"
-        "--dpi-desync-fooling=badseq"
-        "--dpi-desync-fake-tls-mod=rnd,dupsid,sni=www.google.com"
-        #"--filter-l7=discord,stun"
+    services.zapret2 = {
+      enable = true;
+      presets = [
+        "youtube"
+        "discord"
+        "general"
+        "general-ts"
       ];
-      #udpSupport = true;
-      #udpPorts = [
-      #  "50000:50099"
-      #  "1234"
-      #];
-      httpMode = "full"; # Change to full
+      firewall.ports.udp = [
+        "443"
+        "50000-65535"
+      ];
+      defaultPreset = "general-ts";
+      extraPresets = {
+        penis = {
+          description = "Test preset";
+          profiles = [
+            {
+              filter = {
+                tcp = "443";
+                l7 = [ "tls" ];
+              };
+              payload = [ "tls_client_hello" ];
+              desync = [
+                "fake:blob=fake_default_tls"
+                "multisplit:pos=1"
+              ];
+            }
+          ];
+        };
+      };
     };
-
-    #networking.nftables.enable = true;
+    networking.nftables.enable = true;
   };
 }

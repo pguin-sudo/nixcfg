@@ -3,9 +3,11 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.common.services.docker;
-in {
+in
+{
   options.common.services.docker.enable = mkEnableOption "enable docker";
 
   config = mkIf cfg.enable {
@@ -17,7 +19,6 @@ in {
         enable = false;
         setSocketVariable = false;
       };
-      extraOptions = ''--data-root=/home/pguin/docker-data'';
     };
   };
 }

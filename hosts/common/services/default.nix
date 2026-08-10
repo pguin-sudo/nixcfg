@@ -2,6 +2,7 @@
   imports = [
     ./appimage.nix
     ./dm.nix
+    ./dns.nix
     ./docker.nix
     ./hotspot.nix
     # ./howdy.nix # Disabled due to incompatibility with new PAM module
