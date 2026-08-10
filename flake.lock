@@ -498,6 +498,7 @@
         "noctalia-greeter": "noctalia-greeter",
         "spicetify-nix": "spicetify-nix",
         "stylix": "stylix",
+        "zapret2-nix": "zapret2-nix",
         "zen-browser": "zen-browser",
         "zen-nebula": "zen-nebula"
       }
@@ -661,6 +662,26 @@
       "original": {
         "owner": "tinted-theming",
         "repo": "base16-zed",
+        "type": "github"
+      }
+    },
+    "zapret2-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1786030230,
+        "narHash": "sha256-jj2eHTwSNClDIvgEceFX2mk/xa6/J37k5rLjMQ5BVBs=",
+        "owner": "ZenonEl",
+        "repo": "zapret2-nix",
+        "rev": "fcf0d5c9f9debba423144c59940d0c6fea4da13f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ZenonEl",
+        "repo": "zapret2-nix",
         "type": "github"
       }
     },
