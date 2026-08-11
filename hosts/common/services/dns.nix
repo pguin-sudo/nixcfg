@@ -10,18 +10,14 @@ in
 {
   options.common.services.dns.enable = mkEnableOption "enable dns";
   config = mkIf cfg.enable {
-    #services.resolved.enable = mkForce false;
-    #networking.useDHCP = mkForce false;
-    #networking.networkmanager.dns = "none";
+    services.resolved.enable = mkForce false;
 
-    networking.nameservers = [
-      "127.0.2.1:53"
-    ];
+    networking.resolvconf.useLocalResolver = true;
 
     services.dnscrypt-proxy = {
       enable = true;
       settings = {
-        listen_addresses = [ "127.0.2.1" ];
+        listen_addresses = [ "127.0.0.1:53" ];
         ipv6_servers = false;
         require_dnssec = true;
 
