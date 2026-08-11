@@ -24,6 +24,7 @@ in
       # Moved to neovim config
       #basedpyright
       #ruff
+      python313Packages.pytest
 
       # Rust
       rustup
@@ -45,9 +46,12 @@ in
       # AI
       claude-code
 
-      python313Packages.pytest
-
+      # Gamedev
       godot_4
+
+      # Devops
+      ansible
+      opentofu
     ];
 
     services.remmina = {
