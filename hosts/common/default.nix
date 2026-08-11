@@ -84,4 +84,9 @@
     libsecret
     seahorse
   ];
+
+  # Fix for f-keys on bluetooth keyboards
+  boot.extraModprobeConfig = ''
+    options hid_apple fnmode=2
+  '';
 }
