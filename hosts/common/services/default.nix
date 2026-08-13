@@ -7,11 +7,11 @@
     ./hotspot.nix
     # ./howdy.nix # Disabled due to incompatibility with new PAM module
     ./i2p.nix
+    ./keyboard.nix
     ./obs-studio.nix
     ./openssh.nix
     ./polkit.nix
     ./steam.nix
-    ./throne.nix
     ./usbmuxd.nix
     ./vm.nix
     ./vpn.nix
