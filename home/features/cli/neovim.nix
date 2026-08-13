@@ -345,6 +345,8 @@ in
         # Applies the Noctalia matugen palette via require('base16-colorscheme')
         # from ~/.config/nvim/lua/matugen.lua (see extraConfigLua + noctalia.nix).
         pkgs.vimPlugins.base16-nvim
+        # Discord Rich Presence ("Playing Neovim").
+        pkgs.vimPlugins.neocord
       ];
       extraConfigLua = ''
         -- Noctalia matugen palette. Written to ~/.config/nvim/lua/matugen.lua by
@@ -356,6 +358,23 @@ in
         if ok and type(matugen) == "table" and matugen.setup then
           pcall(matugen.setup)
         end
+
+        -- Discord Rich Presence: show that Neovim is running, the project's
+        -- language icon, and elapsed time - never the filename or
+        -- project/workspace name.
+        require('neocord').setup({
+          main_image = "language",
+          show_time = true,
+          enable_line_number = false,
+          editing_text = "Coding",
+          reading_text = "Reading",
+          terminal_text = "In terminal",
+          file_explorer_text = "Browsing files",
+          git_commit_text = "Committing",
+          plugin_manager_text = "Managing plugins",
+          workspace_text = function() end,
+          buttons = function() end,
+        })
       '';
       extraPackages = [
         pkgs.stylua
