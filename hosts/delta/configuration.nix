@@ -33,7 +33,7 @@
   # iOS device USB access (iloader sideloading)
   common.services.usbmuxd.enable = true;
   # VPN
-  common.services.throne.enable = true;
+  common.services.keyboard.enable = true;
   common.services.vpn.enable = true;
 
   # Wifi hotspot: share internet through the wlan adapter while delta is on
