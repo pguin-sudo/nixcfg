@@ -36,7 +36,8 @@ in
         ".." = "cd ..";
         "..." = "cd ../..";
 
-        ssh = "kitty +kitten ssh";
+        # Bad tmux support
+        #ssh = "kitty +kitten ssh";
 
         notepad = "nvim ~/Nextcloud/notepad";
         tiktok = "/home/pguin/Desktop/tiktok/tiktok.sh";
