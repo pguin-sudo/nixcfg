@@ -18,13 +18,13 @@ in
     programs.spicetify = {
       enable = true;
 
-      enabledExtensions = with inputs.spicetify-nix.legacyPackages.${pkgs.system}.extensions; [
+      enabledExtensions = with inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system}.extensions; [
         adblock
         hidePodcasts
         shuffle
       ];
 
-      enabledCustomApps = with inputs.spicetify-nix.legacyPackages.${pkgs.system}.apps; [
+      enabledCustomApps = with inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system}.apps; [
         newReleases
       ];
     };

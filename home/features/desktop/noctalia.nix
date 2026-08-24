@@ -11,7 +11,6 @@ let
 in
 {
   options.features.desktop.noctalia.enable = mkEnableOption "noctalia shell";
-  imports = [ inputs.noctalia.homeModules.default ];
 
   # https://docs.noctalia.dev/v5/getting-started/nixos/
   config = mkIf cfg.enable {

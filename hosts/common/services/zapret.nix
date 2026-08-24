@@ -8,6 +8,12 @@ let
   cfg = config.common.services.zapret;
 in
 {
+  # nixpkgs now ships its own services.zapret2 module (added upstream after
+  # our last flake update) which collides with zapret2-nix's module of the
+  # same option path; disable the built-in one so zapret2-nix's preset-based
+  # module (with its different option schema: presets/extraPresets/etc.) wins.
+  disabledModules = [ "services/networking/zapret2.nix" ];
+
   options.common.services.zapret.enable = mkEnableOption "enable zapret";
   config = mkIf cfg.enable {
     services.zapret2 = {

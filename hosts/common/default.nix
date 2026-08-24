@@ -27,6 +27,13 @@
     "/share/xdg-desktop-portal"
   ];
 
+  # nixos-manual-html fails to build: nixpkgs' redirects.json expects doc
+  # anchors from the built-in services.zapret2 module, but we disable that
+  # module (see hosts/common/services/zapret.nix) in favor of zapret2-nix's
+  # own module of the same option path, so those anchors go missing. No local
+  # nixos-help/manual as a result -- see docs.nixos.dev / search.nixos.org instead.
+  documentation.nixos.enable = false;
+
   nixpkgs = {
     # You can add overlays here
     overlays = [
@@ -59,10 +66,6 @@
         "root"
         "pguin"
       ]; # Set users that are allowed to use the flake command
-      extra-substituters = [ "https://noctalia.cachix.org" ];
-      extra-trusted-public-keys = [
-        "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
-      ];
     };
     gc = {
       automatic = true;

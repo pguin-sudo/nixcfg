@@ -11,12 +11,10 @@
   programs.git = {
     enable = true;
     lfs.enable = true;
-    extraConfig = {
-      pull.rebase = true;
-    };
     settings = {
       user.name = "PGuin";
       user.email = "138515193+pguin-sudo@users.noreply.github.com";
+      pull.rebase = true;
     };
   };
 
