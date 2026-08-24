@@ -26,15 +26,24 @@ in
   # AmneziaVPN's own GUI client is untouched by this module -- it stays a
   # separate app used only to administer the server / export .conf profiles.
   # This module only wires up unattended local consumption of those exported
-  # configs (AmneziaWG) and of Remnawave subscriptions (sing-box).
+  # configs (AmneziaWG) and of Remnawave subscriptions (sing-box). Note that
+  # the in-kernel module enabled below also accelerates AmneziaVPN's own
+  # connections, since its bundled service falls back to the same
+  # `/sys/module/amneziawg` check as awg-quick.
   config = mkIf cfg.enable {
     # `ip link add type amneziawg` needs the out-of-tree amneziawg kernel
-    # module, which doesn't build against this kernel (7.1.4 removed the
-    # `ipv6_stub` symbol layout it relies on). Rather than pin the whole
-    # system to an older kernel for one module, rely on awg-quick's built-in
-    # userspace fallback instead: its add_if() already falls back to
-    # `amneziawg-go` when /sys/module/amneziawg is missing -- it just needs
-    # that binary on PATH, wired in below.
+    # module. This used to fail to build on this kernel (7.1.4 removed the
+    # `ipv6_stub` symbol layout it relied on), forcing a silent fallback to
+    # the much slower `amneziawg-go` userspace implementation for every
+    # connection (roughly half the throughput, ~3x the latency -- confirmed
+    # 2026-08-24). nixpkgs' amneziawg module has since been updated for
+    # newer kernels, so build the real kernel module for whatever kernel
+    # this host runs and load it -- `ip link add type amneziawg` then uses
+    # it automatically via modalias, no further wiring needed. Keep
+    # amneziawg-go installed regardless, as a fallback for the next time a
+    # kernel bump outpaces the module.
+    boot.extraModulePackages = [ config.boot.kernelPackages.amneziawg ];
+
     environment.systemPackages = [
       pkgs.amneziawg-tools
       pkgs.amneziawg-go
