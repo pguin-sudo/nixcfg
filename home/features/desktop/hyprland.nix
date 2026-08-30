@@ -288,7 +288,13 @@ in
           "match:class ^(vesktop)$, workspace special"
           "match:class ^(kitty)$, match:title ^(termfilechooser)$, float on, center on, size 800 600, border_size 10"
           "match:title .*Picture-in-Picture.*, float on, pin on, size 480 270, move 75% 10%"
-          "match:class ^(zen-beta)$, opacity 0.98 0.98"
+          # Zen glass: window-wide translucency so the compositor blurs what's
+          # behind the toolbar. Pairs with the "Zen Internet" mod (installed
+          # from Zen's in-browser mod store) + zen.widget.linux.transparency
+          # set in about:config. decoration.blur.enabled is already true
+          # globally, so the translucent window gets blurred automatically.
+          # Class confirmed via `hyprctl clients` / ps: --class=zen-beta.
+          "match:class ^(zen-beta)$, opacity 0.90 0.90"
         ];
 
         # Frosted-glass Noctalia bar: blur whatever is behind its (low-opacity)

@@ -9,12 +9,12 @@
   ...
 }:
 let
-  # fx-autoconfig's loader, baked into the (immutable) Nix store install dir
-  # via extraPrefsFiles so Zen-Nebula's js/nebula.uc.js can run. See
-  # home/features/desktop/noctalia.nix for the profile-side half of the setup.
-  zenBeta = inputs.zen-browser.packages.x86_64-linux.default.override {
-    extraPrefsFiles = [ "${inputs.fx-autoconfig}/program/config.js" ];
-  };
+  # Zen (beta). Transparency is not wired from Nix: install the "Zen Internet"
+  # mod from Zen's in-browser mod store (Settings -> Mods) and set
+  # zen.widget.linux.transparency = true once in about:config. Hyprland
+  # supplies the glass blur (see home/features/desktop/hyprland.nix, the
+  # zen-beta windowrule).
+  zenBeta = inputs.zen-browser.packages.x86_64-linux.default;
 in {
   home.username = "pguin";
   home.homeDirectory = lib.mkDefault "/home/${config.home.username}";

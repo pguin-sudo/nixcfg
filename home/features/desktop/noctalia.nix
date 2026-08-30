@@ -76,10 +76,12 @@ in
             # ~/.local/state/noctalia/community-templates/ on first enable, so
             # they only theme once cached (not pure-reproducible, but no conflict).
             #
-            # zen-browser (sameerasw's "Transparent Zen" mod) deliberately left
-            # out: it fights the "nebula" user template below for the same
-            # chrome/userChrome.css + userContent.css @import slot. Nebula is
-            # the one actually deployed (see theme.templates.user.nebula).
+            # zen-browser (sameerasw's "Transparent Zen" mod) left out on
+            # purpose: its post_hook rewrites the home-manager-managed
+            # userChrome.css and fails silently. Zen transparency is handled
+            # entirely in-browser now -- install the "Zen Internet" mod from
+            # Zen's mod store and match its toolbar colour to the current
+            # Matugen palette by hand (Change Theme Colors in Zen).
             enable_community_templates = true;
             community_ids = [
               "yazi"
@@ -115,59 +117,6 @@ in
                 input_path = "${../../resources/noctalia-templates/tmux-colors.conf}";
                 output_path = "~/.config/tmux/noctalia-colors.conf";
                 post_hook = ''tmux source-file "$HOME/.config/tmux/noctalia-colors.conf" >/dev/null 2>&1 || true'';
-              };
-
-              # No upstream/community template for Nebula (JustAdumbPrsn/Zen-Nebula
-              # isn't on api.noctalia.dev). Deployed manually: this template only
-              # renders the color override; its post_hook does the actual work of
-              # copying Nebula's CSS + the fx-autoconfig loader + Nebula's
-              # js/nebula.uc.js into the (non-managed, randomly-named) Zen
-              # profile directory, wiring up the @import chain and the
-              # about:config prefs Nebula needs on Linux/Hyprland. The uc.js
-              # loader itself is baked into the zen-beta package at build time
-              # via `extraPrefsFiles` (see home/pguin/*/home.nix) since the Nix
-              # store install dir is read-only.
-              nebula = {
-                enabled = true;
-                input_path = "${../../resources/noctalia-templates/nebula-colors.css}";
-                output_path = "~/.config/noctalia/generated/nebula-colors.css";
-                post_hook = ''
-                  set -euo pipefail
-                  fxac_utils="${inputs.fx-autoconfig}/profile/chrome/utils"
-                  nebula_src="${inputs.zen-nebula}/nebula"
-                  nebula_js="${inputs.zen-nebula}/js/nebula.uc.js"
-                  colors_src="$HOME/.config/noctalia/generated/nebula-colors.css"
-
-                  find "''${XDG_CONFIG_HOME:-$HOME/.config}/zen" "$HOME/.zen" -mindepth 2 -maxdepth 2 -type f -name "prefs.js" -print0 2>/dev/null |
-                    while IFS= read -r -d "" prefs_file; do
-                      profile_dir=$(dirname "$prefs_file")
-                      chrome_dir="$profile_dir/chrome"
-                      user_chrome="$chrome_dir/userChrome.css"
-                      user_content="$chrome_dir/userContent.css"
-                      user_js="$profile_dir/user.js"
-
-                      mkdir -p "$chrome_dir/utils" "$chrome_dir/JS" "$chrome_dir/nebula"
-                      cp -f "$fxac_utils"/* "$chrome_dir/utils/"
-                      cp -f "$nebula_js" "$chrome_dir/JS/nebula.uc.js"
-                      cp -rf "$nebula_src/." "$chrome_dir/nebula/"
-                      cp -f "$colors_src" "$chrome_dir/nebula/noctalia-colors.css"
-
-                      touch "$user_chrome" "$user_content" "$user_js"
-
-                      sed -i '/nebula\/chrome\.css/d;/zen-browser\/zen-userChrome\.css/d' "$user_chrome"
-                      sed -i '/nebula\/content\.css/d;/zen-browser\/zen-userContent\.css/d' "$user_content"
-
-                      printf '%s\n' '@import "nebula/chrome.css";' '@import "nebula/noctalia-colors.css";' >> "$user_chrome"
-                      printf '%s\n' '@import "nebula/content.css";' >> "$user_content"
-
-                      sed -i '/toolkit\.legacyUserProfileCustomizations\.stylesheets/d;/devtools\.chrome\.enabled/d;/zen\.widget\.linux\.transparency/d;/browser\.tabs\.allow_transparent_browser/d' "$user_js"
-                      printf '%s\n' \
-                        'user_pref("devtools.chrome.enabled", true);' \
-                        'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);' \
-                        'user_pref("zen.widget.linux.transparency", true);' \
-                        'user_pref("browser.tabs.allow_transparent_browser", true);' >> "$user_js"
-                    done
-                '';
               };
             };
           };
