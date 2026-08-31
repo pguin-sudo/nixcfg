@@ -20,6 +20,11 @@
 
   programs.bat = {
     enable = true;
+    # Noctalia ships the matugen tmTheme via the `bat` community template (see
+    # noctalia.nix) to ~/.config/bat/themes/noctalia.tmTheme and rebuilds the
+    # bat cache. Selecting it here means the template's apply.sh finds
+    # `--theme=noctalia` already present and never edits the file itself.
+    config.theme = "noctalia";
   };
 
   programs.direnv = {

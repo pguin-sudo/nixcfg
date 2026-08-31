@@ -1,19 +1,27 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib;
 let
   cfg = config.features.cli.starship;
-in
-{
-  options.features.cli.starship.enable = mkEnableOption "starship prompt config";
+  noctaliaCfg = config.features.desktop.noctalia;
 
-  config = mkIf cfg.enable {
-    programs.starship.settings = {
-      add_newline = true;
-      format = "$directory$git_branch$git_commit$git_state $git_status \n$character\n\n";
+  # Static prompt config. Colours use bareword names (blue, bright-black, …)
+  # which, with `palette = "noctalia"` active, resolve to the matugen
+  # [palettes.noctalia] block that Noctalia appends at render time — otherwise
+  # they fall back to the terminal's ANSI palette (also matugen, via kitty).
+  #
+  # Noctalia owns ~/.config/starship.toml: the `user.starship` template below
+  # re-renders it (this base + the palette block) on every theme change, so we
+  # must NOT let home-manager symlink a read-only starship.toml —
+  # `programs.starship.settings` is left empty on purpose.
+  starshipSettings = {
+    add_newline = true;
+    palette = "noctalia";
+    format = "$directory$git_branch$git_commit$git_state $git_status \n$character\n\n";
       right_format = "$singularity$kubernetes$vcsh$hg_branch$pijul_channel$c$cmake$cobol$daml$dart$deno$dotnet$elixir$elm$erlang$fennel$golang$guix_shell$haskell$haxe$helm$java$julia$kotlin$gradle$lua$nim$nodejs$ocaml$opa$perl$pulumi$purescript$python$raku$rlang$red$ruby$rust$scala$solidity$swift$terraform$vlang$vagrant$zig$buf$conda$meson$spack$memory_usage$aws$gcloud$openstack$azure$cpp$kotlin$ocaml$pixi$rlang$php$crystal$custom$status$os$time";
       continuation_prompt = "▶▶ ";
 
@@ -328,6 +336,40 @@ in
         style = "bold bright-cyan";
         symbol = " ";
       };
-    };
   };
+
+  starshipToml = (pkgs.formats.toml { }).generate "starship-base.toml" starshipSettings;
+
+  # Static settings + the matugen [palettes.noctalia] block (whose {{colors.*}}
+  # tokens are the only templated part). This concatenation is the input Noctalia
+  # renders into ~/.config/starship.toml.
+  starshipTemplate = pkgs.concatText "starship.toml.in" [
+    starshipToml
+    ../../resources/noctalia-templates/starship-palette.toml
+  ];
+in
+{
+  options.features.cli.starship.enable = mkEnableOption "starship prompt config";
+
+  config = mkIf cfg.enable (mkMerge [
+    (mkIf noctaliaCfg.enable {
+      # Noctalia writes ~/.config/starship.toml from starshipTemplate on every
+      # theme change; keep home-manager from putting a read-only symlink there.
+      programs.starship.settings = { };
+
+      programs.noctalia.settings.theme.templates.user.starship = {
+        enabled = true;
+        input_path = "${starshipTemplate}";
+        output_path = "~/.config/starship.toml";
+        # starship re-reads its config every prompt — nothing to reload.
+        post_hook = "true";
+      };
+    })
+    (mkIf (!noctaliaCfg.enable) {
+      # No Noctalia to render the palette — let home-manager write the static
+      # config as usual (drop the palette selector so bare colour names fall
+      # back to the terminal's ANSI palette).
+      programs.starship.settings = removeAttrs starshipSettings [ "palette" ];
+    })
+  ]);
 }

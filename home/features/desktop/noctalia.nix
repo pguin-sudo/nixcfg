@@ -32,6 +32,16 @@ in
     xdg.dataFile."noctalia/plugins/pguin/vpn_switcher".source =
       ../../resources/noctalia-plugins/vpn_switcher;
 
+    # Minimal cava config so the `cava` builtin template has a file to target
+    # (its apply.sh errors out if ~/.config/cava/config is missing). The
+    # [color] theme line is pre-set to "noctalia" so apply.sh finds it already
+    # there and never has to edit this (read-only) file; the template writes the
+    # palette to ~/.config/cava/themes/noctalia.
+    xdg.configFile."cava/config".text = ''
+      [color]
+      theme = "noctalia"
+    '';
+
     programs.noctalia = {
       enable = true;
 
@@ -57,43 +67,84 @@ in
           mode = "dark";
           # Generate the palette from the current wallpaper via Matugen
           source = "wallpaper";
+          # Matugen scheme variant (set from the shell's theme picker).
+          wallpaper_scheme = "m3-rainbow";
 
           templates = {
             enable_builtin_templates = true;
-            # No managed-file conflict — these write their own color files
-            # (~/.config/gtk-*/noctalia.css, ~/.config/qt*ct/colors/noctalia.conf).
+            # Builtin templates whose apply.sh either writes a standalone colour
+            # file with no managed-file conflict, or only edits the app's main
+            # config when a selector line is missing — and we pre-seed that line
+            # from Nix so the edit no-ops:
+            #   gtk3/gtk4 -> ~/.config/gtk-*/noctalia.css  (@import handled;
+            #                apply.sh converts a read-only gtk.css symlink itself)
+            #   qt        -> ~/.config/qt*ct/colors/noctalia.conf  (no post_hook)
+            #   btop      -> ~/.config/btop/themes/noctalia.theme
+            #                (btop.nix sets color_theme = "noctalia")
+            #   cava      -> ~/.config/cava/themes/noctalia
+            #                (cava config below carries [color] theme = "noctalia")
+            #   hyprland  -> ~/.config/hypr/noctalia.conf
+            #                (hyprland.nix `source`s it; stub created on activation)
+            # kitty/starship stay OUT of this list — their apply.sh rewrites a
+            # read-only managed file with no idempotent escape; they are handled
+            # as `user` templates instead (kitty here, starship in starship.nix).
             builtin_ids = [
+              "btop"
+              "cava"
               "gtk3"
               "gtk4"
+              "hyprland"
               "qt"
             ];
 
-            # Community templates whose outputs land in NON-managed locations:
-            #   zed  -> ~/.config/zed/themes/noctalia.json      (no post_hook)
-            #   yazi -> ~/.config/yazi/flavors/noctalia.yazi/   (post_hook edits
-            #           the NON-managed ~/.config/yazi/theme.toml)
-            # Fetched from api.noctalia.dev and cached under
+            # Community templates. Fetched from api.noctalia.dev and cached under
             # ~/.local/state/noctalia/community-templates/ on first enable, so
-            # they only theme once cached (not pure-reproducible, but no conflict).
-            #
-            # zen-browser (sameerasw's "Transparent Zen" mod) left out on
-            # purpose: its post_hook rewrites the home-manager-managed
-            # userChrome.css and fails silently. Zen transparency is handled
-            # entirely in-browser now -- install the "Zen Internet" mod from
-            # Zen's mod store and match its toolbar colour to the current
-            # Matugen palette by hand (Change Theme Colors in Zen).
+            # they only theme once cached (not pure-reproducible, but no
+            # managed-file conflict). Every output below lands in a NON-managed
+            # location or only touches app state we don't manage:
+            #   zed          -> ~/.config/zed/themes/noctalia.json       (no hook)
+            #   yazi         -> ~/.config/yazi/flavors/noctalia.yazi/    (hook edits
+            #                   the NON-managed ~/.config/yazi/theme.toml)
+            #   bat          -> ~/.config/bat/themes/noctalia.tmTheme    (hook runs
+            #                   `bat cache --build`; default.nix sets
+            #                   programs.bat.config.theme = "noctalia")
+            #   claude-code  -> ~/.claude/themes/noctalia.json           (no hook)
+            #   discord      -> ~/.config/<client>/themes/noctalia*.css  (no hook;
+            #                   needs a client mod, harmless otherwise)
+            #   telegram     -> ~/.config/telegram-desktop/themes/       (no hook)
+            #   obs          -> ~/.config/obs-studio/themes/matugen.obt   (no hook)
+            #   obsidian     -> per-vault snippets/noctalia.css          (hook edits
+            #                   each vault's own appearance.json)
+            #   prismlauncher-> $XDG_DATA_HOME/PrismLauncher/themes/…     (no hook)
+            #   zen-browser  -> $XDG_CACHE_HOME/noctalia/zen-browser/*    (hook
+            #                   touches each Zen profile's own chrome/userChrome.css
+            #                   + user.js — no longer home-manager-managed since the
+            #                   in-browser transparency switch, so now safe)
+            # neovim/tmux stay OUT of this list — their apply.sh rewrites a
+            # managed init.lua / tmux.conf; handled as `user` templates below.
             enable_community_templates = true;
             community_ids = [
+              "bat"
+              "claude-code"
+              "discord"
+              "obs"
+              "obsidian"
+              "prismlauncher"
+              "telegram"
               "yazi"
               "zed"
+              "zen-browser"
             ];
 
-            # kitty (builtin) and neovim (community) are redeclared here because
-            # their upstream post_hook rewrites a managed file (kitty.conf /
-            # init.lua). Inputs: kitty reuses the builtin template shipped in the
-            # noctalia store path; neovim uses a vendored copy of the community
-            # template (community templates are not in the Nix store). Outputs go
-            # to non-managed files that the app configs include/require.
+            # `user` templates: apps whose upstream template would rewrite a
+            # home-manager-managed (read-only) file. Each renders to a
+            # non-managed path that the app then includes/requires/sources.
+            #   kitty  -> reuses the builtin template from the noctalia store path
+            #   neovim -> vendored copy of the community template (not in the store)
+            #   tmux   -> vendored (no upstream template exists)
+            # starship and fastfetch add their own `user.*` entries here too, from
+            # home/features/cli/{starship,fastfetch}.nix (module-merged), since the
+            # static config lives with those features.
             user = {
               kitty = {
                 enabled = true;
@@ -125,41 +176,75 @@ in
         wallpaper = {
           enabled = true;
           directory = "${config.home.homeDirectory}/Wallpapers";
+          # Default wallpaper (also what the palette is derived from on first
+          # run). Runtime picks via the shell overwrite this in state.
+          default.path = "${config.home.homeDirectory}/Wallpapers/gruvbox/forest.jpg";
         };
 
-        # Top bar — floating glass: low background opacity + Hyprland blur on the
-        # noctalia-bar-* layer (see hyprland.nix layerrule) frosts it, capsules
-        # keep widgets readable. Widget ids verified against the live catalog
-        # (docs.noctalia.dev/v5/bar/widgets/) and the shipped widget_factory.cpp;
-        # layout keys against config_schema.cpp (BarConfig). NB: example.toml's
-        # margin_h/margin_v are stale — the current schema uses margin_ends /
-        # margin_edge. https://docs.noctalia.dev/v5/bar/
+        # Plugins. vpn_switcher is a local plugin (files placed via xdg.dataFile
+        # below); prismlauncher-instances comes from the community source repo.
+        plugins = {
+          enabled = [
+            "pguin/vpn_switcher"
+            "radimous/prismlauncher-instances"
+          ];
+          source = [
+            {
+              kind = "git";
+              location = "https://github.com/noctalia-dev/official-plugins";
+              name = "official";
+            }
+            {
+              kind = "git";
+              location = "https://github.com/noctalia-dev/community-plugins";
+              name = "community";
+            }
+            {
+              kind = "path";
+              location = "~/.local/share/noctalia/plugins/pguin";
+              name = "Local";
+            }
+          ];
+        };
+
+        # Lock screen widgets disabled (login box only, no extra canvas widgets).
+        lockscreen_widgets = {
+          enabled = false;
+          schema_version = 2;
+        };
+
+        # Top bar — docked flush to the top edge (no float): margin_edge /
+        # margin_ends / radius all 0, corner-carve off, so it's an edge-to-edge
+        # strip and panels drop straight out of it with no gap or rounded seam.
+        # Solid (opaque) background so there's no translucency/blur mismatch
+        # with the panels. Capsules keep widgets readable. Widget ids verified
+        # against the live catalog; layout keys / enums validated by
+        # `noctalia config validate` (checkConfig).
+        # https://docs.noctalia.dev/noctalia/bar/
         bar.default = {
           position = "top";
           reserve_space = true; # keep an exclusive zone so windows never overlap it
 
-          # Float it: lift off the top edge and inset the ends so it reads as a
-          # rounded strip rather than a full-width slab.
-          margin_edge = 6;
-          margin_ends = 8;
+          # Pinned to the top edge, full width, square.
+          margin_edge = 0;
+          margin_ends = 0;
+          radius = 0;
+          concave_edge_corners = false;
+
           thickness = 36;
-          radius = 16;
           padding = 8;
           widget_spacing = 8;
-          background_opacity = 0.2; # glassy strip — the blur does the rest
+          background_opacity = 1.0; # solid — matugen surface (near-black in dark mode)
           shadow = true;
           font_weight = 500;
 
           # Each widget in a subtle outlined capsule ("pill"), tinted with the
-          # wallpaper-derived surface_variant role from matugen. Slightly
-          # translucent so the frosted glass shows through, still legible.
+          # wallpaper-derived surface_variant role from matugen.
           capsule = true;
           capsule_fill = "surface_variant";
           capsule_opacity = 0.8;
           capsule_border = "outline";
 
-          # Left: workspaces + focused window. Center: clock. Right: status
-          # cluster (tray, connectivity, audio, brightness, battery) + control center.
           start = [
             "workspaces"
             "active_window"
@@ -177,7 +262,6 @@ in
           ];
         };
 
-        # Per-widget tweak for a bar widget (keys per example.toml [widget.clock]):
         # 24h time in the bar, full date on hover.
         widget.clock = {
           format = "{:%H:%M}";
@@ -190,6 +274,8 @@ in
         shell = {
           font_family = "FiraCode";
           panel.transparency_mode = "soft";
+          # Track per-app screen time (shown in the shell).
+          screen_time_enabled = true;
         };
       };
     };

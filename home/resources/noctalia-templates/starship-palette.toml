@@ -1,0 +1,36 @@
+
+# Noctalia matugen palette for starship — appended to the static base config by
+# home/features/cli/starship.nix and rendered by Noctalia's `user.starship`
+# template on every theme change. The {{colors.*}} tokens are the only templated
+# part of the final ~/.config/starship.toml.
+#
+# Mirrors Noctalia's builtin starship template
+# (share/noctalia/assets/templates/starship/starship.toml).
+
+[palettes.noctalia]
+# Standard colors
+blue      = "{{colors.terminal_normal_blue.default.hex}}"
+red       = "{{colors.terminal_normal_red.default.hex}}"
+green     = "{{colors.terminal_normal_green.default.hex}}"
+yellow    = "{{colors.terminal_normal_yellow.default.hex}}"
+cyan      = "{{colors.terminal_normal_cyan.default.hex}}"
+magenta   = "{{colors.terminal_normal_magenta.default.hex}}"
+white     = "{{colors.terminal_normal_white.default.hex}}"
+black     = "{{colors.terminal_normal_black.default.hex}}"
+
+# Bright variants
+bright-blue    = "{{colors.terminal_bright_blue.default.hex}}"
+bright-red     = "{{colors.terminal_bright_red.default.hex}}"
+bright-green   = "{{colors.terminal_bright_green.default.hex}}"
+bright-yellow  = "{{colors.terminal_bright_yellow.default.hex}}"
+bright-cyan    = "{{colors.terminal_bright_cyan.default.hex}}"
+bright-magenta = "{{colors.terminal_bright_magenta.default.hex}}"
+bright-white   = "{{colors.terminal_bright_white.default.hex}}"
+bright-black   = "{{colors.terminal_bright_black.default.hex}}"
+
+# Text / surface shades
+text      = "{{colors.terminal_foreground.default.hex}}"
+subtext1  = "{{colors.terminal_normal_white.default.hex}}"
+subtext0  = "{{colors.terminal_bright_black.default.hex}}"
+surface0  = "{{colors.terminal_background.default.hex}}"
+base      = "{{colors.terminal_background.default.hex}}"

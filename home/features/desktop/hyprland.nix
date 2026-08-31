@@ -315,16 +315,23 @@ in
         source = ~/.config/hypr/monitors.conf
         source = ~/.config/hypr/workspaces.conf
 
+        # Noctalia's matugen colours ($primary/$surface/... + col.active_border
+        # etc). Written by the `hyprland` builtin template (see noctalia.nix);
+        # its apply.sh normally appends this same source line, but it can't touch
+        # our read-only hyprland.conf, so we declare it here and it no-ops.
+        source = ~/.config/hypr/noctalia.conf
+
         # FIX CURSOR FLICKERING
         cursor:no_hardware_cursors = 1
       '';
     };
 
-    # Make sure the nwg-displays output files exist so Hyprland's `source` above
-    # succeeds on a fresh machine; never clobber real content nwg-displays wrote.
+    # Make sure the runtime-sourced files exist so Hyprland's `source` above
+    # succeeds on a fresh machine; never clobber real content that nwg-displays
+    # or Noctalia later writes.
     home.activation.nwgDisplaysStubs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       run mkdir -p "$HOME/.config/hypr"
-      for f in monitors.conf workspaces.conf; do
+      for f in monitors.conf workspaces.conf noctalia.conf; do
         [ -e "$HOME/.config/hypr/$f" ] || run touch "$HOME/.config/hypr/$f"
       done
     '';
