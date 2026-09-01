@@ -249,7 +249,10 @@ in
             "workspaces"
             "active_window"
           ];
-          center = [ "clock" ];
+          center = [
+            "media"
+            "clock"
+          ];
           end = [
             "tray"
             "network"
@@ -266,6 +269,14 @@ in
         widget.clock = {
           format = "{:%H:%M}";
           tooltip_format = "{:%A, %d %B %Y}";
+        };
+
+        # MPRIS now-playing capsule sitting left of the clock. Collapses when
+        # nothing is playing so the centre stays clean; title scrolls on hover.
+        widget.media = {
+          hide_when_no_media = true;
+          title_scroll = "on_hover";
+          max_length = 220;
         };
 
         # Panels (launcher, clipboard, control-center…) kept readable — "soft"
