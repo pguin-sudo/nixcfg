@@ -287,6 +287,15 @@ in
           panel.transparency_mode = "soft";
           # Track per-app screen time (shown in the shell).
           screen_time_enabled = true;
+          # Run Noctalia's built-in PolicyKit authentication agent (registers at
+          # /org/noctalia/PolkitAuthenticationAgent). Off by default upstream, and
+          # nothing else in this config starts an in-session agent
+          # (common.services.polkit is disabled per-host), so without this any GUI
+          # privilege prompt — udisks mounts, NM system connections, and Noctalia's
+          # own greeter appearance-sync (org.noctalia.greeter.apply-appearance) —
+          # has no agent to answer and hangs. Needs a logind session, which greetd
+          # provides. Do NOT also enable common.services.polkit (two agents race).
+          polkit_agent = true;
         };
       };
     };
