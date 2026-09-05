@@ -21,7 +21,9 @@ AMNEZIA_CONFIG_DIR = Path("/etc/amnezia/amneziawg")
 SINGBOX_CONFIG_DIR = Path("/etc/sing-box/configs")
 
 
-def register_amnezia(link: str, name_override: str | None, existing: set[str]) -> Profile:
+def register_amnezia(
+    link: str, name_override: str | None, existing: set[str]
+) -> Profile:
     """Decode an AmneziaVPN vpn:// link, write its .conf, and register it as
     a new Profile. Raises amnezia.AmneziaLinkError or OSError."""
     decoded = amnezia.decode_link(link)
@@ -58,7 +60,9 @@ def register_remnawave(
     sub = remnawave.fetch_and_parse(link, hwid=hwid)
     matches = remnawave.pick_endpoints(sub, selector=None)
     if not matches:
-        raise ValueError(f"subscription has no usable endpoints{remnawave.no_endpoint_hint(sub)}")
+        raise ValueError(
+            f"subscription has no usable endpoints{remnawave.no_endpoint_hint(sub)}"
+        )
 
     if name_override and len(matches) > 1:
         raise ValueError(

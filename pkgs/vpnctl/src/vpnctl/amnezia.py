@@ -32,6 +32,7 @@ _CONTAINER_PROTOCOL = {
     # containerTypeToProtocolString() still keys its config under "awg"
     # (client/core/utils/containers/containerUtils.cpp in amnezia-client).
     "amnezia-awg2": "awg",
+    "amnezia-awg3": "awg",
     "amnezia-wireguard": "wireguard",
 }
 
@@ -57,6 +58,15 @@ _INTERFACE_FIELDS = [
     ("I3", "I3"),
     ("I4", "I4"),
     ("I5", "I5"),
+    ("HeaderProtectionKey", "HeaderProtectionKey"),
+    ("ContentPaddingAddition", "ContentPaddingAddition"),
+    ("RekeyAfterTime", "RekeyAfterTime"),
+    ("RekeyTimeout", "RekeyTimeout"),
+    ("RejectAfterTime", "RejectAfterTime"),
+    ("KeepaliveTimeout", "KeepaliveTimeout"),
+    ("MaxHandshakeAttempts", "MaxHandshakeAttempts"),
+    ("RandomTrailers", "RandomTrailers"),
+    ("DisableCookies", "DisableCookies"),
 ]
 
 

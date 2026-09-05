@@ -241,9 +241,13 @@ def sync_source_cmd(ctx: click.Context, url: str) -> None:
     instead of re-fetching it once per server.
     """
     profs = _load_profiles(ctx)
-    targets = [p for p in profs if p.type is ProfileType.SINGBOX and p.subscription_url == url]
+    targets = [
+        p for p in profs if p.type is ProfileType.SINGBOX and p.subscription_url == url
+    ]
     if not targets:
-        err_console.print("[red]error:[/red] no singbox profiles are sourced from that URL")
+        err_console.print(
+            "[red]error:[/red] no singbox profiles are sourced from that URL"
+        )
         sys.exit(1)
 
     hwid = profiles.remnawave_defaults(ctx.obj.get("profiles_file")).get("hwid")
@@ -256,7 +260,9 @@ def sync_source_cmd(ctx: click.Context, url: str) -> None:
 
     matches = remnawave.pick_endpoints(sub, selector=None)
     if not matches:
-        err_console.print(f"[red]error:[/red] subscription has no usable endpoints{remnawave.no_endpoint_hint(sub)}")
+        err_console.print(
+            f"[red]error:[/red] subscription has no usable endpoints{remnawave.no_endpoint_hint(sub)}"
+        )
         sys.exit(1)
 
     failed = False
@@ -321,7 +327,9 @@ def add_source_cmd(ctx: click.Context, link: str, name_override: str | None) -> 
         console.print("fetching subscription...")
 
         def _on_skip(server_name: str, reason: str) -> None:
-            console.print(f"[yellow]warning:[/yellow] skipping '{server_name}': {reason}")
+            console.print(
+                f"[yellow]warning:[/yellow] skipping '{server_name}': {reason}"
+            )
 
         try:
             new_profiles = sources.register_remnawave(
@@ -345,7 +353,9 @@ def add_source_cmd(ctx: click.Context, link: str, name_override: str | None) -> 
         except profiles.ProfilesError as e:
             err_console.print(f"[red]error:[/red] {e}")
             sys.exit(1)
-        console.print(f"[bold green]added[/bold green] {profile.name} ({profile.type.value})")
+        console.print(
+            f"[bold green]added[/bold green] {profile.name} ({profile.type.value})"
+        )
 
 
 def _remove(target: Profile) -> None:

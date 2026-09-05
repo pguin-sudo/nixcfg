@@ -11,9 +11,13 @@ from .remnawave import Endpoint
 
 def build_config(ep: Endpoint, interface_name: str = "sing-tun0") -> dict[str, Any]:
     if ep.protocol != "vless":
-        raise ValueError(f"unsupported protocol '{ep.protocol}' (only vless is supported)")
+        raise ValueError(
+            f"unsupported protocol '{ep.protocol}' (only vless is supported)"
+        )
     if ep.security != "reality":
-        raise ValueError(f"unsupported security '{ep.security}' (only reality is supported)")
+        raise ValueError(
+            f"unsupported security '{ep.security}' (only reality is supported)"
+        )
 
     outbound: dict[str, Any] = {
         "type": "vless",

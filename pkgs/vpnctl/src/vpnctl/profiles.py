@@ -144,7 +144,9 @@ def _slugify(text: str, max_len: int, fallback: str) -> str:
     return (slug or fallback)[:max_len]
 
 
-def unique_name(seed: str, existing: set[str], max_len: int = 32, fallback: str = "profile") -> str:
+def unique_name(
+    seed: str, existing: set[str], max_len: int = 32, fallback: str = "profile"
+) -> str:
     """A filesystem/interface-safe name derived from `seed`, not in `existing`.
 
     `fallback` is used when `seed` has no ASCII alphanumerics to slugify --

@@ -26,7 +26,9 @@ def is_active(unit: str) -> str:
 
 
 def start(unit: str) -> None:
-    result = subprocess.run(["systemctl", "start", unit], capture_output=True, text=True)
+    result = subprocess.run(
+        ["systemctl", "start", unit], capture_output=True, text=True
+    )
     if result.returncode != 0:
         raise UnitError(f"failed to start {unit}: {result.stderr.strip()}")
 

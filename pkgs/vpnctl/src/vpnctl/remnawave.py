@@ -46,13 +46,15 @@ class Subscription:
     profiles: list[SubProfile] = field(default_factory=list)
 
 
-def fetch_and_parse(url: str, hwid: str | None = None, timeout: int = 15) -> Subscription:
+def fetch_and_parse(
+    url: str, hwid: str | None = None, timeout: int = 15
+) -> Subscription:
     headers = {
         "User-Agent": "Happ/1.0",
         "x-device-os": "Android",
         "x-ver-os": "14",
         "x-device-model": "VPNCTL",
-        "x-hwid": hwid or "asdfghjkasdfghjkl"
+        "x-hwid": hwid or "asdfghjkasdfghjkl",
     }
 
     r = requests.get(url, headers=headers, timeout=timeout)
