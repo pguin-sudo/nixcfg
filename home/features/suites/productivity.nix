@@ -19,8 +19,11 @@ in
       qbittorrent
       iloader # sideload .ipa files onto iPhone
       #webcord
-      #bottles
       #tailscale
+
+      bottles
+      wineWowPackages.stable # 32/64-bit wine
+      winetricks
 
       onlyoffice-desktopeditors
       obs-studio

@@ -86,6 +86,13 @@
     XDG_RUNTIME_DIR = "/run/user/$UID";
   };
 
+  # Extra locales (ru_RU needed for CP1251 legacy apps under Wine/Bottles)
+  i18n.supportedLocales = [
+    "C.UTF-8/UTF-8"
+    "en_US.UTF-8/UTF-8"
+    "ru_RU.UTF-8/UTF-8"
+  ];
+
   environment.systemPackages = with pkgs; [
     libsecret
     seahorse
