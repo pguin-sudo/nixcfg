@@ -45,5 +45,6 @@
     tree
     file
     jq
+    ggh
   ];
 }
