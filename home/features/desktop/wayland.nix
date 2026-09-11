@@ -94,9 +94,15 @@ in
         # which is why browsers/apps were falling back to launching a full
         # Dolphin window instead of a proper file picker.
         config = {
-          common.default = [ "hyprland" "gtk" ];
+          common.default = [
+            "hyprland"
+            "gtk"
+          ];
           hyprland = {
-            default = [ "hyprland" "gtk" ];
+            default = [
+              "hyprland"
+              "gtk"
+            ];
             "org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
           };
         };
@@ -118,7 +124,10 @@ in
         exec = "kitty --title yazi -e yazi %U";
         terminal = false;
         icon = "yazi";
-        categories = [ "System" "FileManager" ];
+        categories = [
+          "System"
+          "FileManager"
+        ];
         mimeType = [ "inode/directory" ];
       };
 
@@ -126,13 +135,14 @@ in
         enable = true;
 
         defaultApplications = {
-          "inode/directory" = [ "yazi.desktop" "org.kde.dolphin.desktop" ];
-          "x-scheme-handler/file" = [ "yazi.desktop" "org.kde.dolphin.desktop" ];
+          "inode/directory" = [ "yazi.desktop" ];
+          "x-scheme-handler/file" = [ "yazi.desktop" ];
 
           "x-scheme-handler/http" = [ browserDesktopFile ];
           "x-scheme-handler/https" = [ browserDesktopFile ];
           "x-scheme-handler/about" = [ browserDesktopFile ];
           "x-scheme-handler/unknown" = [ browserDesktopFile ];
+          "application/pdf" = [ browserDesktopFile ];
 
           "image/jpeg" = [ "swayimg.desktop" ];
           "image/jpg" = [ "swayimg.desktop" ];

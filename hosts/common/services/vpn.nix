@@ -46,7 +46,7 @@ in
 
     environment.systemPackages = [
       pkgs.amneziawg-tools
-      pkgs.amneziawg-go
+      #pkgs.amneziawg-go
       pkgs.sing-box
       pkgs.vpnctl
     ];
@@ -70,7 +70,7 @@ in
       nftables
       openresolv
       procps
-      amneziawg-go
+      #amneziawg-go
     ];
 
     # No stock NixOS/nixpkgs unit for a per-profile sing-box instance exists
@@ -118,5 +118,14 @@ in
         return polkit.Result.NOT_HANDLED;
       });
     '';
+
+    services = {
+      strongswan = {
+        enable = true;
+        #connections = {
+        #  keyexchange = "ikev2";
+        #};
+      };
+    };
   };
 }
