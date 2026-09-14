@@ -44,6 +44,11 @@
     interface = "wlp2s0f0u5";
   };
 
+  # LAMPA's external torrent-streaming backend (see home/features/desktop/lampa.nix
+  # for the LAMPA client itself). Local-only by default -- see torrserver.nix
+  # for how to expose it to other devices on the LAN instead.
+  common.services.torrserver.enable = true;
+
   # User
   common.services.dm.enable = true;
 

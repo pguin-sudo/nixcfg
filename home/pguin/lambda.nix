@@ -42,6 +42,7 @@
       hyprland.enable = true;
       wayland.enable = true;
       waybar.enable = false;
+      lampa.enable = true;
       noctalia.enable = true;
       xdg.enable = true;
       spotify.enable = true;

@@ -461,6 +461,7 @@
         "noctalia-greeter": "noctalia-greeter",
         "spicetify-nix": "spicetify-nix",
         "stylix": "stylix",
+        "torrserver": "torrserver",
         "zapret2-nix": "zapret2-nix",
         "zen-browser": "zen-browser"
       }
@@ -626,6 +627,26 @@
       "original": {
         "owner": "tinted-theming",
         "repo": "base16-zed",
+        "type": "github"
+      }
+    },
+    "torrserver": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1789286613,
+        "narHash": "sha256-FVeEf7YpZkqI8DTFLsmqHEIWuTEyQu2h/sieAO3EqHU=",
+        "owner": "Damima3369",
+        "repo": "TorrServer",
+        "rev": "29c9bcea678823ef60f907b8efcc4a431f7acea0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Damima3369",
+        "repo": "TorrServer",
         "type": "github"
       }
     },

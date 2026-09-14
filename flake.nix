@@ -43,6 +43,11 @@
     };
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
+
+    torrserver = {
+      url = "github:Damima3369/TorrServer";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -58,6 +63,7 @@
       asus-numpad-driver,
       zen-browser,
       zapret2-nix,
+      torrserver,
       ...
     }@inputs:
     let
@@ -129,6 +135,7 @@
             ./hosts/delta
             disko.nixosModules.disko
             zapret2-nix.nixosModules.default
+            torrserver.nixosModules.default
           ];
         };
 
@@ -155,6 +162,7 @@
             # Host config
             ./hosts/lambda
             zapret2-nix.nixosModules.default
+            torrserver.nixosModules.default
           ];
         };
       };

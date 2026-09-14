@@ -43,6 +43,7 @@
       hyprland.enable = true;
       waybar.enable = false;
       wayland.enable = true;
+      lampa.enable = true;
       noctalia.enable = true;
       xdg.enable = true;
       kitty.enable = true;

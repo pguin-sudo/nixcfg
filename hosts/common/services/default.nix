@@ -12,6 +12,7 @@
     ./openssh.nix
     ./polkit.nix
     ./steam.nix
+    ./torrserver.nix
     ./usbmuxd.nix
     ./vm.nix
     ./vpn.nix
