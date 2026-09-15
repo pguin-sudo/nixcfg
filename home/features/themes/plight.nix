@@ -34,6 +34,7 @@ in {
         NoNewPrivileges = true;
         ProtectSystem = "strict";
         ProtectHome = "read-only";
+        ReadWritePaths = [ "%h/.config/plight" ];
         PrivateTmp = true;
       };
 

@@ -10,6 +10,24 @@
   # Nvidia
   hardware.nvidia.enable = true;
 
+  # Needed for OpenRGB to reach the motherboard's I2C/SMBus RGB controllers
+  hardware.i2c.enable = true;
+  boot.kernelModules = [ "i2c-piix4" ];
+
+  # Power button handled by Hyprland (see home/features/desktop/hyprland.nix),
+  # not logind directly.
+  services.logind.settings.Login.HandlePowerKey = "ignore";
+
+  # RGB off while suspended, back to the noctalia-derived color on resume
+  # (see home/features/themes/rgb.nix).
+  powerManagement.powerDownCommands = ''
+    ${pkgs.openrgb}/bin/openrgb -d 0 -z 0 -sz 12 -c 000000 -m static || true
+  '';
+  powerManagement.resumeCommands = ''
+    color=$(tr -d '#\n' < /home/pguin/.config/noctalia/generated/rgb-color.conf 2>/dev/null)
+    ${pkgs.openrgb}/bin/openrgb -d 0 -z 0 -sz 12 -c "''${color:-000000}" -m static || true
+  '';
+
   # Common
   # System
   common.services.polkit.enable = false;

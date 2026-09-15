@@ -274,7 +274,8 @@ in
         ];
 
         bindl = [
-          ", xf86poweroff, exec, noctalia msg session lock"
+          ", xf86poweroff, exec, noctalia msg session lock-and-suspend"
+          ", switch:on:Lid Switch, exec, noctalia msg session lock-and-suspend"
         ];
 
         # windowrulev2 is a hard error on Hyprland >= 0.55 ("windowrulev2 is

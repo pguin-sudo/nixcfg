@@ -9,6 +9,15 @@
   hardware.asus-numpad.enable = false;
   hardware.battery.enable = false;
 
+  # Power/lid button handled by Hyprland (see home/pguin/lambda/home.nix),
+  # not logind directly.
+  services.logind.settings.Login = {
+    HandlePowerKey = "ignore";
+    HandleLidSwitch = "ignore";
+    HandleLidSwitchDocked = "ignore";
+    HandleLidSwitchExternalPower = "ignore";
+  };
+
   # Common
   # System
   common.services.polkit.enable = false;
