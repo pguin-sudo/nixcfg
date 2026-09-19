@@ -11,6 +11,7 @@
     ./obs-studio.nix
     ./openssh.nix
     ./polkit.nix
+    ./smkb.nix
     ./steam.nix
     ./torrserver.nix
     ./usbmuxd.nix

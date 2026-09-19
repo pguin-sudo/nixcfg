@@ -62,6 +62,12 @@
     interface = "wlp2s0f0u5";
   };
 
+  # Shares this mouse/keyboard with a slave over the hotspot above once its
+  # cursor reaches the configured screen edge. Config/psk live outside the
+  # store at ~/.config/smkb/{master.yaml,psk} -- see examples/master.yaml in
+  # the smkb repo, and ~/Desktop/smkb/README.md for the psk_file convention.
+  common.services.smkb.master.enable = true;
+
   # LAMPA's external torrent-streaming backend (see home/features/desktop/lampa.nix
   # for the LAMPA client itself). Local-only by default -- see torrserver.nix
   # for how to expose it to other devices on the LAN instead.

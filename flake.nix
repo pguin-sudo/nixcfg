@@ -16,6 +16,7 @@
 
     nixvim = {
       url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     stylix.url = "github:nix-community/stylix";
@@ -48,6 +49,8 @@
       url = "github:Damima3369/TorrServer";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    smkb.url = "github:pguin-sudo/smkb";
   };
 
   outputs =
@@ -64,6 +67,7 @@
       zen-browser,
       zapret2-nix,
       torrserver,
+      smkb,
       ...
     }@inputs:
     let
@@ -136,6 +140,7 @@
             disko.nixosModules.disko
             zapret2-nix.nixosModules.default
             torrserver.nixosModules.default
+            smkb.nixosModules.smkb
           ];
         };
 
@@ -163,6 +168,7 @@
             ./hosts/lambda
             zapret2-nix.nixosModules.default
             torrserver.nixosModules.default
+            smkb.nixosModules.smkb
           ];
         };
       };

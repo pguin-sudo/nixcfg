@@ -49,6 +49,10 @@
   # for the LAMPA client itself). Local-only by default -- see torrserver.nix
   # for how to expose it to other devices on the LAN instead.
   common.services.torrserver.enable = true;
+  # Receives delta's shared mouse/keyboard over WiFi (delta's hotspot) once
+  # its cursor reaches the configured screen edge. Config/psk live outside
+  # the store at ~/.config/smkb/{slave.yaml,psk} -- psk must match delta's.
+  common.services.smkb.slave.enable = true;
 
   #services.samba.enable = true;
 
