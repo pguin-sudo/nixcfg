@@ -54,5 +54,27 @@ in
         ipv6.method = "ignore";
       };
     };
+
+    # Клиенты за хотспотом объявляют MSS по своему локальному MTU 1500, но весь
+    # исходящий трафик delta уходит в AmneziaWG-туннель с MTU 1280. Сегменты по
+    # 1460 байт в него не влезают, ICMP "fragmentation needed" до клиента не
+    # доезжает, PMTUD проваливается -- и TLS-хендшейк с большим Client Hello
+    # (например duckduckgo.com) виснет. Своему трафику delta ядро подставляет MSS
+    # по MTU маршрута само, форвардимому -- нет, отсюда это правило.
+    #
+    # Матчим по входу с хотспота, а не по выходу в туннель: имя VPN-интерфейса --
+    # это slug хоста из vpn://-ссылки, который vpnctl генерирует в рантайме
+    # (pkgs/vpnctl/src/vpnctl/sources.py), в nix его нет и он меняется при смене
+    # сервера. `rt mtu` берёт MTU фактического маршрута, поэтому в туннель уйдёт
+    # MSS 1240, а в LAN через eno1 -- 1460, то есть без изменений.
+    networking.nftables.tables.mss-clamp = {
+      family = "inet";
+      content = ''
+        chain forward {
+          type filter hook forward priority mangle; policy accept;
+          iifname "${cfg.interface}" tcp flags syn tcp option maxseg size set rt mtu
+        }
+      '';
+    };
   };
 }

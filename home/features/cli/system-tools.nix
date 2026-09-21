@@ -14,6 +14,8 @@ in {
       # Network Utilities (system-level)
       wireguard-tools
       openvpn
+      tcpdump
+      dnsutils # dig, nslookup
       #mullvad-vpn
       #speedtest-go
     ];
