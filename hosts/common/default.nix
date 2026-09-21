@@ -102,4 +102,9 @@
   boot.extraModprobeConfig = ''
     options hid_apple fnmode=2
   '';
+
+  programs.nix-ld.libraries = with pkgs; [
+    stdenv.cc.cc.lib
+    zlib
+  ];
 }
