@@ -321,11 +321,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1788531059,
-        "narHash": "sha256-hLD4l3QOGBQhkVp3mQ2lJ/YbEi99qUgKapb40KovZ88=",
+        "lastModified": 1789785513,
+        "narHash": "sha256-B44WL6h0XoLjJ41bUPJk0X5SDinLCII//6EcBLXKiJ0=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "801bef6abd86b91e51083066b83fb354a11fc640",
+        "rev": "20b1ddd1aa5ace70c9468305030aa4f9ef79671b",
         "type": "github"
       },
       "original": {
@@ -464,7 +464,6 @@
         "smkb": "smkb",
         "spicetify-nix": "spicetify-nix",
         "stylix": "stylix",
-        "torrserver": "torrserver",
         "zapret2-nix": "zapret2-nix",
         "zen-browser": "zen-browser"
       }
@@ -648,26 +647,6 @@
       "original": {
         "owner": "tinted-theming",
         "repo": "base16-zed",
-        "type": "github"
-      }
-    },
-    "torrserver": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1789286613,
-        "narHash": "sha256-FVeEf7YpZkqI8DTFLsmqHEIWuTEyQu2h/sieAO3EqHU=",
-        "owner": "Damima3369",
-        "repo": "TorrServer",
-        "rev": "29c9bcea678823ef60f907b8efcc4a431f7acea0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Damima3369",
-        "repo": "TorrServer",
         "type": "github"
       }
     },

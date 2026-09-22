@@ -45,11 +45,6 @@
 
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
 
-    torrserver = {
-      url = "github:Damima3369/TorrServer";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     smkb.url = "github:pguin-sudo/smkb";
   };
 
@@ -66,7 +61,6 @@
       asus-numpad-driver,
       zen-browser,
       zapret2-nix,
-      torrserver,
       smkb,
       ...
     }@inputs:
@@ -139,7 +133,6 @@
             ./hosts/delta
             disko.nixosModules.disko
             zapret2-nix.nixosModules.default
-            torrserver.nixosModules.default
             smkb.nixosModules.smkb
           ];
         };
@@ -167,7 +160,6 @@
             # Host config
             ./hosts/lambda
             zapret2-nix.nixosModules.default
-            torrserver.nixosModules.default
             smkb.nixosModules.smkb
           ];
         };
