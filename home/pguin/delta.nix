@@ -49,6 +49,7 @@
       kitty.enable = true;
       dolphin.enable = true;
       spotify.enable = true;
+      torrserver.enable = true;
       zed.enable = true;
     };
     suites = {

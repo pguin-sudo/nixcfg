@@ -11,6 +11,7 @@
     ./noctalia.nix
     ./spotify.nix
     ./sway.nix
+    ./torrserver.nix
     ./waybar.nix
     ./wayland.nix
     ./zed.nix
