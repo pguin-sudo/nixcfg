@@ -4,15 +4,18 @@
   lib,
   ...
 }:
-with lib; let
+with lib;
+let
   cfg = config.features.suites.studio;
-in {
+in
+{
   options.features.suites.studio.enable = mkEnableOption "studio suite";
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       blender
       krita
+      audacity
     ];
   };
 }

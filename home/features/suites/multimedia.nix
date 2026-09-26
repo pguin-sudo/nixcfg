@@ -19,6 +19,7 @@ in
       cmatrix
       yt-dlp
       qpwgraph
+      easyeffects
       #amberol
       #jellyfin-media-player
     ];
