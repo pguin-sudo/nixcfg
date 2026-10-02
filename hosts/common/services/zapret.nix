@@ -28,9 +28,14 @@ in
         "general-ts"
         "winws"
       ];
+      # Голосовые порты Discord намеренно НЕ перечислены здесь: у этого
+      # правила глобальный ct-original-packets-лимит (firewall.connbytesLimit,
+      # по умолчанию 6), а ICE/STUN consent-freshness у Discord идёт весь
+      # звонок. После первых 6 пакетов поток шёл бы дальше немаскированным, и
+      # DPI успевал переопознать его — см. отдельную таблицу
+      # networking.nftables.tables.zapret2-voice ниже, без лимита.
       firewall.ports.udp = [
         "443"
-        "50000-65535"
       ];
       defaultPreset = "winws";
       extraPresets = {
@@ -78,17 +83,22 @@ in
             # (also RU-domestic, from the same bundle) stands in for it.
             {
               name = "discord-voice";
-              filter.udp = "19294-19344,50000-65535";
+              # Как в референсе (Flowseal/zapret-discord-youtube): реальный
+              # голосовой/STUN трафик укладывается в 50000-50100, подтверждено
+              # tcpdump на delta. Firewall-правило для этих портов — отдельная
+              # таблица zapret2-voice ниже, не firewall.ports.udp.
+              filter.udp = "19294-19344,50000-50100";
               filter.l7 = [
                 "discord"
                 "stun"
               ];
+              hostlist = false;
               payload = [
                 "discord_ip_discovery"
                 "stun"
               ];
               desync = [
-                "fake:blob=quic_rutube:repeats=6"
+                "fake:blob=discord_udp:repeats=6"
               ];
               extraArgs = [
                 "--blob=quic_rutube:@${./zapret-data/blobs/quic_initial_rutube_ru.bin}"
@@ -208,5 +218,26 @@ in
     environment.etc."zapret2/lists/ipset-all.txt".source = ./zapret-data/lists/ipset-all.txt;
     environment.etc."zapret2/lists/ipset-exclude.txt".source = ./zapret-data/lists/ipset-exclude.txt;
     networking.nftables.enable = true;
+
+    # Голос Discord должен маскироваться ВЕСЬ звонок, а не первые
+    # connbytesLimit пакетов — см. комментарий у firewall.ports.udp выше.
+    # Порты намеренно не входят в таблицу zapret2 модуля: две base-chain на
+    # одном hook, матчащие один пакет, поставили бы его в очередь дважды
+    # (NFQUEUE-reinject продолжает обход со следующей base-chain того же
+    # хука, а не с конца текущей).
+    networking.nftables.tables.zapret2-voice = {
+      family = "inet";
+      content =
+        let
+          mark = config.services.zapret2.firewall.desyncMark;
+        in
+        ''
+          chain zapret2_voice_postrouting {
+            type filter hook postrouting priority mangle + 10; policy accept;
+            meta mark and ${mark} == ${mark} counter return
+            udp dport { 19294-19344, 50000-50100 } counter queue flags bypass to ${toString config.services.zapret2.qnum}
+          }
+        '';
+    };
   };
 }
