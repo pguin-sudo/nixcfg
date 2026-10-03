@@ -15,8 +15,8 @@ in
     # Steam installed in host config
 
     home.packages = with pkgs; [
-      #vesktop
-      discord
+      vesktop
+      #discord
       gzdoom
       prismlauncher-cracked
       osu-lazer-bin
