@@ -7,10 +7,21 @@
 with lib;
 let
   cfg = config.common.services.vpn;
+
+  ikev2RuntimeDir = "/run/ikev2";
+  ikev2RuntimeSwanctlConf = "${ikev2RuntimeDir}/swanctl.conf";
+
+  # ISRG Root X1 — корневой сертификат Let's Encrypt, которым подписан
+  # сертификат сервера i.pguin.ru. Файл кладём в store и ссылаемся на
+  # него напрямую из swanctl.conf.
+  isrgRootX1 = pkgs.fetchurl {
+    url = "https://letsencrypt.org/certs/isrgrootx1.pem";
+    sha256 = "sha256-IrVXonBVszYGtlWfN3A5KNPkrXnxELQH0EmG4YQ1Q9E=";
+  };
 in
 {
   options.common.services.vpn = {
-    enable = mkEnableOption "AmneziaWG + sing-box VPN stack driven by vpnctl";
+    enable = mkEnableOption "AmneziaWG + sing-box + IKEv2 VPN stack driven by vpnctl";
 
     user = mkOption {
       type = types.str;
@@ -21,48 +32,62 @@ in
         relies on this to avoid sudo on every connect/disconnect.
       '';
     };
+
+    ikev2.enable = mkEnableOption "IKEv2 VPN";
+
+    ikev2.passwordFile = mkOption {
+      type = types.path;
+      # /run is tmpfs and nothing in this repo populates /run/secrets (no
+      # sops-nix/agenix here) -- that path would never exist. A plain file
+      # under /etc survives reboots and just needs to be created once,
+      # out-of-band, same as this repo's other unmanaged secrets (e.g.
+      # ~/.config/smkb/psk).
+      default = "/etc/ikev2/password";
+
+      description = ''
+        File containing the complete IKEv2 configuration, created manually
+        (e.g. `install -m 600 /dev/stdin /etc/ikev2/password`) -- NOT managed
+        by Nix/home-manager.
+
+        Format:
+
+          server=vpn.example.com
+          remote_id=vpn.example.com
+          username=myusername
+          password=mypassword
+
+        The file must not be stored in the Nix store.
+      '';
+    };
   };
 
-  # AmneziaVPN's own GUI client is untouched by this module -- it stays a
-  # separate app used only to administer the server / export .conf profiles.
-  # This module only wires up unattended local consumption of those exported
-  # configs (AmneziaWG) and of Remnawave subscriptions (sing-box). Note that
-  # the in-kernel module enabled below also accelerates AmneziaVPN's own
-  # connections, since its bundled service falls back to the same
-  # `/sys/module/amneziawg` check as awg-quick.
   config = mkIf cfg.enable {
-    # `ip link add type amneziawg` needs the out-of-tree amneziawg kernel
-    # module. This used to fail to build on this kernel (7.1.4 removed the
-    # `ipv6_stub` symbol layout it relied on), forcing a silent fallback to
-    # the much slower `amneziawg-go` userspace implementation for every
-    # connection (roughly half the throughput, ~3x the latency -- confirmed
-    # 2026-08-24). nixpkgs' amneziawg module has since been updated for
-    # newer kernels, so build the real kernel module for whatever kernel
-    # this host runs and load it -- `ip link add type amneziawg` then uses
-    # it automatically via modalias, no further wiring needed. Keep
-    # amneziawg-go installed regardless, as a fallback for the next time a
-    # kernel bump outpaces the module.
-    boot.extraModulePackages = [ config.boot.kernelPackages.amneziawg ];
+
+    # -----------------------------------------------------------------------
+    # AmneziaWG
+    # -----------------------------------------------------------------------
+
+    boot.extraModulePackages = [
+      config.boot.kernelPackages.amneziawg
+    ];
 
     environment.systemPackages = [
       pkgs.amneziawg-tools
-      #pkgs.amneziawg-go
       pkgs.sing-box
       pkgs.vpnctl
+    ]
+    ++ optionals cfg.ikev2.enable [
+      # swanctl сам найдёт vici-сокет работающего charon, конфиг
+      # передавать не нужно. aes/sha1/sha2/hmac/nonce, нужные для
+      # proposals ниже, собраны в pkgs.strongswan по умолчанию --
+      # оверрайд не нужен.
+      pkgs.strongswan
     ];
 
-    # amneziawg-tools ships its own templated awg-quick@.service (built with
-    # WITH_SYSTEMDUNITS=yes) which runs `awg-quick up %i`; a bare instance
-    # name resolves against /etc/amnezia/amneziawg/%i.conf by awg-quick's own
-    # convention. systemd.packages just makes that unit file visible --
-    # nothing autostarts since no [Install] target is pulled in anywhere.
-    systemd.packages = [ pkgs.amneziawg-tools ];
+    systemd.packages = [
+      pkgs.amneziawg-tools
+    ];
 
-    # The shipped unit sets no PATH, and awg-quick (a bash script) shells out
-    # to readlink/ip/iptables/nft/sysctl/resolvconf -- none of which resolve
-    # in systemd's default minimal PATH on NixOS. Declaring `path` here adds
-    # a drop-in for the package-provided "awg-quick@" unit rather than
-    # replacing it.
     systemd.services."awg-quick@".path = with pkgs; [
       coreutils
       iproute2
@@ -70,62 +95,201 @@ in
       nftables
       openresolv
       procps
-      #amneziawg-go
     ];
 
-    # No stock NixOS/nixpkgs unit for a per-profile sing-box instance exists
-    # (services.sing-box in nixpkgs is a single non-templated, non-root
-    # service meant for server-side use) -- so this is hand-written.
+    # -----------------------------------------------------------------------
+    # sing-box
+    # -----------------------------------------------------------------------
+
     systemd.services."sing-box@" = {
       description = "sing-box VPN profile - %i";
+
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
+
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.sing-box}/bin/sing-box run -c /etc/sing-box/configs/%i.json";
+
         Restart = "on-failure";
         RestartSec = 2;
-        # The tun inbound needs CAP_NET_ADMIN; running as root keeps this
-        # simple rather than threading AmbientCapabilities through.
+
         User = "root";
       };
     };
 
-    # Owned by cfg.user, not root: `vpnctl add-source` (invoked from the
-    # Noctalia panel, unprivileged) writes new profile configs here directly.
-    # awg-quick@/sing-box@ still read them fine since both units run as root.
+    # -----------------------------------------------------------------------
+    # VPN profile directories
+    # -----------------------------------------------------------------------
+
     systemd.tmpfiles.rules = [
       "d /etc/amnezia/amneziawg 0750 ${cfg.user} root -"
       "d /etc/sing-box/configs 0750 ${cfg.user} root -"
+    ]
+    ++ optionals cfg.ikev2.enable [
+      "d ${ikev2RuntimeDir} 0700 root root -"
     ];
+
+    # -----------------------------------------------------------------------
+    # IKEv2 / strongSwan (swanctl)
+    # -----------------------------------------------------------------------
+
+    services.strongswan-swanctl = mkIf cfg.ikev2.enable {
+      enable = true;
+
+      # Модуль добавит `include /run/ikev2/swanctl.conf` в /etc/swanctl/swanctl.conf,
+      # который затем подхватывается ExecStartPost'ом `swanctl --load-all`.
+      includes = [ ikev2RuntimeSwanctlConf ];
+    };
+
+    systemd.services.ikev2-config = mkIf cfg.ikev2.enable {
+      description = "Generate IKEv2 swanctl runtime configuration";
+
+      before = [ "strongswan-swanctl.service" ];
+      wantedBy = [ "multi-user.target" ];
+
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+
+        ExecStart = pkgs.writeShellScript "generate-ikev2-config" ''
+          set -euo pipefail
+
+          SECRET_FILE="${cfg.ikev2.passwordFile}"
+          RUNTIME_DIR="${ikev2RuntimeDir}"
+          ISRG_ROOT="${isrgRootX1}"
+
+          if [ ! -f "$SECRET_FILE" ]; then
+            echo "IKEv2 secret file does not exist: $SECRET_FILE" >&2
+            exit 1
+          fi
+
+          # shellcheck disable=SC1090
+          source "$SECRET_FILE"
+
+          : "''${server:?server is missing}"
+          : "''${remote_id:?remote_id is missing}"
+          : "''${username:?username is missing}"
+          : "''${password:?password is missing}"
+
+          install -d -m 0700 "$RUNTIME_DIR"
+
+          cat > "${ikev2RuntimeSwanctlConf}" <<EOF
+          # ISRG Root X1 кладём в store, путь известен на этапе сборки.
+          # Этого достаточно, чтобы charon проверил цепочку Let's Encrypt.
+          authorities {
+            isrg-root-x1 {
+              file = $ISRG_ROOT
+            }
+          }
+
+          connections {
+            ikev2 {
+              version = 2
+              remote_addrs = $server
+              # Запрашиваем внутренний адрес у сервера -- без этого local_ts
+              # по умолчанию ("dynamic") берёт адрес интерфейса машины, а не
+              # выданный сервером, и child SA не поднимается.
+              vips = 0.0.0.0, ::
+
+              local {
+                auth = eap-mschapv2
+                eap_id = $username
+              }
+
+              remote {
+                auth = pubkey
+                id = $remote_id
+              }
+
+              children {
+                ikev2 {
+                  remote_ts = 0.0.0.0/0
+                  # none, а не trap: иначе charon сам поднимет туннель на
+                  # первом же исходящем пакете, в обход vpnctl и его модели
+                  # "один активный профиль за раз" (как у awg-quick@/sing-box@).
+                  # vpnctl дергает ikev2-connection.service явно.
+                  start_action = none
+                  esp_proposals = aes256-sha256
+                }
+              }
+
+              proposals = aes256-sha256-modp2048
+              fragmentation = yes
+              encap = yes
+            }
+          }
+
+          secrets {
+            eap-$username {
+              id = $username
+              secret = "$password"
+            }
+          }
+          EOF
+
+          chmod 600 "${ikev2RuntimeSwanctlConf}"
+        '';
+      };
+    };
+
+    # charon/swanctl run as root and own the vici socket -- rather than
+    # exposing that socket to cfg.user, give vpnctl the same unit-based
+    # start/stop contract it already uses for awg-quick@/sing-box@:
+    # `systemctl start` initiates the SA (blocking until it's up or fails)
+    # and leaves the unit "active" via RemainAfterExit, `systemctl stop`
+    # runs ExecStop to terminate it. unitctl.is_active() then just works.
+    systemd.services.ikev2-connection = mkIf cfg.ikev2.enable {
+      description = "IKEv2 VPN connection (swanctl)";
+
+      after = [
+        "strongswan-swanctl.service"
+        "network-online.target"
+      ];
+      wants = [ "network-online.target" ];
+      requisite = [ "strongswan-swanctl.service" ];
+
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        TimeoutStartSec = "30s";
+
+        ExecStart = "${pkgs.strongswan}/sbin/swanctl --initiate --child ikev2";
+        ExecStop = "${pkgs.strongswan}/sbin/swanctl --terminate --ike ikev2";
+      };
+    };
+
+    # -----------------------------------------------------------------------
+    # Polkit
+    # -----------------------------------------------------------------------
 
     security.polkit.enable = true;
 
-    # Scoped to exactly the two unit-name patterns vpnctl drives -- no other
-    # unit, and no other user, gets start/stop/restart rights from this rule.
     environment.etc."polkit-1/rules.d/50-vpnctl.rules".text = ''
       polkit.addRule(function(action, subject) {
         if (action.id != "org.freedesktop.systemd1.manage-units") {
           return polkit.Result.NOT_HANDLED;
         }
+
         if (subject.user != "${cfg.user}") {
           return polkit.Result.NOT_HANDLED;
         }
+
         var unit = action.lookup("unit");
-        if (unit && (/^awg-quick@[^\/]+\.service$/.test(unit) || /^sing-box@[^\/]+\.service$/.test(unit))) {
+
+        if (
+          unit &&
+          (
+            /^awg-quick@[^\/]+\.service$/.test(unit) ||
+            /^sing-box@[^\/]+\.service$/.test(unit) ||
+            unit == "ikev2-connection.service"
+          )
+        ) {
           return polkit.Result.YES;
         }
+
         return polkit.Result.NOT_HANDLED;
       });
     '';
-
-    services = {
-      strongswan = {
-        enable = true;
-        #connections = {
-        #  keyexchange = "ikev2";
-        #};
-      };
-    };
   };
 }

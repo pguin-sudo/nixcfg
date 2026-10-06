@@ -31,8 +31,9 @@ let
         type = types.enum [
           "amnezia"
           "singbox"
+          "ikev2"
         ];
-        description = "amnezia = awg-quick@ unit over a manually-exported .conf; singbox = sing-box@ unit over a vpnctl-generated config.";
+        description = "amnezia = awg-quick@ unit over a manually-exported .conf; singbox = sing-box@ unit over a vpnctl-generated config; ikev2 = the single system-wide ikev2-connection.service driven by common.services.vpn.ikev2.";
       };
       unit = mkOption {
         type = types.str;

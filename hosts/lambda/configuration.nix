@@ -45,6 +45,7 @@
   common.services.dm.enable = true;
   # VPN
   common.services.vpn.enable = true;
+  common.services.vpn.ikev2.enable = true;
   # Receives delta's shared mouse/keyboard over WiFi (delta's hotspot) once
   # its cursor reaches the configured screen edge. Config/psk live outside
   # the store at ~/.config/smkb/{slave.yaml,psk} -- psk must match delta's.

@@ -7,6 +7,7 @@ from enum import Enum
 class ProfileType(str, Enum):
     AMNEZIA = "amnezia"
     SINGBOX = "singbox"
+    IKEV2 = "ikev2"
 
 
 @dataclass(frozen=True)
@@ -15,7 +16,11 @@ class Profile:
     type: ProfileType
     unit: str
     config_path: str
-    interface: str
+    # None for ikev2 -- its unit-based status (unitctl.is_active) is already
+    # a faithful proxy for the tunnel, it has no named interface to probe
+    # (strongSwan routes via XFRM policies over the existing default route,
+    # not a dedicated tun/wg device).
+    interface: str | None
     subscription_source: str | None = None
     # The server's own display name at add-source time (e.g. "🇩🇪 Германия"),
     # kept for display -- NOT used to re-match the same server on sync-source,

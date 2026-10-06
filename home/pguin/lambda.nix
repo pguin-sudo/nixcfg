@@ -32,7 +32,17 @@
       neovim.enable = true;
       starship.enable = true;
       tmux.enable = true;
-      vpnctl.enable = true;
+      vpnctl = {
+        enable = true;
+        profiles = [
+          {
+            name = "ikev2";
+            type = "ikev2";
+            unit = "ikev2-connection.service";
+            configPath = "/run/ikev2/swanctl.conf";
+          }
+        ];
+      };
       yazi.enable = true;
       zsh.enable = true;
     };

@@ -16,7 +16,17 @@ import click
 from rich.console import Console
 from rich.table import Table
 
-from . import amnezia, display, lock, profiles, remnawave, singbox, sources, unitctl
+from . import (
+    amnezia,
+    display,
+    health,
+    lock,
+    profiles,
+    remnawave,
+    singbox,
+    sources,
+    unitctl,
+)
 from .models import Profile, ProfileType
 
 console = Console()
@@ -55,11 +65,19 @@ def _find_profile(profs: list[Profile], name: str) -> Profile:
 
 @main.command("list")
 @click.option("--json", "as_json", is_flag=True, help="Machine-readable output.")
+@click.option(
+    "--check",
+    is_flag=True,
+    help="Probe each singbox profile's server with a TCP connect and mark "
+    "unreachable ones. Adds latency; amnezia (WireGuard/UDP) and ikev2 "
+    "profiles aren't checkable this way and are left unmarked.",
+)
 @click.pass_context
-def list_cmd(ctx: click.Context, as_json: bool) -> None:
+def list_cmd(ctx: click.Context, as_json: bool, check: bool) -> None:
     """List all registered profiles with their current status."""
     profs = _load_profiles(ctx)
-    rows = [display.profile_row(p) for p in profs]
+    reachability = health.check_all(profs) if check else {}
+    rows = [display.profile_row(p, reachable=reachability.get(p.name)) for p in profs]
 
     if as_json:
         click.echo(json.dumps(rows, indent=2))
@@ -70,9 +88,21 @@ def list_cmd(ctx: click.Context, as_json: bool) -> None:
     table.add_column("Type")
     table.add_column("Unit")
     table.add_column("Status")
+    if check:
+        table.add_column("Reachable")
     for r in rows:
         status = "[bold green]active[/bold green]" if r["active"] else r["state"]
-        table.add_row(r["name"], r["type"], r["unit"], status)
+        row = [r["name"], r["type"], r["unit"], status]
+        if check:
+            reach = r["reachable"]
+            row.append(
+                "[green]yes[/green]"
+                if reach is True
+                else "[red]no[/red]"
+                if reach is False
+                else "[dim]n/a[/dim]"
+            )
+        table.add_row(*row)
     console.print(table)
 
 
@@ -148,6 +178,20 @@ def status(ctx: click.Context, as_json: bool) -> None:
     result: dict[str, Any]
     if active is None:
         result = {"active": None}
+    elif active.interface is None:
+        # ikev2: no named interface to probe (XFRM policies over the
+        # existing default route, not a dedicated tun/wg device) -- the
+        # unit's own active state is the only signal we have.
+        result = {
+            "active": {
+                "name": active.name,
+                "type": active.type.value,
+                "unit": active.unit,
+                "interface": None,
+                "link_up": None,
+                "has_default_route": None,
+            }
+        }
     else:
         result = {
             "active": {
@@ -168,11 +212,14 @@ def status(ctx: click.Context, as_json: bool) -> None:
         console.print("disconnected")
     else:
         a = result["active"]
-        link = "up" if a["link_up"] else "down"
-        console.print(
-            f"[bold green]{a['name']}[/bold green] ({a['type']}) "
-            f"-- link {link}, default route: {a['has_default_route']}"
-        )
+        if a["interface"] is None:
+            console.print(f"[bold green]{a['name']}[/bold green] ({a['type']})")
+        else:
+            link = "up" if a["link_up"] else "down"
+            console.print(
+                f"[bold green]{a['name']}[/bold green] ({a['type']}) "
+                f"-- link {link}, default route: {a['has_default_route']}"
+            )
 
 
 @main.command("sync-singbox")

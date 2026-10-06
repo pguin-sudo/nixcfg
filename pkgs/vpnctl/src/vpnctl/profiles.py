@@ -21,13 +21,15 @@ class ProfilesError(RuntimeError):
     pass
 
 
-def _default_interface(name: str, ptype: ProfileType) -> str:
+def _default_interface(name: str, ptype: ProfileType) -> str | None:
     # awg-quick names the interface after the config file stem (must stay
     # <=15 chars, the Linux IFNAMSIZ limit -- that's on the profile author).
     # sing-box profiles are mutually exclusive by design, so one fixed tun
-    # name for all of them is fine.
+    # name for all of them is fine. ikev2 has no named interface at all.
     if ptype is ProfileType.AMNEZIA:
         return name
+    if ptype is ProfileType.IKEV2:
+        return None
     return "sing-tun0"
 
 
@@ -102,8 +104,12 @@ def _profile_to_raw(p: Profile) -> dict[str, Any]:
         "type": p.type.value,
         "unit": p.unit,
         "config_path": p.config_path,
-        "interface": p.interface,
     }
+    # TOML has no null -- interface is only absent for ikev2 (dynamic
+    # add-source never creates one, but don't write an invalid file if that
+    # ever changes).
+    if p.interface is not None:
+        raw["interface"] = p.interface
     if p.subscription_source is not None:
         raw["subscription_source"] = p.subscription_source
     if p.subscription_selector is not None:

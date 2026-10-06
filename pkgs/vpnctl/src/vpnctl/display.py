@@ -33,7 +33,7 @@ def server_summary(p: Profile) -> str | None:
     return None
 
 
-def profile_row(p: Profile) -> dict[str, Any]:
+def profile_row(p: Profile, reachable: bool | None = None) -> dict[str, Any]:
     state = unitctl.is_active(p.unit)
     group = p.subscription_url or p.name
     group_label = urlparse(p.subscription_url).netloc if p.subscription_url else p.name
@@ -52,4 +52,7 @@ def profile_row(p: Profile) -> dict[str, Any]:
         "group": group,
         "group_label": group_label,
         "has_subscription": p.subscription_url is not None,
+        # None = not probed (default `list`) or not checkable (see health.py);
+        # only set by `list --check`.
+        "reachable": reachable,
     }
