@@ -40,7 +40,16 @@ local function applyStatus(status)
         return
     end
 
-    local routed = active.link_up == true and active.has_default_route == true
+    -- ikev2 has no named interface to probe (XFRM policies over the
+    -- existing route, not a dedicated tun/wg device) -- vpnctl reports
+    -- link_up/has_default_route as null for it, and the unit being active
+    -- already means swanctl's --initiate succeeded, so treat that as routed
+    -- instead of reading null as "not connected". type() check rather than
+    -- `== nil` since a JSON null may decode to a non-nil sentinel.
+    local hasInterface = type(active.interface) == "string"
+    local routed = if not hasInterface
+        then true
+        else active.link_up == true and active.has_default_route == true
     if routed then
         barWidget.setGlyph("shield-check")
         barWidget.setGlyphColor("primary")

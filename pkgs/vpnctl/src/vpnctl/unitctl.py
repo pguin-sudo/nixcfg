@@ -15,20 +15,40 @@ class UnitError(RuntimeError):
     pass
 
 
-def is_active(unit: str) -> str:
+def is_active(unit: str, timeout: float = 10.0) -> str:
     """systemd's ActiveState: active/inactive/failed/activating/deactivating/unknown."""
-    result = subprocess.run(
-        ["systemctl", "is-active", unit],
-        capture_output=True,
-        text=True,
-    )
+    try:
+        result = subprocess.run(
+            ["systemctl", "is-active", unit],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        return "unknown"
     return result.stdout.strip() or "unknown"
 
 
-def start(unit: str) -> None:
-    result = subprocess.run(
-        ["systemctl", "start", unit], capture_output=True, text=True
-    )
+def start(unit: str, timeout: float = 60.0) -> None:
+    """Start a unit, enforcing a hard deadline.
+
+    Without an explicit timeout, `systemctl start` blocks for as long as the
+    start job takes to resolve -- which, unlike awg-quick's near-instant
+    config load, can genuinely hang: a polkit authorization that never gets
+    an agent response, or (ikev2-connection.service) a strongSwan IKE
+    handshake stalling against an unreachable/firewalled server. Raising
+    here instead of blocking forever is what lets `connect` report a clear
+    error rather than vpnctl itself looking hung.
+    """
+    try:
+        result = subprocess.run(
+            ["systemctl", "start", unit],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired as e:
+        raise UnitError(f"{unit} did not start within {timeout:.0f}s") from e
     if result.returncode != 0:
         raise UnitError(f"failed to start {unit}: {result.stderr.strip()}")
 

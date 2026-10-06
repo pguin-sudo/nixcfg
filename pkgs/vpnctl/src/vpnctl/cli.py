@@ -114,8 +114,17 @@ def list_cmd(ctx: click.Context, as_json: bool, check: bool) -> None:
     type=float,
     help="Seconds to wait for the previously active profile to stop.",
 )
+@click.option(
+    "--start-timeout",
+    default=60.0,
+    type=float,
+    help="Seconds to wait for the new profile to start (raise this for a slow "
+    "IKEv2 handshake; lower it to fail fast instead of looking hung).",
+)
 @click.pass_context
-def connect(ctx: click.Context, name: str, stop_timeout: float) -> None:
+def connect(
+    ctx: click.Context, name: str, stop_timeout: float, start_timeout: float
+) -> None:
     """Connect NAME, stopping any other active profile first."""
     profs = _load_profiles(ctx)
     target = _find_profile(profs, name)
@@ -130,7 +139,7 @@ def connect(ctx: click.Context, name: str, stop_timeout: float) -> None:
                     unitctl.stop_and_wait(p.unit, timeout=stop_timeout)
 
             console.print(f"starting [green]{target.name}[/green] ({target.unit})...")
-            unitctl.start(target.unit)
+            unitctl.start(target.unit, timeout=start_timeout)
     except (unitctl.UnitError, RuntimeError) as e:
         err_console.print(f"[red]error:[/red] {e}")
         sys.exit(1)

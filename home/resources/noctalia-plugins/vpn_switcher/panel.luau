@@ -44,6 +44,13 @@ local function row(p)
         table.insert(subtitle, ui.label({ text = p.server, color = "on_surface_variant", fontSize = 11 }))
     end
     table.insert(subtitle, ui.label({ text = statusText, color = "on_surface_variant", fontSize = 11 }))
+    -- Only flag the negative case (a `vpnctl list --check` TCP probe failed)
+    -- -- true/unchecked both stay silent, same "don't filter, just mark it"
+    -- call as the CLI's own `--check` output. The row and its connect button
+    -- stay exactly as usable as before; this is a hint, not a block.
+    if p.reachable == false then
+        table.insert(subtitle, ui.label({ text = noctalia.tr("panel.unreachable"), color = "error", fontSize = 11 }))
+    end
 
     local children = {
         ui.box({

@@ -10,6 +10,12 @@
 noctalia.setUpdateInterval(2500)
 
 local busy = false -- true while a connect/disconnect vpnctl call is in flight
+local ticks = 0
+-- `--check` TCP-probes every singbox profile's server -- heavier than a
+-- plain list, so it only runs every CHECK_EVERY ticks (~30s at the 2.5s
+-- update interval), not on every poll.
+local CHECK_EVERY = 12
+local reachableCache = {} -- profile name -> last-known reachable (sticky between sweeps)
 
 local function log(msg)
     noctalia.log(`vpn_switcher: {msg}`)
@@ -19,23 +25,48 @@ local function shellQuote(value)
     return "'" .. value:gsub("'", [['"'"']]) .. "'"
 end
 
+-- Carries the last real `--check` result forward onto ticks that only ran a
+-- plain list (reachable not probed that tick), so the panel doesn't flicker
+-- back to "unknown" every 2.5s between sweeps.
+local function mergeReachability(rows)
+    if type(rows) ~= "table" then
+        return rows
+    end
+    for _, row in ipairs(rows) do
+        if type(row) == "table" and type(row.name) == "string" then
+            if type(row.reachable) == "boolean" then
+                reachableCache[row.name] = row.reachable
+            else
+                row.reachable = reachableCache[row.name]
+            end
+        end
+    end
+    return rows
+end
+
 -- Fast, read-only: `vpnctl list`/`status --json` are just a handful of
 -- `systemctl is-active` + `ip link/route show` calls, safe at this cadence.
-local function refresh()
+-- `force` runs a `--check` sweep immediately regardless of the tick count
+-- (used when the panel is opened, so it shows fresh reachability right away).
+local function refresh(force)
     if busy then
         return
     end
 
-    noctalia.runAsync("vpnctl list --json", function(result)
+    ticks = ticks + 1
+    local doCheck = force == true or ticks % CHECK_EVERY == 0
+    local listCmd = if doCheck then "vpnctl list --check --json" else "vpnctl list --json"
+
+    noctalia.runAsync(listCmd, function(result)
         if result.exitCode == 0 then
             local decoded = noctalia.json.decode(result.stdout)
             if decoded ~= nil then
-                noctalia.state.set("profiles", decoded)
+                noctalia.state.set("profiles", mergeReachability(decoded))
             end
         else
             log(`list failed: {result.stderr}`)
         end
-    end, 5000)
+    end, if doCheck then 15000 else 5000)
 
     noctalia.runAsync("vpnctl status --json", function(result)
         if result.exitCode == 0 then
@@ -100,7 +131,7 @@ function onIpc(event, payload)
             runVpnctl(`sync-source {shellQuote(url)}`, 30000)
         end
     elseif event == "refresh" then
-        refresh()
+        refresh(true)
     else
         log(`unknown command '{event}'`)
     end

@@ -11,6 +11,7 @@
     "connect": "Connect",
     "disconnect": "Disconnect",
     "empty": "No profiles yet. Paste a link below to add one.",
+    "unreachable": "unreachable",
     "add-placeholder": "Remnawave subscription URL or vpn:// link",
     "add-button": "Add"
   },
