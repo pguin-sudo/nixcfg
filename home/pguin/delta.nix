@@ -27,6 +27,7 @@
 
   features = {
     cli = {
+      atuin.enable = true;
       btop.enable = true;
       fzf.enable = true;
       fastfetch.enable = true;

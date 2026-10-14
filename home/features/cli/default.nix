@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   imports = [
+    ./atuin.nix
     ./btop.nix
     ./fzf.nix
     ./fastfetch.nix
