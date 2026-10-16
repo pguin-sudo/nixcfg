@@ -53,6 +53,7 @@
   # VPN
   common.services.keyboard.enable = true;
   common.services.vpn.enable = true;
+  common.services.vpn.ikev2.enable = true;
 
   # Wifi hotspot: share internet through the wlan adapter while delta is on
   # SSID/password are NOT here: create /etc/hotspot-secrets.env on delta with
