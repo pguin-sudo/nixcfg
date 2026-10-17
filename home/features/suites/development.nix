@@ -52,6 +52,9 @@ in
       # Devops
       ansible
       opentofu
+
+      # IoT
+      usbutils
     ];
 
     services.remmina = {
