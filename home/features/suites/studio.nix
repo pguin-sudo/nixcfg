@@ -16,6 +16,7 @@ in
       blender
       krita
       audacity
+      inkscape
     ];
   };
 }
