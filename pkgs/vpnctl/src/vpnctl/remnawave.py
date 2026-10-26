@@ -1,10 +1,10 @@
-"""Fetching and parsing VLESS+Reality subscriptions from Remnawave-style panels.
+"""Fetching a Remnawave-style VLESS+Reality subscription and turning it into
+a sing-box client config.
 
 Understands the three body formats these panels commonly return: a raw
 Xray-JSON config array, a single sing-box-style JSON object with
 "outbounds", or a base64/plain-text list of vless:// URIs. Only the fields
-needed to build a sing-box client outbound are extracted -- this is not a
-general subscription parser.
+needed to build a sing-box client outbound are extracted.
 """
 
 from __future__ import annotations
@@ -12,12 +12,19 @@ from __future__ import annotations
 import base64
 import json
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
+from urllib.error import URLError
 from urllib.parse import parse_qs, unquote, urlparse
+from urllib.request import Request, urlopen
 
-import requests
+# Sent as the x-hwid header with every subscription request -- some panels
+# gate by device/HWID limit. Not a secret, just an identifier other clients
+# also use; override by editing this constant if a panel rejects it.
+HWID = "asdfghjkasdfghjkl"
 
 _PLACEHOLDER_UUID = "00000000-0000-0000-0000-000000000000"
+_PROXY_PROTOCOLS = {"vless", "vmess", "trojan", "shadowsocks"}
 
 
 @dataclass
@@ -41,31 +48,25 @@ class SubProfile:
     endpoints: list[Endpoint] = field(default_factory=list)
 
 
-@dataclass
-class Subscription:
-    profiles: list[SubProfile] = field(default_factory=list)
-
-
-def fetch_and_parse(
-    url: str, hwid: str | None = None, timeout: int = 15
-) -> Subscription:
+def fetch(url: str, timeout: int = 15) -> list[SubProfile]:
     headers = {
         "User-Agent": "Happ/1.0",
         "x-device-os": "Android",
         "x-ver-os": "14",
         "x-device-model": "VPNCTL",
-        "x-hwid": hwid or "asdfghjkasdfghjkl",
+        "x-hwid": HWID,
     }
+    req = Request(url, headers=headers)
+    try:
+        with urlopen(req, timeout=timeout) as r:  # noqa: S310 -- panel URL is user-supplied by design
+            content_type = r.headers.get("content-type", "")
+            body = r.read().decode("utf-8", "ignore")
+    except URLError as e:
+        raise RuntimeError(f"{e}") from e
+    return _parse_body(body, content_type)
 
-    r = requests.get(url, headers=headers, timeout=timeout)
-    r.raise_for_status()
-    return _parse_body(r.text, r.headers.get("content-type", ""))
 
-
-_PROXY_PROTOCOLS = {"vless", "vmess", "trojan", "shadowsocks"}
-
-
-def _parse_body(body: str, content_type: str) -> Subscription:
+def _parse_body(body: str, content_type: str) -> list[SubProfile]:
     text = body.strip()
 
     if text[:1] in "[{" or "json" in content_type.lower():
@@ -74,48 +75,37 @@ def _parse_body(body: str, content_type: str) -> Subscription:
         except json.JSONDecodeError:
             obj = None
         if isinstance(obj, list):
-            return Subscription(
-                profiles=[_profile_from_xray(c) for c in obj if isinstance(c, dict)]
-            )
+            return [_profile_from_xray(c) for c in obj if isinstance(c, dict)]
         if isinstance(obj, dict) and "outbounds" in obj:
-            return Subscription(profiles=[_profile_from_xray(obj)])
+            return [_profile_from_xray(obj)]
 
     try:
         decoded = _b64decode(text).decode("utf-8", "ignore")
         if "://" in decoded:
-            return Subscription(profiles=_profiles_from_uris(decoded))
+            return _profiles_from_uris(decoded)
     except Exception:
         pass
 
     if "://" in text:
-        return Subscription(profiles=_profiles_from_uris(text))
+        return _profiles_from_uris(text)
 
-    return Subscription()
+    return []
 
 
 def pick_endpoints(
-    sub: Subscription, selector: str | None
+    profiles: list[SubProfile], selector: str | None = None
 ) -> list[tuple[SubProfile, Endpoint]]:
-    """All (profile, endpoint) pairs with a security type build_config
-    supports, scoped to profiles matching `selector` if given. A single
-    Remnawave subscription commonly bundles several servers/nodes."""
+    """All (profile, endpoint) pairs build_config can handle, scoped to
+    profiles matching `selector` if given. A single Remnawave subscription
+    commonly bundles several servers/nodes."""
     result: list[tuple[SubProfile, Endpoint]] = []
-    for prof in sub.profiles:
+    for prof in profiles:
         if selector is not None and selector.lower() not in prof.name.lower():
             continue
         for ep in prof.endpoints:
             if ep.security == "reality":
                 result.append((prof, ep))
     return result
-
-
-def pick_endpoint(
-    sub: Subscription, selector: str | None
-) -> tuple[SubProfile, Endpoint] | None:
-    """First match from pick_endpoints, for callers that target a single
-    already-registered profile (sync-singbox). None if there is no match."""
-    matches = pick_endpoints(sub, selector)
-    return matches[0] if matches else None
 
 
 def _looks_like_placeholder(ep: Endpoint) -> bool:
@@ -126,15 +116,15 @@ def _looks_like_placeholder(ep: Endpoint) -> bool:
     )
 
 
-def no_endpoint_hint(sub: Subscription) -> str:
+def no_endpoint_hint(profiles: list[SubProfile]) -> str:
     if any(
-        _looks_like_placeholder(ep) for prof in sub.profiles for ep in prof.endpoints
+        _looks_like_placeholder(ep) for prof in profiles for ep in prof.endpoints
     ):
         return (
             " (this subscription returned a placeholder link, not a real server -- "
             "usually means the device/HWID limit was reached or this client isn't "
-            r"recognized; check the subscription's device limit, or set \[remnawave] "
-            "hwid to the value your other client already uses)"
+            "recognized; check the subscription's device limit, or edit "
+            "remnawave.HWID to the value your other client already uses)"
         )
     return ""
 
@@ -223,3 +213,84 @@ def _endpoint_from_uri(uri: str) -> tuple[Endpoint | None, str]:
         fingerprint=q.get("fp"),
     )
     return ep, name
+
+
+# --- sing-box client config -------------------------------------------------
+
+
+def build_config(ep: Endpoint, interface_name: str = "sing-tun0") -> dict[str, Any]:
+    if ep.protocol != "vless":
+        raise ValueError(
+            f"unsupported protocol '{ep.protocol}' (only vless is supported)"
+        )
+    if ep.security != "reality":
+        raise ValueError(
+            f"unsupported security '{ep.security}' (only reality is supported)"
+        )
+
+    outbound: dict[str, Any] = {
+        "type": "vless",
+        "tag": "proxy",
+        "server": ep.address,
+        "server_port": ep.port,
+        "uuid": ep.uuid,
+        "packet_encoding": "xudp",
+        # sing-box's outbound dialer needs this explicitly since 1.12 dropped
+        # the old global domain_strategy; only matters if `server` is a
+        # hostname rather than a literal IP.
+        "domain_resolver": "remote",
+        "tls": {
+            "enabled": True,
+            "server_name": ep.sni or ep.address,
+            "utls": {"enabled": True, "fingerprint": ep.fingerprint or "chrome"},
+            "reality": {
+                "enabled": True,
+                "public_key": ep.public_key or "",
+                "short_id": ep.short_id or "",
+            },
+        },
+    }
+    if ep.flow:
+        outbound["flow"] = ep.flow
+
+    return {
+        "log": {"level": "warn"},
+        # Full-tunnel: every DNS query (hijacked off the tun via the route
+        # rule below) resolves through the remote server, which itself goes
+        # out over the tun's default "proxy" route -- no split/local server
+        # needed since nothing is meant to bypass the tunnel while connected.
+        "dns": {
+            "servers": [{"type": "tls", "tag": "remote", "server": "1.1.1.1"}],
+            "final": "remote",
+            "strategy": "prefer_ipv4",
+        },
+        "inbounds": [
+            {
+                "type": "tun",
+                "tag": "tun-in",
+                "interface_name": interface_name,
+                "address": ["172.19.0.1/30"],
+                "mtu": 9000,
+                "auto_route": True,
+                "strict_route": True,
+                "stack": "system",
+            }
+        ],
+        "outbounds": [
+            outbound,
+            {"type": "direct", "tag": "direct"},
+        ],
+        "route": {
+            "auto_detect_interface": True,
+            "final": "proxy",
+            "rules": [{"protocol": "dns", "action": "hijack-dns"}],
+        },
+    }
+
+
+def write_config(path: Path, ep: Endpoint, interface_name: str = "sing-tun0") -> None:
+    """Build a client config for `ep` and persist it to `path`. Raises
+    ValueError from build_config, or OSError on a write failure."""
+    cfg = build_config(ep, interface_name=interface_name)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(cfg, indent=2), encoding="utf-8")

@@ -12,9 +12,6 @@ python3.pkgs.buildPythonApplication {
   build-system = [ python3.pkgs.hatchling ];
 
   dependencies = with python3.pkgs; [
-    click
-    rich
-    requests
     tomli-w
   ];
 

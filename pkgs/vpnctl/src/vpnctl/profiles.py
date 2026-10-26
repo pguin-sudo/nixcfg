@@ -1,20 +1,55 @@
+"""The Profile model and its two TOML stores.
+
+DEFAULT_PATH is a home-manager-generated symlink into /nix/store (read-only,
+possibly absent entirely on a host with no declared profiles). EXTRA_PATH is
+the writable counterpart `add-source`/`remove-source` maintain at runtime.
+"""
+
 from __future__ import annotations
 
+import os
 import re
+import tempfile
 import tomllib
+from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
 from typing import Any, cast
 
 import tomli_w
 
-from .models import Profile, ProfileType
-
 DEFAULT_PATH = Path.home() / ".config" / "vpnctl" / "profiles.toml"
-
-# Profiles added at runtime (Noctalia panel "add source", `vpnctl add-source`).
-# DEFAULT_PATH is a home-manager-generated symlink into /nix/store and can't
-# be written to -- this is the writable counterpart merged in alongside it.
 EXTRA_PATH = Path.home() / ".local" / "state" / "vpnctl" / "profiles.toml"
+
+
+class ProfileType(str, Enum):
+    AMNEZIA = "amnezia"
+    SINGBOX = "singbox"
+    IKEV2 = "ikev2"
+
+
+@dataclass(frozen=True)
+class Profile:
+    name: str
+    type: ProfileType
+    unit: str
+    config_path: str
+    # None for ikev2 -- it has no named interface to probe (strongSwan routes
+    # via XFRM policies over the existing default route, not a tun/wg device).
+    interface: str | None
+    # The server's own display name at add-source time, kept for display --
+    # NOT used to re-match the same server later (a subscription can list
+    # several servers under the identical name).
+    subscription_selector: str | None = None
+    subscription_url: str | None = None
+    # Position in pick_endpoints()'s flat list at add-source time; sync-source
+    # re-fetches the whole subscription and re-matches by this index, since
+    # names alone aren't unique enough.
+    subscription_index: int | None = None
+    # True for profiles vpnctl itself registered (add-source), living in the
+    # writable EXTRA_PATH. False for ones declared in Nix (DEFAULT_PATH) --
+    # those can only be changed by editing home/*.nix and rebuilding.
+    dynamic: bool = False
 
 
 class ProfilesError(RuntimeError):
@@ -23,9 +58,8 @@ class ProfilesError(RuntimeError):
 
 def _default_interface(name: str, ptype: ProfileType) -> str | None:
     # awg-quick names the interface after the config file stem (must stay
-    # <=15 chars, the Linux IFNAMSIZ limit -- that's on the profile author).
-    # sing-box profiles are mutually exclusive by design, so one fixed tun
-    # name for all of them is fine. ikev2 has no named interface at all.
+    # <=15 chars, the Linux IFNAMSIZ limit). sing-box profiles are mutually
+    # exclusive by design, so one fixed tun name for all of them is fine.
     if ptype is ProfileType.AMNEZIA:
         return name
     if ptype is ProfileType.IKEV2:
@@ -41,12 +75,8 @@ def _load_raw(path: Path) -> list[dict[str, Any]]:
     return cast(list[dict[str, Any]], data.get("profile", []))
 
 
-def load(path: Path | None = None) -> list[Profile]:
-    path = path or DEFAULT_PATH
-    if not path.exists():
-        raise ProfilesError(f"profiles file not found: {path}")
-
-    tagged = [(raw, False) for raw in _load_raw(path)] + [
+def load() -> list[Profile]:
+    tagged = [(raw, False) for raw in _load_raw(DEFAULT_PATH)] + [
         (raw, True) for raw in _load_raw(EXTRA_PATH)
     ]
 
@@ -72,7 +102,6 @@ def load(path: Path | None = None) -> list[Profile]:
                 unit=unit,
                 config_path=config_path,
                 interface=raw.get("interface") or _default_interface(name, ptype),
-                subscription_source=raw.get("subscription_source"),
                 subscription_selector=raw.get("subscription_selector"),
                 subscription_url=raw.get("subscription_url"),
                 subscription_index=raw.get("subscription_index"),
@@ -89,15 +118,6 @@ def find(profs: list[Profile], name: str) -> Profile:
     raise ProfilesError(f"no such profile: {name}")
 
 
-def remnawave_defaults(path: Path | None = None) -> dict[str, Any]:
-    path = path or DEFAULT_PATH
-    if not path.exists():
-        return {}
-    with path.open("rb") as f:
-        data = tomllib.load(f)
-    return cast(dict[str, Any], data.get("remnawave", {}))
-
-
 def _profile_to_raw(p: Profile) -> dict[str, Any]:
     raw: dict[str, Any] = {
         "name": p.name,
@@ -105,13 +125,9 @@ def _profile_to_raw(p: Profile) -> dict[str, Any]:
         "unit": p.unit,
         "config_path": p.config_path,
     }
-    # TOML has no null -- interface is only absent for ikev2 (dynamic
-    # add-source never creates one, but don't write an invalid file if that
-    # ever changes).
+    # TOML has no null -- interface is only absent for ikev2.
     if p.interface is not None:
         raw["interface"] = p.interface
-    if p.subscription_source is not None:
-        raw["subscription_source"] = p.subscription_source
     if p.subscription_selector is not None:
         raw["subscription_selector"] = p.subscription_selector
     if p.subscription_url is not None:
@@ -121,28 +137,36 @@ def _profile_to_raw(p: Profile) -> dict[str, Any]:
     return raw
 
 
+def _write_extra(raws: list[dict[str, Any]]) -> None:
+    """tempfile + os.replace, so a crash mid-write or two concurrent
+    add-source calls can't truncate or corrupt EXTRA_PATH."""
+    EXTRA_PATH.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_path = tempfile.mkstemp(dir=EXTRA_PATH.parent, prefix=".profiles-")
+    try:
+        with os.fdopen(fd, "wb") as f:
+            tomli_w.dump({"profile": raws}, f)
+        os.replace(tmp_path, EXTRA_PATH)
+    except BaseException:
+        Path(tmp_path).unlink(missing_ok=True)
+        raise
+
+
 def add_profile(profile: Profile) -> None:
-    """Append `profile` to the writable extra-profiles store (EXTRA_PATH)."""
     existing = _load_raw(EXTRA_PATH)
     if any(r.get("name") == profile.name for r in existing):
         raise ProfilesError(f"duplicate profile name: {profile.name}")
-
     existing.append(_profile_to_raw(profile))
-    EXTRA_PATH.parent.mkdir(parents=True, exist_ok=True)
-    EXTRA_PATH.write_text(tomli_w.dumps({"profile": existing}), encoding="utf-8")
+    _write_extra(existing)
 
 
 def remove_profile(name: str) -> None:
-    """Remove `name` from the writable extra-profiles store (EXTRA_PATH).
-
-    Only ever touches EXTRA_PATH -- there is no such thing as removing a
-    declarative (home-manager) profile at runtime.
-    """
+    """Only ever touches EXTRA_PATH -- a declarative (Nix) profile can't be
+    removed at runtime."""
     existing = _load_raw(EXTRA_PATH)
     remaining = [r for r in existing if r.get("name") != name]
     if len(remaining) == len(existing):
         raise ProfilesError(f"no such dynamic profile: {name}")
-    EXTRA_PATH.write_text(tomli_w.dumps({"profile": remaining}), encoding="utf-8")
+    _write_extra(remaining)
 
 
 def _slugify(text: str, max_len: int, fallback: str) -> str:
@@ -155,9 +179,9 @@ def unique_name(
 ) -> str:
     """A filesystem/interface-safe name derived from `seed`, not in `existing`.
 
-    `fallback` is used when `seed` has no ASCII alphanumerics to slugify --
-    e.g. a Cyrillic-only subscription server name -- so unrelated sources
-    don't all collapse into "profile", "profile-2", etc.
+    `fallback` covers a seed with no ASCII alphanumerics to slugify (e.g. a
+    Cyrillic-only server name), so unrelated sources don't all collapse into
+    "profile", "profile-2", etc.
     """
     base = _slugify(seed, max_len, fallback)
     if base not in existing:

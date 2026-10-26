@@ -69,12 +69,12 @@ if $MNT_MOUNTED; then
 fi
 
 if ! $RESUME; then
-  # Если диск отличается от дефолта в partitioning.nix — патчим копию
-  DEFAULT_IN_NIX="$(grep 'device = ' "$NIXCFG/hosts/$HOSTNAME/partitioning.nix" 2>/dev/null | head -1 | grep -oP '(?<="/dev/)[^"]+' || true)"
+  # Если диск отличается от дефолта в disks.nix — патчим копию
+  DEFAULT_IN_NIX="$(grep 'device = ' "$NIXCFG/hosts/$HOSTNAME/disks.nix" 2>/dev/null | head -1 | grep -oP '(?<="/dev/)[^"]+' || true)"
   if [[ -n "$DEFAULT_IN_NIX" && "$DISK_NAME" != "$DEFAULT_IN_NIX" ]]; then
-    echo -e "${YELLOW}[*] Обновляем partitioning.nix: /dev/$DEFAULT_IN_NIX → $DISK${NC}"
+    echo -e "${YELLOW}[*] Обновляем disks.nix: /dev/$DEFAULT_IN_NIX → $DISK${NC}"
     sed -i "s|device = \"/dev/$DEFAULT_IN_NIX\"|device = \"$DISK\"|" \
-      "$NIXCFG/hosts/$HOSTNAME/partitioning.nix"
+      "$NIXCFG/hosts/$HOSTNAME/disks.nix"
   fi
 
   echo ""
@@ -124,6 +124,3 @@ chown -R 1000:1000 /mnt/home/pguin/nixcfg 2>/dev/null || true
 
 echo ""
 echo -e "${GREEN}=== Готово! Извлеки флешку и перезагрузись. ===${NC}"
-echo ""
-echo "После первого входа запусти home-manager:"
-echo "  home-manager switch --flake ~/nixcfg#pguin@$HOSTNAME"

@@ -4,9 +4,6 @@ version = "0.1.0"
 description = "Unified control for AmneziaWG and sing-box (Remnawave) VPN profiles"
 requires-python = ">=3.11"
 dependencies = [
-  "click>=8.1",
-  "rich>=13.0",
-  "requests>=2.31",
   "tomli-w>=1.0",
 ]
 

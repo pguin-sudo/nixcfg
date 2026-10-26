@@ -28,7 +28,7 @@ from dataclasses import dataclass
 
 _CONTAINER_PROTOCOL = {
     "amnezia-awg": "awg",
-    # AmneziaWG protocol v2 -- a distinct container type, but
+    # AmneziaWG protocol v2/v3 -- a distinct container type, but
     # containerTypeToProtocolString() still keys its config under "awg"
     # (client/core/utils/containers/containerUtils.cpp in amnezia-client).
     "amnezia-awg2": "awg",

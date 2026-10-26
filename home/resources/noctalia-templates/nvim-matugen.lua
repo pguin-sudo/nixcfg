@@ -6,7 +6,7 @@
 --
 -- Noctalia renders the color placeholders below and writes the result to
 -- ~/.config/nvim/lua/matugen.lua (see theme.templates.user.neovim in
--- home/features/desktop/noctalia.nix). It is loaded via require("matugen") from
+-- home/desktop/noctalia.nix). It is loaded via require("matugen") from
 -- programs.nixvim.extraConfigLua and needs the base16-nvim plugin.
 local M = {}
 

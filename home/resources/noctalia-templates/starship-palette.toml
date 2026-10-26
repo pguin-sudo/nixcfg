@@ -1,6 +1,6 @@
 
 # Noctalia matugen palette for starship — appended to the static base config by
-# home/features/cli/starship.nix and rendered by Noctalia's `user.starship`
+# home/cli/starship.nix and rendered by Noctalia's `user.starship`
 # template on every theme change. The {{colors.*}} tokens are the only templated
 # part of the final ~/.config/starship.toml.
 #

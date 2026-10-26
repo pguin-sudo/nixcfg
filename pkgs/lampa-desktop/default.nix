@@ -136,7 +136,7 @@ stdenvNoCC.mkDerivation {
 
     # No loose icon file ships outside resources/app.asar (electron-builder's
     # packed app bundle) -- pull the app's own icon out of it for the desktop
-    # entry (features/desktop/lampa.nix). Path confirmed via `asar list` on
+    # entry (home/desktop/lampa.nix). Path confirmed via `asar list` on
     # the v1.5.10 release.
     # extract-file takes no destination arg -- it always writes to CWD, named
     # by the archive-internal path's basename.

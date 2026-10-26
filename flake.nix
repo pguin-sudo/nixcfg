@@ -5,7 +5,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -19,19 +18,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    stylix.url = "github:nix-community/stylix";
-
     noctalia-greeter = {
       url = "github:noctalia-dev/noctalia-greeter";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    asus-numpad-driver = {
-      url = "github:asus-linux-drivers/asus-numberpad-driver";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    nixpkgs-howdy.url = "github:fufexan/nixpkgs/howdy";
 
     spicetify-nix = {
       url = "github:Gerg-L/spicetify-nix";
@@ -55,73 +45,62 @@
       home-manager,
       disko,
       nixos-hardware,
-      nixvim,
-      stylix,
-      spicetify-nix,
-      asus-numpad-driver,
-      zen-browser,
       zapret2-nix,
       smkb,
       ...
     }@inputs:
     let
       inherit (self) outputs;
-      systems = [
-        "aarch64-linux"
-        "i686-linux"
-        "x86_64-linux"
-        "aarch64-darwin"
-        "x86_64-darwin"
-      ];
-      forAllSystems = nixpkgs.lib.genAttrs systems;
-      howdy = inputs.nixpkgs-howdy;
     in
     {
-      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
-      overlays = import ./overlays { inherit inputs; };
+      packages.x86_64-linux = import ./pkgs { pkgs = nixpkgs.legacyPackages.x86_64-linux; };
+
       nixosConfigurations = {
         installer = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-            ({ lib, ... }: {
-              environment.etc."nixcfg".source = ./.;
+            (
+              { lib, ... }:
+              {
+                environment.etc."nixcfg".source = ./.;
 
-              services.getty.autologinUser = lib.mkForce "root";
+                services.getty.autologinUser = lib.mkForce "root";
 
-              systemd.services.nixos-pguin-installer = {
-                description = "pguin NixOS installer";
-                after = [
-                  "network-online.target"
-                  "getty.target"
-                ];
-                wants = [ "network-online.target" ];
-                wantedBy = [ "multi-user.target" ];
-                serviceConfig = {
-                  Type = "idle";
-                  StandardInput = "tty";
-                  TTYPath = "/dev/tty1";
-                  StandardOutput = "tty";
-                  StandardError = "tty";
-                  ExecStart = "/etc/nixcfg/install.sh";
-                  Restart = "on-failure";
+                systemd.services.nixos-pguin-installer = {
+                  description = "pguin NixOS installer";
+                  after = [
+                    "network-online.target"
+                    "getty.target"
+                  ];
+                  wants = [ "network-online.target" ];
+                  wantedBy = [ "multi-user.target" ];
+                  serviceConfig = {
+                    Type = "idle";
+                    StandardInput = "tty";
+                    TTYPath = "/dev/tty1";
+                    StandardOutput = "tty";
+                    StandardError = "tty";
+                    ExecStart = "/etc/nixcfg/install.sh";
+                    Restart = "on-failure";
+                  };
                 };
-              };
 
-              # Wifi через NetworkManager
-              networking.networkmanager.enable = true;
+                # Wifi через NetworkManager
+                networking.networkmanager.enable = true;
 
-              # SSH для отладки
-              services.openssh = {
-                enable = true;
-                settings.PermitRootLogin = "yes";
-              };
+                # SSH для отладки
+                services.openssh = {
+                  enable = true;
+                  settings.PermitRootLogin = "yes";
+                };
 
-              nix.settings.experimental-features = [
-                "nix-command"
-                "flakes"
-              ];
-            })
+                nix.settings.experimental-features = [
+                  "nix-command"
+                  "flakes"
+                ];
+              }
+            )
           ];
         };
 
@@ -140,7 +119,6 @@
         lambda = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
           modules = [
-            # NixOS hardware
             nixos-hardware.nixosModules.common-cpu-amd
             nixos-hardware.nixosModules.common-cpu-amd-pstate
             nixos-hardware.nixosModules.common-gpu-amd
@@ -148,39 +126,10 @@
             nixos-hardware.nixosModules.common-pc-laptop
             nixos-hardware.nixosModules.common-pc-laptop-ssd
             nixos-hardware.nixosModules.asus-battery
-            asus-numpad-driver.nixosModules.default
-            # Howdy (disabled due to incompatibility with new PAM module)
-            # { disabledModules = [ "security/pam.nix" ]; }
-            # "${howdy}/nixos/modules/security/pam.nix"
-            # "${howdy}/nixos/modules/services/security/howdy"
-            # "${howdy}/nixos/modules/services/misc/linux-enable-ir-emitter.nix"
-            # Disko
             disko.nixosModules.disko
-            ./hosts/lambda/partitioning.nix
-            # Host config
             ./hosts/lambda
             zapret2-nix.nixosModules.default
             smkb.nixosModules.smkb
-          ];
-        };
-      };
-
-      homeConfigurations = {
-        "pguin@delta" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages."x86_64-linux";
-          extraSpecialArgs = { inherit inputs outputs; };
-          modules = [
-            stylix.homeModules.stylix
-            ./home/pguin/delta.nix
-          ];
-        };
-
-        "pguin@lambda" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages."x86_64-linux";
-          extraSpecialArgs = { inherit inputs outputs zen-browser; };
-          modules = [
-            stylix.homeModules.stylix
-            ./home/pguin/lambda.nix
           ];
         };
       };
