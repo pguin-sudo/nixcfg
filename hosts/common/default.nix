@@ -236,4 +236,8 @@
   };
 
   services.usbmuxd.enable = true;
+
+  services.fstrim.enable = true;
+  services.fwupd.enable = true;
+  services.fail2ban.enable = true;
 }
