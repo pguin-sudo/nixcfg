@@ -17,6 +17,7 @@ in
       krita
       audacity
       inkscape
+      yt-dlp
     ];
   };
 }
