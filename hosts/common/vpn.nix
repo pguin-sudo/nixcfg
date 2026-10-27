@@ -6,16 +6,8 @@
 let
   ikev2RuntimeDir = "/run/ikev2";
   ikev2RuntimeSwanctlConf = "${ikev2RuntimeDir}/swanctl.conf";
-  # /run is tmpfs and nothing in this repo populates /run/secrets (no
-  # sops-nix/agenix here) -- that path would never exist. A plain file
-  # under /etc survives reboots and just needs to be created once,
-  # out-of-band: install -m 600 /dev/stdin /etc/ikev2/password <<<
-  #   server=... / remote_id=... / username=... / password=...
   ikev2PasswordFile = "/etc/ikev2/password";
 
-  # ISRG Root X1 -- корневой сертификат Let's Encrypt, которым подписан
-  # сертификат сервера i.pguin.ru. Файл кладём в store и ссылаемся на
-  # него напрямую из swanctl.conf.
   isrgRootX1 = pkgs.fetchurl {
     url = "https://letsencrypt.org/certs/isrgrootx1.pem";
     sha256 = "sha256-IrVXonBVszYGtlWfN3A5KNPkrXnxELQH0EmG4YQ1Q9E=";
@@ -28,9 +20,6 @@ in
     pkgs.amneziawg-tools
     pkgs.sing-box
     pkgs.vpnctl
-    # swanctl сам найдёт vici-сокет работающего charon, конфиг передавать
-    # не нужно. aes/sha1/sha2/hmac/nonce для proposals ниже собраны в
-    # pkgs.strongswan по умолчанию -- оверрайд не нужен.
     pkgs.strongswan
   ];
 
@@ -68,8 +57,6 @@ in
 
   services.strongswan-swanctl = {
     enable = true;
-    # Модуль добавит `include /run/ikev2/swanctl.conf` в /etc/swanctl/swanctl.conf,
-    # который затем подхватывается ExecStartPost'ом `swanctl --load-all`.
     includes = [ ikev2RuntimeSwanctlConf ];
   };
 
@@ -95,7 +82,6 @@ in
           exit 1
         fi
 
-        # shellcheck disable=SC1090
         source "$SECRET_FILE"
 
         : "''${server:?server is missing}"
@@ -106,8 +92,7 @@ in
         install -d -m 0700 "$RUNTIME_DIR"
 
         cat > "${ikev2RuntimeSwanctlConf}" <<EOF
-        # ISRG Root X1 кладём в store, путь известен на этапе сборки.
-        # Этого достаточно, чтобы charon проверил цепочку Let's Encrypt.
+
         authorities {
           isrg-root-x1 {
             file = $ISRG_ROOT
@@ -118,9 +103,6 @@ in
           ikev2 {
             version = 2
             remote_addrs = $server
-            # Запрашиваем внутренний адрес у сервера -- без этого local_ts
-            # по умолчанию ("dynamic") берёт адрес интерфейса машины, а не
-            # выданный сервером, и child SA не поднимается.
             vips = 0.0.0.0, ::
 
             local {
@@ -136,10 +118,6 @@ in
             children {
               ikev2 {
                 remote_ts = 0.0.0.0/0
-                # none, а не trap: иначе charon сам поднимет туннель на
-                # первом же исходящем пакете, в обход vpnctl и его модели
-                # "один активный профиль за раз" (как у awg-quick@/sing-box@).
-                # vpnctl дергает ikev2-connection.service явно.
                 start_action = none
                 esp_proposals = aes256-sha256
               }
@@ -164,12 +142,6 @@ in
     };
   };
 
-  # charon/swanctl run as root and own the vici socket -- rather than
-  # exposing that socket to pguin, give vpnctl the same unit-based
-  # start/stop contract it already uses for awg-quick@/sing-box@:
-  # `systemctl start` initiates the SA (blocking until it's up or fails)
-  # and leaves the unit "active" via RemainAfterExit, `systemctl stop`
-  # runs ExecStop to terminate it. unitctl.is_active() then just works.
   systemd.services.ikev2-connection = {
     description = "IKEv2 VPN connection (swanctl)";
 

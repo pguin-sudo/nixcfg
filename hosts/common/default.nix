@@ -242,4 +242,15 @@
   services.fstrim.enable = true;
   services.fwupd.enable = true;
   services.fail2ban.enable = true;
+
+  # Binary cache
+  nix.settings = {
+    extra-substituters = [
+      "https://cache.pguin.ru"
+      "http://192.168.31.200:5000"
+    ];
+    extra-trusted-public-keys = [ "sigma-1:/QQBGFuXpqaN8z7l1f9fK6x6xTBMnn4vQLFiRstF+fs=" ];
+    connect-timeout = 3;
+    fallback = true;
+  };
 }
