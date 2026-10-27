@@ -190,8 +190,6 @@ in
     };
   };
 
-  security.polkit.enable = true;
-
   environment.etc."polkit-1/rules.d/50-vpnctl.rules".text = ''
     polkit.addRule(function(action, subject) {
       if (action.id != "org.freedesktop.systemd1.manage-units") {

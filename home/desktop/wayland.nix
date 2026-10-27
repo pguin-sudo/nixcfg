@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   ...
 }:
@@ -8,22 +7,7 @@ let
   browserDesktopFile = "${config.home.sessionVariables.BROWSER or "firefox"}.desktop";
 in
 {
-  programs.rofi = {
-    enable = true;
-    terminal = "${pkgs.kitty}/bin/kitty";
-    extraConfig = {
-      modi = "drun,run,window";
-      show-icons = true;
-      display-drun = "Applications";
-      display-run = "Run";
-      display-window = "Windows";
-      drun-display-format = "{name}";
-      window-format = "{w} {i} {t}";
-    };
-  };
-
   home.packages = with pkgs; [
-    slurp
     wl-clipboard
     wtype
 
@@ -32,46 +16,27 @@ in
     playerctl
 
     brightnessctl
-    networkmanagerapplet
     kdePackages.kdeconnect-kde
 
-    mako
     libnotify
-
-    awww
 
     # Mime & xdg
     xdg-utils
     shared-mime-info
 
     # Images
-    grim
-    swappy
-    sway-contrib.grimshot
     swayimg
 
     # For checking keybinds
     wev
 
     # Hyprland
-    pyprland
     wayvnc
   ];
 
   home.file."Wallpapers" = {
     source = ../resources/Wallpapers;
     recursive = true;
-  };
-
-  services = {
-    mako = {
-      enable = true;
-      settings.default-timeout = 5000;
-    };
-
-    awww = {
-      enable = true;
-    };
   };
 
   xdg = {
@@ -182,10 +147,6 @@ in
       };
     };
 
-  };
-
-  programs.hyprlock = {
-    enable = true;
   };
 
   # Small fix for home-manager

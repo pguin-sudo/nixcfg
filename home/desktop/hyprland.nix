@@ -329,25 +329,6 @@
     done
   '';
 
-  # Scratchpad
-  home.file.".config/hypr/pyprland.toml".text = ''
-    [pyprland]
-        # pypr has a lot of plugins, but this is just a basic example config
-        # https://hyprland-community.github.io/pyprland/Plugins.html
-        plugins = [ "scratchpads" ]
-
-    [pyprland.variables]
-        term_with_klass = "kitty --class"
-
-    [scratchpads.console]
-        # This is a drop-down terminal configuration
-        animation = "fromTop"
-        class     = "console-dropdown"
-        command   = "[term_with_class] console-dropdown"
-        max_size  = "90% 100%"
-        size      = "80% 80%"
-  '';
-
   home.file.".config/hypr/scripts/rotate-screen.sh" = {
     executable = true;
     text = ''

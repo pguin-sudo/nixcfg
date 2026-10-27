@@ -136,8 +136,10 @@
   system.stateVersion = "24.05"; # Did you read the comment?
 
   # Login/greeter -- https://docs.noctalia.dev/v5/greeter/
-  programs.noctalia-greeter.enable = true;
-  services.displayManager.defaultSession = "hyprland";
+  services.displayManager = {
+    defaultSession = "hyprland";
+    noctalia-greeter.enable = true;
+  };
   programs.hyprland.enable = true;
   # greetd (the login manager noctalia-greeter drives) picks this up
   # automatically for its PAM service.
