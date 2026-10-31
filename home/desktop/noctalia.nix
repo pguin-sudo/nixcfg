@@ -85,8 +85,9 @@
             };
           };
         };
-
       };
+
+      audio.enable_sounds = false;
 
       calendar.enabled = true;
 
@@ -100,7 +101,6 @@
         enabled = [
           "radimous/prismlauncher-instances"
           "pguin/vpn_switcher"
-          "nightwatch75/claude-cockpit"
         ];
         source = [
           {
@@ -155,7 +155,6 @@
         concave_edge_corners = true;
         end = [
           "tray"
-          "pguin/vpn_switcher:widget"
           "group:g1"
           "group:g4"
           "group:g2"
@@ -223,7 +222,7 @@
           }
 
           {
-            accordion = false;
+            accordion = true;
             accordion_direction = "end";
             border = "outline";
             border_width = 1.0;
@@ -231,8 +230,8 @@
             fill = "surface_variant";
             id = "g4";
             members = [
-              "brightness"
               "battery"
+              "brightness"
             ];
             opacity = 0.80000001192092896;
             padding = 6.0;

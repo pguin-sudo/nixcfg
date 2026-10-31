@@ -36,6 +36,8 @@
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
 
     smkb.url = "github:pguin-sudo/smkb";
+
+    incy-nix.url = "github:pguin-sudo/incy-nix";
   };
 
   outputs =
@@ -46,6 +48,7 @@
       disko,
       nixos-hardware,
       zapret2-nix,
+      incy-nix,
       smkb,
       ...
     }@inputs:
@@ -112,6 +115,7 @@
             ./hosts/delta
             disko.nixosModules.disko
             zapret2-nix.nixosModules.default
+            incy-nix.nixosModules.default
             smkb.nixosModules.smkb
           ];
         };
@@ -129,6 +133,7 @@
             disko.nixosModules.disko
             ./hosts/lambda
             zapret2-nix.nixosModules.default
+            incy-nix.nixosModules.default
             smkb.nixosModules.smkb
           ];
         };

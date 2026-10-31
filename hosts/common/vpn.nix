@@ -188,4 +188,14 @@ in
       return polkit.Result.NOT_HANDLED;
     });
   '';
+
+  #######################
+  ######## INCY #########
+  #######################
+  programs.incy = {
+    enable = true;
+    polkit.enable = true;
+    tun.enable = true;
+    dns.enable = true;
+  };
 }
