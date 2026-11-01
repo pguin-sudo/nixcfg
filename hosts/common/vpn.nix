@@ -198,4 +198,15 @@ in
     tun.enable = true;
     dns.enable = true;
   };
+
+  environment.etc."polkit-1/rules.d/50-incy.rules".text = ''
+    polkit.addRule(function(action, subject) {
+      if (action.id == "org.freedesktop.policykit.exec") {
+        var program = action.lookup("program");
+        if (program && (program.indexOf("incy-helper") >= 0 || program.indexOf("incy") >= 0 || program == "${pkgs.iptables}/bin/iptables")) {
+          return polkit.Result.AUTH_ADMIN_KEEP;
+        }
+      }
+    });
+  '';
 }
