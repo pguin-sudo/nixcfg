@@ -72,5 +72,9 @@
 
       Не создавай коммиты.
     '';
+
+    settings = {
+      project_doc_fallback_filenames = [ "PROJECT.md" ];
+    };
   };
 }
