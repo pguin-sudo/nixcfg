@@ -39,6 +39,9 @@
 
     # IoT
     usbutils
+
+    # DB
+    datagrip
   ];
 
   services.remmina = {
