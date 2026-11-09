@@ -13,6 +13,7 @@
 
     # Rust
     rustup
+    bacon
 
     # JS
     nodejs_24
