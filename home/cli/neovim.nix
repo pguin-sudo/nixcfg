@@ -16,6 +16,7 @@
     vimAlias = true;
     viAlias = true;
     globals.mapleader = " ";
+
     opts = {
       mouse = "a";
       splitbelow = true;
@@ -44,6 +45,7 @@
       writebackup = false;
       undofile = true;
     };
+
     autoCmd = [
       {
         event = [ "FileType" ];
@@ -52,12 +54,26 @@
       }
       {
         event = [ "FileType" ];
+        pattern = [ "rust" ];
+        command = "setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab";
+      }
+      {
+        event = [ "FileType" ];
         pattern = [ "nix" ];
         command = "setlocal nowrap";
       }
     ];
+
     keymaps = [
-      # Сохранение и выход
+      {
+        mode = "n";
+        key = "<leader>cf";
+        action = "<cmd>lua require('conform').format({ lsp_format = 'fallback', timeout_ms = 3000 })<CR>";
+        options = {
+          silent = true;
+          desc = "Format buffer";
+        };
+      }
       {
         mode = "n";
         key = "<leader>w";
@@ -70,7 +86,6 @@
         action = ":q<CR>";
         options.silent = false;
       }
-      # Telescope
       {
         mode = "n";
         key = "<leader>ff";
@@ -95,7 +110,6 @@
         action = "<cmd>Telescope help_tags<CR>";
         options.silent = true;
       }
-      # Project-wide search (LazyVim style)
       {
         mode = "n";
         key = "<leader><space>";
@@ -141,24 +155,18 @@
           desc = "Search diagnostics";
         };
       }
-      # NOTE: LSP keymaps (gd, gr, K, grn, gra, [d/]d, ...) are defined below
-      # via `plugins.lsp.keymaps`, so they are only bound in buffers where an
-      # LSP client is actually attached (see `keymapsOnEvents.LspAttach`).
-      # Gitsigns
       {
         mode = "n";
         key = "<leader>lp";
         action = "<cmd>lua require('gitsigns').preview_hunk()<CR>";
         options.silent = true;
       }
-      # Lazygit
       {
         mode = "n";
         key = "<leader>lg";
         action = "<cmd>LazyGit<CR>";
         options.silent = true;
       }
-      # Neotree
       {
         mode = "n";
         key = "<leader>t";
@@ -166,17 +174,21 @@
         options.silent = true;
       }
     ];
+
     plugins = {
       lsp = {
         enable = true;
         inlayHints = true;
+
         keymaps = {
           silent = true;
+
           diagnostic = {
             "[d" = "goto_prev";
             "]d" = "goto_next";
             "<leader>d" = "open_float";
           };
+
           lspBuf = {
             "gd" = "definition";
             "gD" = "declaration";
@@ -201,25 +213,44 @@
             };
           };
         };
+
         servers = {
+          rust_analyzer = {
+            enable = true;
+            installCargo = true;
+            installRustc = true;
+            installRustfmt = true;
+
+            settings."rust-analyzer" = {
+              cargo = {
+                allTargets = true;
+                buildScripts.enable = true;
+              };
+              check.command = "clippy";
+              checkOnSave = true;
+              procMacro.enable = true;
+              completion.callable.snippets = "fill_arguments";
+            };
+          };
+
           nixd.enable = true;
-          # Python: basedpyright for types/navigation, ruff for lint/format
-          # (ruff's hover is disabled so basedpyright's richer hover wins).
           basedpyright.enable = true;
+
           ruff = {
             enable = true;
             onAttach.function = ''
               client.server_capabilities.hoverProvider = false
             '';
           };
-          # TypeScript/JavaScript type-checking (tsc) + navigation.
+
           ts_ls.enable = true;
-          # Fast JS/TS/JSON linting & formatting.
           biome.enable = true;
         };
       };
+
       conform-nvim = {
         enable = true;
+
         settings = {
           formatters_by_ft = {
             lua = [ "stylua" ];
@@ -236,17 +267,22 @@
             typescript = [ "biome" ];
             typescriptreact = [ "biome" ];
           };
+
           format_on_save = {
-            timeout_ms = 500;
+            timeout_ms = 3000;
             lsp_format = "fallback";
           };
         };
       };
+
       cmp = {
         enable = true;
         autoEnableSources = true;
+
         settings = {
+          snippet.expand = "function(args) vim.snippet.expand(args.body) end";
           completion.completeopt = "menu,menuone,noselect";
+
           mapping = {
             "<Tab>" = ''
               cmp.mapping(function(fallback)
@@ -269,6 +305,7 @@
             "<CR>" = "cmp.mapping.confirm({ select = false })";
             "<C-Space>" = "cmp.mapping.complete()";
           };
+
           sources = [
             { name = "nvim_lsp"; }
             { name = "path"; }
@@ -276,8 +313,10 @@
           ];
         };
       };
+
       gitsigns = {
         enable = true;
+
         settings = {
           attach_to_untracked = true;
           current_line_blame = true;
@@ -287,7 +326,9 @@
           };
         };
       };
+
       lualine.enable = true;
+
       telescope = {
         enable = true;
         extensions."fzf-native" = {
@@ -300,6 +341,7 @@
           };
         };
       };
+
       lazygit = {
         enable = true;
         settings = {
@@ -307,19 +349,27 @@
           floating_window_scaling_factor = 0.9;
         };
       };
+
       neo-tree.enable = true;
+
       langmapper = {
         enable = true;
         autoLoad = true;
       };
+
       web-devicons.enable = true;
+
       treesitter = {
         enable = true;
+
         settings = {
           highlight.enable = true;
           indent.enable = true;
         };
+
         grammarPackages = with config.programs.nixvim.plugins.treesitter.package.builtGrammars; [
+          rust
+          toml
           lua
           nix
           json
@@ -331,32 +381,24 @@
           tsx
         ];
       };
+
       markdown-preview = {
         enable = true;
       };
     };
+
     extraPlugins = [
       pkgs.vimPlugins.vim-markdown
-      # Applies the Noctalia matugen palette via require('base16-colorscheme')
-      # from ~/.config/nvim/lua/matugen.lua (see extraConfigLua + noctalia.nix).
       pkgs.vimPlugins.base16-nvim
-      # Discord Rich Presence ("Playing Neovim").
       pkgs.vimPlugins.neocord
     ];
+
     extraConfigLua = ''
-      -- Noctalia matugen palette. Written to ~/.config/nvim/lua/matugen.lua by
-      -- the theme.templates.user.neovim template (see noctalia.nix); it is
-      -- absent until Noctalia first applies a theme, so load it defensively.
-      -- The literal string pcall(require, 'matugen') below also matches the
-      -- guard in the upstream template's post_hook, keeping it a no-op here.
       local ok, matugen = pcall(require, 'matugen')
       if ok and type(matugen) == "table" and matugen.setup then
         pcall(matugen.setup)
       end
 
-      -- Discord Rich Presence: show that Neovim is running, the project's
-      -- language icon, and elapsed time - never the filename or
-      -- project/workspace name.
       require('neocord').setup({
         main_image = "language",
         show_time = true,
@@ -371,14 +413,17 @@
         buttons = function() end,
       })
     '';
+
     extraPackages = [
+      pkgs.clippy
+      pkgs.biome
+      pkgs.ruff
       pkgs.stylua
       pkgs.nixfmt
       pkgs.hunspell
       pkgs.hunspellDicts.ru-ru
       pkgs.hunspellDicts.en-us
       pkgs.prettier
-      # Required by Telescope for project-wide file/text search.
       pkgs.ripgrep
       pkgs.fd
     ];
