@@ -61,9 +61,9 @@
       bind -n M-v split-window -h -c "#{pane_current_path}"
       bind -n M-Enter new-window -c "#{pane_current_path}"
 
-      bind -n M-c confirm-before -p "Kill pane? (y/n)" kill-pane
-      bind -n M-q confirm-before -p "Kill window? (y/n)" kill-window
-      bind -n M-Q confirm-before -p "Kill entire session? (y/n)" kill-session
+      bind -n M-c kill-pane
+      bind -n M-q kill-window
+      bind -n M-Q kill-session
 
       bind -n M-d detach
 
@@ -90,7 +90,7 @@
       {
         plugin = tmuxPlugins.continuum;
         extraConfig = ''
-          set -g @continuum-restore 'on'
+          set -g @continuum-restore 'off'
           set -g @continuum-boot 'on'
           set -g @continuum-save-interval '10'
         '';
