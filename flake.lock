@@ -85,11 +85,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1794126923,
-        "narHash": "sha256-vjjAexl+BkgzZAw/AkbG03feHKRTrAFOzPQavjLkd/M=",
+        "lastModified": 1795425562,
+        "narHash": "sha256-ufni93MMAFCDq6cJ21iKnnzd3gAFIzU0uI67BLzoEOY=",
         "owner": "pguin-sudo",
         "repo": "incy-nix",
-        "rev": "2bdea0aea6e6ecf8ac9fe25bde4f3285b31baf10",
+        "rev": "94b2e31ecb99327855700ae4ab6b880961938c95",
         "type": "github"
       },
       "original": {
