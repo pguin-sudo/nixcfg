@@ -271,11 +271,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1793104617,
-        "narHash": "sha256-/iQ6cdffcAWlTx4S0LAyZ85r0fofz8hhyoFs6MAjogI=",
+        "lastModified": 1795425133,
+        "narHash": "sha256-oU2x/XmSjvXymmuTdlFumNXfYh9Or/5H+T17Wok8Ujc=",
         "owner": "pguin-sudo",
         "repo": "smkb",
-        "rev": "8cda1fbcb45f59360cd329725afca4b8d876b90d",
+        "rev": "bb3dadc78153ba33d457170723c6eeb9152525de",
         "type": "github"
       },
       "original": {
