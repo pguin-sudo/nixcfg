@@ -42,7 +42,7 @@
     usbutils
 
     # DB
-    datagrip
+    dbgate
   ];
 
   services.remmina = {
